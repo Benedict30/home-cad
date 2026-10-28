@@ -2272,6 +2272,16 @@ function boot(){
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{requestDraw();renderLibrary();});
 }
 boot();
+// on the public website, pick up a newer published version instead of a copy the browser saved (GitHub Pages lets browsers keep one for 10 minutes)
+(async()=>{
+  if(window.claude||!/^https?:$/.test(location.protocol))return;
+  try{
+    const r=await fetch(location.pathname,{method:'HEAD',cache:'no-store'});const lm=Date.parse(r.headers.get('last-modified')||''),mine=Date.parse(document.lastModified);
+    if(!(lm>mine+1000))return;
+    let n=0;try{n=+(sessionStorage.getItem('hcad.refresh')||0);}catch(e){}if(n>=2)return;try{sessionStorage.setItem('hcad.refresh',n+1);}catch(e){}
+    await fetch(location.pathname,{cache:'reload'});location.reload();
+  }catch(e){}
+})();
 window.__hcad={loadIdea,enterExplore,goCombo,exitExplore,COMBOS,get explore(){return explore;},clashes:()=>[...clashSet()].map(id=>{const it=getItem(id);return it.name+'@'+it.x+','+it.y;}),get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
 })();
 </script>
