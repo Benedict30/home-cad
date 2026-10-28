@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model and walkthrough.">
+<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and knock-down combinations.">
 <title>4-Room Type 3 Home CAD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,6 +84,7 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .savestate[data-s="off"]::before{background:var(--ink-3)}
 .only-narrow{display:none}
 .phone-only{display:none !important}
+.file-btn{display:none}
 #app.is-walk .sunp{bottom:auto;top:12px}
 
 /* ---------- panels */
@@ -120,6 +121,38 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .badge.part{background:var(--warn-bg);color:var(--warn)}
 .badge.new{background:var(--accent-2);color:var(--accent)}
 .badge.gone{background:var(--danger-bg);color:var(--danger)}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.k-yes,.k-res,.k-no{display:inline-block;width:16px;height:9px;border-radius:2px;flex-shrink:0}
+.k-yes{background:var(--ok)}.k-res{background:var(--warn)}.k-no{background:var(--struct)}
+.hackleg{top:12px;left:max(12px,env(safe-area-inset-left,0px));padding:5px 5px 5px 12px;align-items:center;gap:6px 14px;font-size:12.5px;flex-wrap:wrap;max-width:calc(100% - 100px)}
+.hackleg b{font-family:var(--f-display);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.hackleg span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.hackleg .ib{width:26px;height:26px}
+.klist{display:flex;flex-direction:column;gap:12px}
+.klist>div{display:flex;gap:12px;align-items:flex-start}
+.klist i{margin-top:6px;width:22px;height:10px}
+.klist b{display:block;font-weight:600;font-size:14px}
+.klist span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.ideas{display:flex;flex-direction:column;gap:8px}
+.ideas button{border:1px solid var(--line);background:var(--paper);border-radius:9px;padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.ideas button:hover{border-color:var(--accent)}
+.ideas b{font-weight:600;font-size:14px}
+.ideas span{font-size:12.5px;color:var(--ink-3)}
+.ideas button.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.explore{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'nav end' 'moves moves';align-items:center;gap:6px 12px;padding-block:8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgb(0 0 0 / .07)}
+.ex-nav{grid-area:nav;display:flex;align-items:center;gap:2px;min-width:0}
+.ex-nav .ib{flex-shrink:0;border-color:var(--line-2)}
+.ex-title{border:0;background:none;text-align:left;display:flex;flex-direction:column;min-width:0;padding:2px 8px;border-radius:6px;flex:1}
+.ex-title:hover{background:var(--panel-2)}
+.ex-title .c{font:500 11px var(--f-mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.ex-title b{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-title .s{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-moves{grid-area:moves;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;min-width:0;padding-bottom:1px}
+.ex-moves::-webkit-scrollbar{display:none}
+.mv{border:1px solid var(--line-2);border-radius:99px;padding:4px 11px 4px 7px;font-size:12.5px;background:var(--paper);display:inline-flex;gap:5px;align-items:center;color:var(--ink-2);white-space:nowrap}
+.mv svg{width:15px;height:15px}
+.mv[aria-pressed="true"]{background:var(--ok-bg);border-color:color-mix(in srgb,var(--ok) 55%,transparent);color:var(--ok)}
+.ex-end{grid-area:end;display:flex;gap:6px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .fld{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -176,18 +209,18 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 .notes li.n{border-left-color:var(--accent)}
 
 /* ---------- stage */
-.stage{grid-area:stage;position:relative;overflow:hidden;background:var(--paper);min-width:0;touch-action:none}
+.stage{--exh:0px;grid-area:stage;position:relative;overflow:hidden;background:var(--paper);min-width:0;touch-action:none}
 #plan{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #three{position:absolute;inset:0;background:var(--sky)}
 #three canvas{display:block;width:100%;height:100%;touch-action:none}
 .ov{position:absolute;z-index:5;display:flex;gap:6px}
 .ovbox{background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:9px;box-shadow:0 2px 10px rgb(0 0 0 / .08)}
-.zoomctl{right:max(12px,env(safe-area-inset-right,0px));bottom:12px;flex-direction:column;padding:3px;gap:2px}
+.zoomctl{right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + var(--exh));flex-direction:column;padding:3px;gap:2px}
 .zoomctl .ib{width:32px;height:32px}
 .ov3d{top:12px;right:max(12px,env(safe-area-inset-right,0px));flex-direction:column;align-items:flex-end;gap:8px}
 .ov3d .seg{background:color-mix(in srgb,var(--panel) 92%,transparent)}
 .ov3d .seg button{font-size:12.5px;padding:4px 9px}
-.sunp{left:max(12px,env(safe-area-inset-left,0px));bottom:12px;width:min(300px,calc(100% - 24px));padding:10px 12px;flex-direction:column;gap:8px}
+.sunp{left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + var(--exh));width:min(300px,calc(100% - 24px));padding:10px 12px;flex-direction:column;gap:8px}
 .sunp .hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sunp h4{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2)}
 .sunp .read{font:400 11.5px var(--f-mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
@@ -196,7 +229,7 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 .sunp .body{display:flex;flex-direction:column;gap:8px}
 .sunp.min .body{display:none}
 .westsun{font:600 11px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--warn);background:var(--warn-bg);border-radius:4px;padding:2px 7px}
-.walkhud{inset:auto 0 0 0;pointer-events:none;justify-content:space-between;align-items:flex-end;padding:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+.walkhud{inset:auto 0 var(--exh) 0;pointer-events:none;justify-content:space-between;align-items:flex-end;padding:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
 .walkhud>*{pointer-events:auto}
 .dpad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:4px;padding:6px}
 .dpad button{border:1px solid var(--line-2);background:var(--panel);border-radius:8px;display:grid;place-items:center;color:var(--ink);touch-action:none;user-select:none;-webkit-user-select:none}
@@ -207,7 +240,7 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 .minimap canvas{width:200px;height:150px;display:block;border-radius:5px;cursor:crosshair}
 .minimap span{font-size:11px;color:var(--ink-3);text-align:center}
 .walkhint{top:12px;left:50%;transform:translateX(-50%);padding:6px 12px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
-.selbar{left:50%;bottom:14px;transform:translateX(-50%);padding:4px 4px 4px 12px;align-items:center;gap:2px;max-width:calc(100% - 100px)}
+.selbar{left:50%;bottom:calc(14px + var(--exh));transform:translateX(-50%);padding:4px 4px 4px 12px;align-items:center;gap:2px;max-width:calc(100% - 100px)}
 .selbar b{font-weight:500;font-size:13px;margin-right:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .selbar .ib{width:32px;height:32px}
 .nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--ink-2)}
@@ -263,6 +296,18 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
   .right{right:0;transform:translateX(102%);padding-right:env(safe-area-inset-right,0px)}
   #app.show-lib .left,#app.show-insp .right{transform:none;visibility:visible}
   .legend{display:none}
+  .file-btn{display:inline-block}
+  #b-designs,#b-export,#b-knock,#b-help{display:none}
+  .savestate{display:none}
+}
+@media (max-width: 920px){
+  .brand-t{display:none}
+}
+@media (max-width: 1300px){
+  .savestate{display:none}
+}
+@media (max-width: 1200px) and (min-width: 1081px){
+  .brand-t span{display:none}
 }
 @media (max-width: 760px){
   .topbar{flex-wrap:wrap;row-gap:6px;column-gap:8px}
@@ -272,7 +317,7 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
   .spacer{display:none}
   .acts{margin-left:auto}
   .savestate{display:none}
-  #b-help,#b-designs,#b-export,#b-undo,#b-redo{display:none}
+  #b-help,#b-designs,#b-export,#b-knock,#b-undo,#b-redo{display:none}
   .phone-only{display:inline-grid !important}
   .tools .sep.phone-only{display:block !important}
   .tb{padding:6px 9px}
@@ -288,6 +333,11 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 @media (max-width: 420px){
   .brand-t{display:none}
   .seg button{padding:5px 9px}
+}
+@media (max-width: 760px){
+  .explore{grid-template-columns:minmax(0,1fr);grid-template-areas:'nav' 'moves' 'end'}
+  .ex-moves{flex-wrap:wrap}
+  .ex-end .tb{flex:1}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
 </style>
@@ -311,9 +361,10 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
       <button class="ib" id="b-undo" title="Undo (Ctrl+Z)" aria-label="Undo"></button>
       <button class="ib" id="b-redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"></button>
       <span class="savestate" id="savestate" data-s="ok">Saved</span>
+      <button class="tb" id="b-knock">Knock down</button>
       <button class="tb" id="b-designs">Designs</button>
       <button class="tb" id="b-export">Export</button>
-      <button class="tb phone-only" id="b-file">File</button>
+      <button class="tb file-btn" id="b-file">File</button>
       <button class="ib" id="b-help" title="Keyboard shortcuts" aria-label="Keyboard shortcuts"></button>
       <button class="ib only-narrow" id="b-lib" title="Furniture library" aria-label="Furniture library"></button>
       <button class="ib only-narrow" id="b-insp" title="Inspector" aria-label="Inspector"></button>
@@ -367,6 +418,16 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
     </div>
 
     <div class="ov ovbox selbar" id="selbar" hidden></div>
+    <div class="explore" id="explore" hidden>
+      <div class="ex-nav">
+        <button class="ib" id="ex-prev" title="Previous combination ( [ )" aria-label="Previous combination"></button>
+        <button class="ex-title" id="ex-title" title="See all combinations"><span class="c" id="ex-count"></span><b id="ex-name"></b><span class="s" id="ex-sub"></span></button>
+        <button class="ib" id="ex-next" title="Next combination ( ] )" aria-label="Next combination"></button>
+      </div>
+      <div class="ex-moves" id="ex-moves" role="group" aria-label="Walls to knock down"></div>
+      <div class="ex-end"><button class="tb small" id="ex-back">Back to my layout</button><button class="tb small primary" id="ex-keep">Keep this one</button></div>
+    </div>
+    <div class="ov ovbox hackleg" id="hackleg" hidden><b>Knock-down check</b><span><i class="k-yes"></i>Can go, with permit</span><span><i class="k-res"></i>Bathroom, restricted</span><span><i class="k-no"></i>Must stay</span><button class="ib" id="hack-off" aria-label="Turn off the knock-down check" title="Turn off"></button></div>
   </main>
 
   <aside class="right panel" id="insp" aria-label="Inspector">
@@ -439,6 +500,8 @@ const ICON={
   dup:ic('<rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'),
   trash:ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'),
   sliders:ic('<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'),
+  check:ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'), dot:ic('<circle cx="12" cy="12" r="6.5"/>'),
+  chevL:ic('<path d="M15 5l-7 7 7 7"/>'), chevR:ic('<path d="M9 5l7 7-7 7"/>'),
   chevD:ic('<path d="M6 9l6 6 6-6"/>'), chevU:ic('<path d="M6 15l6-6 6 6"/>'),
   aUp:ic('<path d="M12 19V5M6 11l6-6 6 6"/>'), aDn:ic('<path d="M12 5v14M6 13l6 6 6-6"/>'),
   aL:ic('<path d="M19 12H5M11 6l-6 6 6 6"/>'), aR:ic('<path d="M5 12h14M13 6l6 6-6 6"/>'),
@@ -538,7 +601,8 @@ function defaultModel(){
   W('s2',[4241,6636],[6925,6636],300,'structural');
   W('s3',[4391,4907],[4391,6786],300,'structural');
   W('s4',[6775,4907],[6775,6786],300,'structural');
-  W('p4',[3646,3750],[9575,3750],100,'partition',[door(2104,850,{side:-1,hinge:1}),door(3154,900,{side:-1,hinge:0})]);
+  W('p4a',[3646,3750],[6640,3750],100,'partition',[door(2104,850,{side:-1,hinge:1})]);
+  W('p4b',[6640,3750],[9575,3750],100,'partition',[door(160,900,{side:-1,hinge:0})]);
   W('p5',[6700,225],[6700,3750],120,'partition');
   W('p6',[9575,225],[9575,3750],100,'partition');
   W('p7',[8305,3750],[8305,4950],100,'partition',[door(100,950,{side:-1,hinge:1})]);
@@ -583,9 +647,10 @@ const ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));
 const ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));
 
 // ============================================================ state
+let pristine=true, explore=null;
 let model=null, sel=null, hov=null, tool='select', viewMode='plan', tab='inspect';
 const view={s:.05,ox:0,oy:0};
-const UI_DEF={layers:{grid:1,dims:1,labels:1,patterns:1,furniture:1,fixtures:1,swings:1,demo:1,clash:1},snap:50,ortho:1,wsnap:1,cut:'full',doorAngle:85,ceiling:0,structHi:0,shadows:1,sunT:16,sunM:new Date().getMonth(),sunMin:0,libCat:'Living'};
+const UI_DEF={layers:{grid:1,dims:1,labels:1,patterns:1,furniture:1,fixtures:1,swings:1,demo:1,clash:1,hack:0},snap:50,ortho:1,wsnap:1,cut:'full',doorAngle:85,ceiling:0,structHi:0,shadows:1,sunT:16,sunM:new Date().getMonth(),sunMin:0,libCat:'Living'};
 const ui=(()=>{try{const s=JSON.parse(LS.get('hcad.ui')||'{}');return Object.assign(copy(UI_DEF),s,{layers:Object.assign({},UI_DEF.layers,s.layers||{})});}catch(e){return copy(UI_DEF);}})();
 function saveUI(){LS.set('hcad.ui',JSON.stringify(ui));}
 
@@ -605,7 +670,7 @@ function commit(){
   if(hist.stack[hist.i]===s)return;
   hist.stack=hist.stack.slice(0,hist.i+1);hist.stack.push(s);
   if(hist.stack.length>150)hist.stack.shift();
-  hist.i=hist.stack.length-1;changed();
+  hist.i=hist.stack.length-1;pristine=false;changed();
 }
 function undo(){if(hist.i>0){hist.i--;model=JSON.parse(hist.stack[hist.i]);fixSel();changed();toast('Undone');}}
 function redo(){if(hist.i<hist.stack.length-1){hist.i++;model=JSON.parse(hist.stack[hist.i]);fixSel();changed();}}
@@ -655,6 +720,86 @@ function clashSet(){
   }
   return out;
 }
+// ---- what HDB lets you knock down (HDB renovation guidelines)
+const HACK={
+  yes:'Non-structural partition. It can be knocked down with HDB’s written approval, by a contractor from HDB’s Directory of Renovation Contractors (DRC). If it turns out to be reinforced concrete, a Professional Engineer must supervise the demolition.',
+  bath:'Bathroom wall. HDB does not allow bathroom wall or floor finishes to be removed for the first 3 years after the block is completed. After that, a bathroom can only be enlarged by up to 600 mm (0.6 m²), with a permit.',
+  struct:'Structural wall, shaded black on the HDB plan. It cannot be hacked, removed or tampered with.',
+  shelter:'Household shelter wall. SCDF rules forbid hacking it; drilling is limited to 50 mm for screws.',
+  facade:'External wall, part of the building facade. It stays as built.',
+  added:'A wall you added in this design. You can remove it freely.',
+};
+function wallSides(w){const f=wf(w),out=[];for(const sg of[-1,1])for(const fr of[.25,.5,.75]){const p=wpt(w,f,f.L*fr,sg*(w.t/2+150));const r=roomAt(p[0],p[1]);if(r&&!out.includes(r))out.push(r);}return out;}
+function hackInfo(w){
+  if(w.kind==='new')return{v:'yes',t:'Yes',why:HACK.added};
+  if(w.kind==='facade')return{v:'no',t:'Must stay',why:HACK.facade};
+  const rs=wallSides(w);
+  if(w.kind==='structural')return{v:'no',t:'Must stay',why:rs.some(r=>r.kind==='shelter')?HACK.shelter:HACK.struct};
+  if(rs.some(r=>r.kind==='bath'))return{v:'restricted',t:'Restricted',why:HACK.bath};
+  return{v:'yes',t:'Yes, with permit',why:HACK.yes};
+}
+// ---- knock-down ideas, built from the original layout
+function mkItem(type,x,y,r,x2){const T=TYPES[type];return Object.assign({id:uid('it'),type,name:T.n,x,y,r,w:T.w,d:T.d,h:T.h,z:T.z||0,col:T.col},x2||{});}
+function roomIn(m,x,y){let best=null,ba=1e18;for(const r of m.rooms){if(inPoly([x,y],r.poly)){const a=polyArea(r.poly);if(a<ba){ba=a;best=r;}}}return best;}
+function dropItemsIn(m,ids){m.items=m.items.filter(it=>{if(TYPES[it.type]&&TYPES[it.type].fixture)return true;const r=roomIn(m,it.x,it.y);return !(r&&ids.includes(r.id));});}
+function knock(m,ids){for(const w of m.walls)if(ids.includes(w.id))w.removed=true;}
+const IDEAS={
+  shell:{name:'Only what must stay',sub:'Every wall HDB lets you knock down, removed.',hack:1,apply(m){
+    knock(m,['p1','p4a','p4b','p5','p6','p7','p8']);m.items=m.items.filter(i=>TYPES[i.type]&&TYPES[i.type].fixture);
+  }},
+};
+// ---- knock-down combinations: a open Bedroom 3, b Bedroom 2 into a walk-in, c join Bedrooms 3 and 2, e open the kitchen to the yard
+const MOVES=[
+  {k:'a',label:'Open Bedroom 3 to living',walls:2},
+  {k:'b',label:'Bedroom 2 into walk-in',walls:1},
+  {k:'c',label:'Join Bedrooms 3 + 2',walls:1},
+  {k:'e',label:'Open kitchen to yard',walls:1},
+];
+const COMBOS=['','a','b','c','e','ab','ac','ae','bc','be','ce','abc','abe','ace','bce','abce'];
+const COMBO_BASE={'':'As built',a:'Open study',b:'Master suite',c:'Twin kids’ room',ab:'Study + master suite',ac:'Study + family area',bc:'Master suite with study',abc:'Open-plan suite'};
+function comboTitle(f){const base=COMBO_BASE[f.replace('e','')];return f.includes('e')?(base==='As built'?'Bigger kitchen':base+' + bigger kitchen'):base;}
+function comboSub(f){
+  const A=f.includes('a'),B=f.includes('b'),C=f.includes('c');
+  const beds=1+((!A&&!C)?1:0)+((!B&&!C)?1:0)+((C&&!A&&!B)?1:0),extra=[];
+  if(A||(B&&C))extra.push('study');if(B)extra.push('walk-in wardrobe');if(A&&C&&!B)extra.push('family area');
+  const walls=MOVES.filter(m=>f.includes(m.k)).reduce((n,m)=>n+m.walls,0);
+  return beds+' bedroom'+(beds>1?'s':'')+(extra.length?' + '+extra.join(' + '):'')+' · '+(walls?walls+' wall'+(walls>1?'s':'')+' down':'no walls down');
+}
+function buildCombo(f){
+  const A=f.includes('a'),B=f.includes('b'),C=f.includes('c'),E=f.includes('e');
+  const m=defaultModel(),R=id=>m.rooms.find(r=>r.id===id),r3=R('br3'),r2=R('br2');
+  const ids=[];if(A)ids.push('p1','p4a');if(B)ids.push('p6');if(C)ids.push('p5');if(E)ids.push('p8');knock(m,ids);
+  if(B)m.walls.find(w=>w.id==='p4b').openings=[];
+  dropItemsIn(m,['living','br3','br2','mb']);
+  const I=(...a)=>m.items.push(mkItem(...a));
+  // living and dining
+  if(A){I('rug',2050,1980,90,{w:1800,d:1500});I('sofa3',850,1980,270,{w:1800});I('coffee',2050,1980,90);I('tv',3350,1800,90,{w:1400});I('aircon',3425,1800,90);I('lamp',600,3150,0);}
+  else{I('rug',2050,2300,90,{w:2200,d:1500});I('sofa3',850,2300,270);I('coffee',2050,2300,90);I('tv',3350,2300,90);I('aircon',3425,2300,90);I('lamp',600,1350,0);I('side',800,3650,0);I('plant',3300,3540,0);}
+  I('dining4',1900,5650,0);I('shoecab',2270,7175,180);
+  // bedroom 3
+  if(A){r3.name='Study';r3.floor='porcelain';r3.label=[4750,1380];I('desk',4900,525,0,{w:1600});
+    if(!C){I('shelf',6465,1500,90,{w:1800});I('aircon',6515,1500,90);I('rug',4950,2350,0,{w:2000,d:1400,col:'#b9c4d0'});I('armchair',5850,2600,90,{col:'#5c7a52'});I('side',5850,3300,0);I('plant',4200,3250,0);}
+    else{I('aircon',4055,1300,270);if(!B)I('shelf',6700,525,0,{w:1600});I('rug',5000,2300,0,{w:1800,d:1400,col:'#b9c4d0'});I('armchair',5500,2300,90,{col:'#5c7a52'});I('side',5500,3050,0);I('plant',4200,3250,0);}
+  }else if(C&&B){r3.name='Suite study';r3.label=[5000,1450];
+    I('desk',4900,525,0,{w:1600});I('shelf',3871,3100,270,{w:1200});I('armchair',5200,2500,0,{col:'#8a6f8e'});I('side',5900,2500,0);I('aircon',4055,1300,270);
+  }else if(C){r3.name='Kids’ room';r3.label=[6700,2550];r3.merge=['br2'];r2.nolabel=1;
+    I('bedSS',4955,1500,270);I('wardrobe',3996,3100,270,{w:1200});I('desk',6800,650,0,{w:1600});I('aircon',4055,1300,270);I('rug',6700,2100,0,{w:1400,d:1800,col:'#c9b8a6'});
+  }else{I('bedSS',5590,1500,90);I('desk',4230,1300,270);I('wardrobe',3996,3100,270,{w:1200});I('aircon',6515,1500,90);}
+  // bedroom 2
+  if(B){r2.name='Walk-in wardrobe';r2.label=[8400,2700];
+    if(C)I('wardrobe',6700,650,0,{w:1700});else I('wardrobe',7060,1950,270,{w:3000});
+    I('wardrobe',8400,3400,180,{w:2000});I('dresser',8300,1900,0,{name:'Wardrobe island',w:1200,d:600,h:900});
+  }else if(C&&A){r2.name='Family area';r2.floor='porcelain';r2.label=[8300,3300];
+    I('sofa3',7210,1850,270,{w:1800});I('tv',9325,1850,90,{w:1800});I('coffee',8350,1850,90);I('rug',8300,1850,90,{w:2000,d:1600});I('aircon',9400,1850,90);
+  }else if(C){I('bedSS',8475,1500,90,{col:'#c9b8a6'});I('wardrobe',8500,3400,180,{w:1600});
+  }else{I('bedSS',8475,1500,90,{col:'#c9b8a6'});I('wardrobe',7060,1350,270,{w:1600});I('desk',8550,3400,180);I('aircon',6885,2700,270);}
+  // main bedroom
+  I('bedQ',10700,1900,270);I('night',9825,800,270);I('night',9825,3000,270);I('wardrobe',11300,4600,180,{w:2000});I('armchair',11900,3400,90,{col:'#8a6f8e'});
+  if(B)I('aircon',12125,1000,90);else I('aircon',9750,1900,270);
+  if(E)R('sy').name='Utility area';
+  m.meta.name=comboTitle(f);m.meta.combo=f||'none';
+  return m;
+}
 // opening helpers
 function openingFits(w,at,wd,ignoreId){
   const f=wf(w);if(at<40||at+wd>f.L-40)return false;
@@ -668,10 +813,10 @@ function clampOpening(w,o,at){
 
 // ============================================================ palette
 let PAL={};
-const LIGHT_PAL={paper:'#ffffff',ink:'#151920',ink2:'#4f5865',ink3:'#88919e',struct:'#151920',wallfill:'#ffffff',newfill:'#dde5ff',furn:'#f0f2f5',grid:'#e9ecf0',gridMajor:'#d4dae2',accent:'#2646c8',warn:'#9a5a06',danger:'#b42c22',dark:false};
+const LIGHT_PAL={paper:'#ffffff',ink:'#151920',ink2:'#4f5865',ink3:'#88919e',struct:'#151920',wallfill:'#ffffff',newfill:'#dde5ff',furn:'#f0f2f5',grid:'#e9ecf0',gridMajor:'#d4dae2',accent:'#2646c8',warn:'#9a5a06',danger:'#b42c22',ok:'#28704a',line:'#c0c8d2',dark:false};
 function readPal(){
   const cs=getComputedStyle(document.documentElement),g=k=>cs.getPropertyValue(k).trim();
-  PAL={paper:g('--paper'),ink:g('--ink'),ink2:g('--ink-2'),ink3:g('--ink-3'),struct:g('--struct'),wallfill:g('--wallfill'),newfill:g('--newfill'),furn:g('--furn'),grid:g('--grid'),gridMajor:g('--grid-major'),accent:g('--accent'),warn:g('--warn'),danger:g('--danger'),sky:g('--sky')};
+  PAL={paper:g('--paper'),ink:g('--ink'),ink2:g('--ink-2'),ink3:g('--ink-3'),struct:g('--struct'),wallfill:g('--wallfill'),newfill:g('--newfill'),furn:g('--furn'),grid:g('--grid'),gridMajor:g('--grid-major'),accent:g('--accent'),warn:g('--warn'),danger:g('--danger'),ok:g('--ok'),sky:g('--sky')};
   PAL.dark=hex2rgb(PAL.paper).reduce((a,b)=>a+b,0)<300;
 }
 
@@ -838,6 +983,9 @@ function drawPlan(c,W,H,v,o){
     if(sel&&sel.kind==='room'&&sel.id===r.id&&!o.export){c.fillStyle=P.accent;c.globalAlpha=.08;c.fill();c.globalAlpha=1;c.strokeStyle=P.accent;c.lineWidth=2*u;c.stroke();}
     else if(hov&&hov.kind==='room'&&hov.id===r.id&&!o.export){c.fillStyle=P.accent;c.globalAlpha=.04;c.beginPath();polyPath(c,r.poly);c.fill();c.globalAlpha=1;}
   }
+  // floor carries on where a wall has been knocked down
+  for(const w of model.walls){if(!w.removed)continue;const f=wf(w);let r=null;for(const sg of[-1,1]){const p=wpt(w,f,f.L/2,sg*(w.t/2+120));r=roomAt(p[0],p[1]);if(r)break;}
+    if(!r)continue;const F=FLOORS[r.floor]||FLOORS.screed;c.beginPath();polyPath(c,spanPoly(w,f,0,f.L));c.fillStyle=mix(F.base,P.paper,P.dark?.86:.72);c.fill();}
   // ledge parapet & laundry rack & open-kitchen edge
   c.strokeStyle=P.ink;c.lineWidth=.9*u;c.strokeRect(LEDGE.x0,LEDGE.y0,LEDGE.x1-LEDGE.x0,LEDGE.y1-LEDGE.y0);
   c.strokeRect(LEDGE.x0+LEDGE.t,LEDGE.y0,LEDGE.x1-LEDGE.x0-2*LEDGE.t,LEDGE.y1-LEDGE.y0-LEDGE.t);
@@ -863,8 +1011,9 @@ function drawPlan(c,W,H,v,o){
     if(w.kind==='new'&&!o.mini){c.save();c.clip();c.strokeStyle=P.accent;c.globalAlpha=.55;c.lineWidth=.7*u;const f=wf(w);const bb=[Math.min(w.a[0],w.b[0])-w.t,Math.min(w.a[1],w.b[1])-w.t,Math.max(w.a[0],w.b[0])+w.t,Math.max(w.a[1],w.b[1])+w.t];c.beginPath();for(let x=bb[0]-(bb[3]-bb[1]);x<bb[2];x+=70){c.moveTo(x,bb[3]);c.lineTo(x+(bb[3]-bb[1]),bb[1]);}c.stroke();c.restore();}}
   for(const w of vis){const f=wf(w);for(const op of w.openings||[]){if(op.type==='window')drawWindow(c,w,f,op,u,P);}}
   c.beginPath();for(const w of st)for(const p of wallPolys(w))polyPath(c,p);c.fillStyle=P.struct;c.fill();
+  if(L.hack&&!o.mini){for(const w of vis){const h=hackInfo(w);c.beginPath();for(const p of wallPolys(w))polyPath(c,p);c.fillStyle=h.v==='yes'?P.ok:h.v==='restricted'?P.warn:P.struct;c.fill();}}
   for(const w of vis){const f=wf(w);for(const op of w.openings||[]){if(op.type!=='window')drawDoor(c,w,f,op,u,P);}}
-  if(L.demo&&!o.mini){c.strokeStyle=P.warn;c.lineWidth=1.3*u;c.setLineDash([7*u,5*u]);
+  if(L.demo&&!o.mini){c.strokeStyle=P.ink2;c.lineWidth=1.3*u;c.setLineDash([7*u,5*u]);
     for(const w of model.walls){if(!w.removed)continue;const f=wf(w);c.beginPath();polyPath(c,spanPoly(w,f,0,f.L));c.stroke();
       const A=wpt(w,f,0,-w.t/2),B=wpt(w,f,f.L,w.t/2),C2=wpt(w,f,0,w.t/2),D=wpt(w,f,f.L,-w.t/2);c.beginPath();c.moveTo(A[0],A[1]);c.lineTo(B[0],B[1]);c.moveTo(C2[0],C2[1]);c.lineTo(D[0],D[1]);c.stroke();}
     c.setLineDash([]);}
@@ -883,7 +1032,8 @@ function drawPlan(c,W,H,v,o){
   }
   if(L.labels&&!o.mini){
     for(const r of model.rooms){
-      const a=polyArea(r.poly);if(a<1.5e6&&s<.03&&!o.export)continue;
+      if(r.nolabel)continue;
+      const a=polyArea(r.poly)+(r.merge||[]).reduce((n,id)=>{const q=getRoom(id);return n+(q?polyArea(q.poly):0);},0);if(a<1.5e6&&s<.03&&!o.export)continue;
       const lx=X(r.label[0]),ly=Y(r.label[1]);
       const xs=r.poly.map(p=>p[0]);const bw=(Math.max(...xs)-Math.min(...xs))*s*.9;
       let big=r.kind==='ledge'||r.kind==='corridor'?fs*.8:fs;
@@ -982,7 +1132,7 @@ let cursorW=null,draft=null,libDrop=null,spaceDown=false;
 function resizePlan(){const r=stage.getBoundingClientRect();CW=Math.max(1,r.width);CH=Math.max(1,r.height);DPR=Math.min(window.devicePixelRatio||1,2.5);cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);requestDraw();}
 function requestDraw(){if(drawQueued)return;drawQueued=true;requestAnimationFrame(()=>{drawQueued=false;if(viewMode==='plan')drawPlan(cx,CW,CH,view,{dpr:DPR});$('#st-zoom').textContent=Math.round(view.s/0.05*100)+'%';});}
 const toW=(px,py)=>[(px-view.ox)/view.s,(py-view.oy)/view.s];
-function fitView(){const b={x0:-1500,y0:-1500,x1:14100,y1:10700};const s=Math.min(CW/(b.x1-b.x0),CH/(b.y1-b.y0))*.97;view.s=s;view.ox=CW/2-(b.x0+b.x1)/2*s;view.oy=CH/2-(b.y0+b.y1)/2*s;requestDraw();}
+function fitView(){const b={x0:-1500,y0:-1500,x1:14100,y1:10700};const ex=parseFloat(stage.style.getPropertyValue('--exh'))||0,H=Math.max(100,CH-ex);const s=Math.min(CW/(b.x1-b.x0),H/(b.y1-b.y0))*.97;view.s=s;view.ox=CW/2-(b.x0+b.x1)/2*s;view.oy=H/2-(b.y0+b.y1)/2*s;requestDraw();}
 function zoomAt(px,py,f){const[wx,wy]=toW(px,py);const s=clamp(view.s*f,.012,1.5);view.s=s;view.ox=px-wx*s;view.oy=py-wy*s;requestDraw();}
 function evPos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];}
 
@@ -1205,6 +1355,7 @@ function deleteSel(){
     if(w.kind==='structural'){toast('Structural walls cannot be hacked, removed or tampered with (plan note 3).','err');return;}
     if(w.kind==='facade'){toast('Facade walls and windows are part of the building exterior.','err');return;}
     if(w.kind==='new'){model.walls=model.walls.filter(x=>x.id!==w.id);sel=null;commit();toast('Partition deleted');return;}
+    if(hackInfo(w).v==='restricted'){toast('Bathroom walls can\u2019t be knocked down. HDB only lets a bathroom grow by up to 600 mm, after the first 3 years.','err');return;}
     if(tab!=='inspect')setTab('inspect');renderInspector('confirmRemove');openPanel('insp');return;}
   else return;
   renderInspector();renderSelbar();requestDraw();
@@ -1220,6 +1371,7 @@ addEventListener('keydown',e=>{
   if(mod&&k==='y'){e.preventDefault();redo();return;}
   if(mod&&k==='d'){e.preventDefault();dupSel();return;}
   if(mod)return;
+  if(explore&&(e.key==='['||e.key===']')){goCombo(explore.i+(e.key===']'?1:-1));return;}
   if(viewMode==='walk'&&['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(k))return;
   if(k===' '){spaceDown=true;if(viewMode==='plan')cv.style.cursor='grab';e.preventDefault();return;}
   if(k==='escape'){if(draft){finishWall();}else if(sel){setSel(null);}else if(tool!=='select')setTool('select');closePanels();return;}
@@ -1280,11 +1432,11 @@ function setView(v,fromHash){
   if(v!=='plan'){if(tool!=='select'){tool='select';$$('#tools .ib').forEach(b=>b.classList.toggle('on',b.dataset.tool==='select'));}init3D();resize3D();if(v==='walk')enterWalk();else if(prev==='walk')exitWalk();sync3D();
     $('#st-hint').textContent=v==='walk'?'Walking at 1.6 m eye height · W A S D or arrows · drag to look':'Drag to orbit · right-drag or two fingers to pan · scroll to zoom · click furniture to select, drag to move it';}
   else{if(prev==='walk')exitWalk();setTool(tool);resizePlan();}
-  renderSelbar();
-  if(!fromHash){try{history.replaceState(null,'','#'+v);}catch(e){}}
+  renderSelbar();updHackLeg();
+  if(!fromHash&&!explore){try{history.replaceState(null,'','#'+v);}catch(e){}}
 }
 $$('.views button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h!==viewMode)setView(h,true);});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1);const c=parseCombo(h);if(c!==null){const i=COMBOS.indexOf(c);if(!explore)enterExplore(c);else if(i!==explore.i)goCombo(i);return;}if(h&&h!==viewMode)setView(h,true);});
 
 // ============================================================ library
 const thumbs={};
@@ -1361,12 +1513,13 @@ function renderInspector(mode){
     h+=`<div class="sec"><h4>Colour</h4>${swatches(COLORS,it.col,'col')}</div>`;
     h+=`<div class="sec row"><button class="tb small" data-act="dup">Duplicate</button><button class="tb small" data-act="lock">${it.locked?'Unlock':'Lock position'}</button><button class="tb small danger" data-act="del">Delete</button></div>`;
   }else if(sel&&sel.kind==='wall'){const w=getWall(sel.id);if(!w){sel=null;return renderInspector();}const f=wf(w);const[cls,label,desc]=wallKindInfo(w);
-    h+=`<div class="ititle"><div><h3>Wall</h3><p>${nf(f.L)} mm long · ${w.t} mm thick</p></div><span class="badge ${cls}">${label}</span></div><p class="note">${desc}</p>`;
+    h+=`<div class="ititle"><div><h3>Wall</h3><p>${nf(f.L)} mm long · ${w.t} mm thick</p></div><span class="badge ${cls}">${label}</span></div>${w.removed||w.kind==='new'?`<p class="note">${desc}</p>`:''}`;
+    if(!w.removed){const hk=hackInfo(w);h+=`<div class="sec"><h4>Can I knock it down?</h4><div class="row"><span class="badge ${hk.v==='yes'?'ok':hk.v==='restricted'?'part':'struct'}">${hk.t}</span></div><p class="note">${hk.why}</p></div>`;}
     if(mode==='confirmRemove'&&w.kind==='partition'){h+=`<div class="callout warn"><b>Remove this original partition?</b> It stays on the drawing as a dashed demolition outline so you can restore it. HDB approval is required before hacking it, and non-structural RC elements also need a Professional Engineer's supervision.</div><div class="row"><button class="tb danger" data-act="doRemove">Mark for removal</button><button class="tb" data-act="cancel">Keep wall</button></div>`;}
     if(w.kind==='new'){h+=`<div class="sec"><h4>Geometry</h4><div class="grid3">${numF('Length','len',f.L)}${numF('Thickness','t',w.t)}</div></div>`;}
     h+=`<div class="sec"><h4>Paint (both faces)</h4>${swatches(PAINTS,w.paint||model.meta.paint,'wpaint')}${w.paint?'<button class="tb small" data-act="paintReset" style="align-self:flex-start">Use house colour</button>':''}</div>`;
     const ops=w.openings||[];if(ops.length&&!w.removed)h+=`<div class="sec"><h4>Openings</h4><div class="list">${ops.map(o=>`<button data-op="${o.id}"><span class="grow">${o.type==='window'?'Window':(o.style==='main'?'Main door':o.style==='blast'?'Shelter door':o.style==='folding'?'Folding door':'Door')}</span><span class="mono">${o.w} wide</span></button>`).join('')}</div></div>`;
-    if(w.kind==='partition'&&!w.removed&&mode!=='confirmRemove')h+=`<div class="sec row"><button class="tb small danger" data-act="askRemove">Remove wall…</button></div>`;
+    if(w.kind==='partition'&&!w.removed&&mode!=='confirmRemove'&&hackInfo(w).v==='yes')h+=`<div class="sec row"><button class="tb small danger" data-act="askRemove">Remove wall…</button></div>`;
     if(w.removed)h+=`<div class="sec row"><button class="tb small" data-act="restore">Restore wall</button></div>`;
     if(w.kind==='new')h+=`<div class="sec row"><button class="tb small danger" data-act="del">Delete partition</button></div>`;
   }else if(sel&&sel.kind==='opening'){const w=getWall(sel.wid),o=getOpening(sel.wid,sel.id);if(!w||!o){sel=null;return renderInspector();}const ed=wallEditable(w);
@@ -1396,7 +1549,7 @@ function renderInspector(mode){
     h+=`<div class="sec">${txtF('Project name','pname',model.meta.name)}</div>`;
     h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.</p></div>`;
     if(model.items.some(i=>i.sample))h+=`<p class="callout info"><b>The furniture is a sample layout</b> so you can see the tool working. Move it, resize it, or clear it and start from an empty flat.</p>`;
-    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p></div>`;
+    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
     if(mode==='confirmClear')h+=`<div class="callout warn"><b>Remove every piece of furniture?</b> HDB-provided toilets and basins stay. You can undo this.</div><div class="row"><button class="tb danger" data-act="doClear">Clear furniture</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else if(mode==='confirmReset')h+=`<div class="callout warn"><b>Go back to the original HDB layout?</b> Walls, finishes and furniture all reset. Save a version first if you want to keep this one.</div><div class="row"><button class="tb danger" data-act="doReset">Reset to original</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else h+=`<div class="sec row"><button class="tb small" data-act="askClear">Clear furniture…</button><button class="tb small" data-act="askReset">Reset to original plan…</button></div>`;
@@ -1417,7 +1570,7 @@ $('#tabbody').addEventListener('change',e=>{
   if(e.target.matches('[data-wpaint-custom]')){const w=sel&&getWall(sel.id);if(w){w.paint=e.target.value;commit();}return;}
   if(e.target.matches('[data-hpaint-custom]')){model.meta.paint=e.target.value;commit();return;}
   if(e.target.matches('[data-rate]')){const r=getRoom(e.target.dataset.rate);if(r){r.rate=e.target.value;commit();}return;}
-  if(e.target.matches('[data-lay]')){ui.layers[e.target.dataset.lay]=e.target.checked?1:0;saveUI();requestDraw();sync3D();return;}
+  if(e.target.matches('[data-lay]')){ui.layers[e.target.dataset.lay]=e.target.checked?1:0;saveUI();requestDraw();sync3D();updHackLeg();return;}
   if(e.target.matches('[data-ui]')){const key=e.target.dataset.ui;ui[key]=e.target.type==='checkbox'?(e.target.checked?1:0):+e.target.value;saveUI();sync3D(true);requestDraw();return;}
   if(e.target.matches('[data-rfloor]')){const r=getRoom(e.target.dataset.rfloor);if(r){r.floor=e.target.value;commit();}return;}
   if(!k)return;const v=e.target.value,n=parseFloat(v);
@@ -1462,6 +1615,7 @@ $('#tabbody').addEventListener('click',e=>{
     case 'flipH':{const o=getOpening(sel.wid,sel.id);if(o){o.hinge=o.hinge?0:1;commit();}break;}
     case 'flipS':{const o=getOpening(sel.wid,sel.id);if(o){o.side=(o.side||1)*-1;commit();}break;}
     case 'selWall':setSel({kind:'wall',id:sel.wid});break;
+    case 'knock':openKnock();break;
     case 'askClear':renderInspector('confirmClear');break;case 'askReset':renderInspector('confirmReset');break;
     case 'doClear':model.items=model.items.filter(i=>TYPES[i.type]?.fixture);sel=null;commit();toast('Furniture cleared — toilets and basins kept');break;
     case 'doReset':model=defaultModel();sel=null;commit();toast('Back to the original HDB layout');break;
@@ -1477,7 +1631,7 @@ function renderFinishes(el){
 function renderLayers(el){
   const L=ui.layers,tg=(k,n)=>`<label class="tog"><span>${n}</span><input type="checkbox" data-lay="${k}" ${L[k]?'checked':''}></label>`;
   const tu=(k,n)=>`<label class="tog"><span>${n}</span><input type="checkbox" data-ui="${k}" ${ui[k]?'checked':''}></label>`;
-  el.innerHTML=`<div class="sec"><h4>Plan drawing</h4>${tg('grid','Grid')}${tg('dims','Dimensions')}${tg('labels','Room names & areas')}${tg('patterns','Floor patterns')}${tg('swings','Door swings')}${tg('demo','Walls marked for removal')}${tg('clash','Highlight wall clashes')}</div>
+  el.innerHTML=`<div class="sec"><h4>Plan drawing</h4>${tg('grid','Grid')}${tg('dims','Dimensions')}${tg('labels','Room names & areas')}${tg('patterns','Floor patterns')}${tg('swings','Door swings')}${tg('demo','Walls marked for removal')}${tg('hack','Knock-down check')}${tg('clash','Highlight wall clashes')}</div>
   <div class="sec"><h4>Objects</h4>${tg('furniture','Furniture')}${tg('fixtures','Bathroom fixtures from HDB plan')}</div>
   <div class="sec"><h4>3D model</h4>${tu('ceiling','Show ceiling')}${tu('structHi','Tint structural walls')}${tu('shadows','Sun shadows')}
     <label class="fld"><span>Doors open to ${ui.doorAngle}°</span><input type="range" min="0" max="90" step="5" value="${ui.doorAngle}" data-ui="doorAngle" aria-label="Door opening angle"></label>
@@ -1520,6 +1674,73 @@ function renderSelbar(){
   b.hidden=false;b.innerHTML=`<b>${esc(it.name)}</b><button class="ib" data-sb="rotL" title="Rotate −90° (Shift+R)" aria-label="Rotate left">${ICON.rotL}</button><button class="ib" data-sb="rotR" title="Rotate +90° (R)" aria-label="Rotate right">${ICON.rotR}</button><button class="ib" data-sb="dup" title="Duplicate (Ctrl+D)" aria-label="Duplicate">${ICON.dup}</button><button class="ib" data-sb="del" title="Delete" aria-label="Delete">${ICON.trash}</button><button class="ib only-narrow" data-sb="props" title="Properties" aria-label="Properties">${ICON.sliders}</button>`;
 }
 $('#selbar').addEventListener('click',e=>{const b=e.target.closest('[data-sb]');if(!b)return;const a=b.dataset.sb;if(a==='rotL')rotateSel(-90);if(a==='rotR')rotateSel(90);if(a==='dup')dupSel();if(a==='del')deleteSel();if(a==='props'){setTab('inspect');openPanel('insp');}});
+
+// ============================================================ knock-down check & ideas
+function updHackLeg(){const el=$('#hackleg');if(el)el.hidden=!(ui.layers.hack&&viewMode!=='walk');}
+function onHack(){requestDraw();sync3D();updHackLeg();if(tab==='layers')renderInspector();}
+$('#hack-off').innerHTML=ICON.close;$('#hack-off').onclick=()=>{ui.layers.hack=0;saveUI();onHack();};
+function openKnock(){
+  openModal('What can I knock down?',`<p class="note">Every wall in your flat, sorted by what HDB allows. Turn on the check to colour the walls on the plan and in 3D.</p>
+  <div class="klist">
+    <div><i class="k-yes"></i><div><b>Can be knocked down, with a permit</b><span>Bedroom 3’s wall facing the living room (only the lower 1.25 m; the top 2.5 m is structural) and its corridor wall, the walls between the bedrooms, the main bedroom entrance wall, and the kitchen to service yard wall.</span></div></div>
+    <div><i class="k-res"></i><div><b>Bathroom walls, restricted</b><span>No removing bathroom wall or floor finishes for the first 3 years after the block is completed. After that a bathroom can only grow by up to 600 mm (0.6 m²).</span></div></div>
+    <div><i class="k-no"></i><div><b>Must stay</b><span>Structural walls (black on your HDB plan), the household shelter, and the external walls and windows.</span></div></div>
+  </div>
+  <div class="row"><button class="tb" data-k="toggle">${ui.layers.hack?'Hide the check':'Show the check on my plan'}</button></div>
+  <div class="sec"><h4>Try the combinations</h4><p class="note">Four knock-downs you can mix: open up Bedroom 3, turn Bedroom 2 into a walk-in wardrobe, join Bedrooms 3 and 2, and open the kitchen to the yard. That makes 16 layouts to step through on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p>
+  <div class="row"><button class="tb primary" data-k="explore">Explore all 16 combinations</button><button class="tb" data-k="list">See the list</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
+  <p class="callout info">Every knock-down needs HDB’s written approval and a contractor from HDB’s Directory of Renovation Contractors. The sales plan doesn’t show which partitions are lightweight and which are reinforced concrete; reinforced concrete ones need a Professional Engineer to supervise. Confirm with your contractor before work starts.</p>`);
+  $('#m-body').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
+    if(b.dataset.k==='explore')enterExplore('');if(b.dataset.k==='list')showAllCombos();if(b.dataset.k==='shell'){if(explore)exitExplore(false,true);loadIdea('shell');}};
+}
+async function loadIdea(k){
+  const I=IDEAS[k];if(!I)return;
+  if(!pristine){try{await Store.save('Before “'+I.name+'”');}catch(e){}}
+  const m=defaultModel();I.apply(m);m.meta.name=I.name;m.meta.idea=k;
+  model=normalize(m);sel=null;if(I.hack&&!ui.layers.hack){ui.layers.hack=1;saveUI();}
+  commit();pristine=true;closeModal();closePanels();onHack();if(viewMode==='plan')fitView();
+  toast('Loaded “'+I.name+'”. Undo goes back.');
+}
+$('#b-knock').onclick=openKnock;
+
+// ============================================================ combination explorer
+function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slice(6);if(c==='as-built')return '';return COMBOS.includes(c)?c:null;}
+function exploreHeight(){const el=$('#explore');const h=el.hidden?0:Math.ceil(el.getBoundingClientRect().height);stage.style.setProperty('--exh',h+'px');}
+function enterExplore(f){
+  const first=!explore;if(first)explore={i:0,snapshot:copy(model)};
+  $('#explore').hidden=false;$('#app').classList.add('exploring');closeModal();closePanels();setSave('off','Exploring, not saved');
+  goCombo(Math.max(0,COMBOS.indexOf(f||'')));
+  if(first&&viewMode==='plan')fitView();
+}
+function goCombo(i){
+  if(!explore)return;i=((i%COMBOS.length)+COMBOS.length)%COMBOS.length;explore.i=i;const f=COMBOS[i];
+  model=normalize(buildCombo(f));sel=null;commit();pristine=true;updExplore();
+  try{history.replaceState(null,'','#combo-'+(f||'as-built'));}catch(e){}
+}
+function updExplore(){
+  if(!explore)return;const f=COMBOS[explore.i];
+  $('#ex-count').textContent=(explore.i+1)+' of '+COMBOS.length;$('#ex-name').textContent=comboTitle(f);$('#ex-sub').textContent=comboSub(f);
+  $('#ex-moves').innerHTML=MOVES.map(m=>{const on=f.includes(m.k);return `<button class="mv" data-mv="${m.k}" aria-pressed="${on}" title="${on?'Put this wall back':'Knock this down'}">${on?ICON.check:ICON.dot}<span>${esc(m.label)}</span></button>`;}).join('');
+  exploreHeight();
+}
+function toggleMove(k){const set=new Set(COMBOS[explore.i].split(''));set.has(k)?set.delete(k):set.add(k);goCombo(COMBOS.indexOf('abce'.split('').filter(c=>set.has(c)).join('')));}
+function exitExplore(restore,quiet){
+  if(!explore)return;const snap=explore.snapshot;explore=null;
+  $('#explore').hidden=true;$('#app').classList.remove('exploring');exploreHeight();
+  if(restore&&snap){model=snap;sel=null;commit();pristine=false;if(!quiet)toast('Back to your layout');}
+  else{Store.schedule();if(!quiet)toast('Kept “'+model.meta.name+'” as your layout');}
+  try{history.replaceState(null,'','#'+viewMode);}catch(e){}
+}
+function showAllCombos(){
+  openModal('All 16 combinations',`<div class="ideas">${COMBOS.map((f,i)=>`<button data-ci="${i}" class="${explore&&explore.i===i?'on':''}"><b>${i+1}. ${esc(comboTitle(f))}</b><span>${esc(comboSub(f))}</span></button>`).join('')}</div>`);
+  $('#m-body').onclick=e=>{const b=e.target.closest('[data-ci]');if(!b)return;const i=+b.dataset.ci;closeModal();if(explore)goCombo(i);else enterExplore(COMBOS[i]);};
+}
+$('#ex-prev').innerHTML=ICON.chevL;$('#ex-next').innerHTML=ICON.chevR;
+$('#ex-prev').onclick=()=>goCombo(explore.i-1);$('#ex-next').onclick=()=>goCombo(explore.i+1);
+$('#ex-moves').onclick=e=>{const b=e.target.closest('[data-mv]');if(b)toggleMove(b.dataset.mv);};
+$('#ex-title').onclick=showAllCombos;
+$('#ex-back').onclick=()=>exitExplore(true);$('#ex-keep').onclick=()=>exitExplore(false);
 
 function showShortcuts(){openModal('Keyboard shortcuts',`<div class="keys">
 <kbd>V</kbd><span>Select & move</span><kbd>W</kbd><span>Draw partition wall (Esc or double-click to finish)</span><kbd>D</kbd><span>Add door to a partition</span><kbd>N</kbd><span>Add window to a partition</span><kbd>M</kbd><span>Dimension</span><kbd>H</kbd> <span>Pan (or hold Space and drag)</span>
@@ -1650,12 +1871,16 @@ function buildStatic(){
   for(const r of model.rooms){const s=new THREE.Shape();r.poly.forEach((p,i)=>i?s.lineTo(p[0]/1000,-p[1]/1000):s.moveTo(p[0]/1000,-p[1]/1000));
     const geo=new THREE.ShapeGeometry(s);geo.rotateX(-Math.PI/2);const m=new THREE.Mesh(geo,floorMat(r.floor));m.position.y=.002;m.receiveShadow=true;m.userData={kind:'room',id:r.id};G.add(m);
     if(ui.ceiling||T3.walkMode){if(r.kind==='ledge')continue;const cg=new THREE.ShapeGeometry(new THREE.Shape(r.poly.map(p=>new THREE.Vector2(p[0]/1000,p[1]/1000))));cg.rotateX(Math.PI/2);const c=new THREE.Mesh(cg,mat('#f3f2ee',.95));c.position.y=H/1000;c.receiveShadow=true;G.add(c);}}
+  for(const w of model.walls){if(!w.removed)continue;const f=wf(w);let r=null;for(const sg of[-1,1]){const p=wpt(w,f,f.L/2,sg*(w.t/2+120));r=roomAt(p[0],p[1]);if(r)break;}
+    const q=spanPoly(w,f,0,f.L);const sh2=new THREE.Shape();q.forEach((p,i)=>i?sh2.lineTo(p[0]/1000,-p[1]/1000):sh2.moveTo(p[0]/1000,-p[1]/1000));
+    const g2=new THREE.ShapeGeometry(sh2);g2.rotateX(-Math.PI/2);const fm=new THREE.Mesh(g2,floorMat(r?r.floor:'screed'));fm.position.y=.0015;fm.receiveShadow=true;G.add(fm);}
   // walls
   const capS=mat('#1b1e24',.9),capP=mat('#5b616a',.9),capN=mat('#4058c4',.8),bottom=mat('#888888',.9);
   const glass=mat('#bcd3df',.05,.1,{transparent:true,opacity:.2,depthWrite:false});const frame=mat('#d5d8dc',.45,.35),trim=mat('#ebe7e0',.6);
   for(const w of model.walls){
     if(w.removed)continue;const f=wf(w),ang=-Math.atan2(f.uy,f.ux);
-    const paint=ui.structHi&&w.kind==='structural'?'#8b9199':(w.paint||model.meta.paint||'#f2f0eb');
+    let paint=ui.structHi&&w.kind==='structural'?'#8b9199':(w.paint||model.meta.paint||'#f2f0eb');
+    if(ui.layers.hack&&!T3.walkMode){const hv=hackInfo(w).v;paint=hv==='yes'?'#6fbf8c':hv==='restricted'?'#e5ad55':'#5b616a';}
     const side=mat(paint,.92),cap=w.kind==='structural'?capS:w.kind==='new'?capN:capP,mats=[side,side,cap,bottom,side,side];
     const piece=(s0,s1,y0,y1)=>{y1=Math.min(y1,top);if(y1-y0<2||s1-s0<2)return;const geo=new THREE.BoxGeometry((s1-s0)/1000,(y1-y0)/1000,w.t/1000);const m=new THREE.Mesh(geo,mats);const p=wpt(w,f,(s0+s1)/2,0);m.position.set(p[0]/1000,(y0+y1)/2000+(w.kind==='structural'?.0006:0),p[1]/1000);m.rotation.y=ang;m.castShadow=true;m.receiveShadow=true;m.userData={kind:'wall',id:w.id};G.add(m);};
     for(const[s0,s1]of spans(w,f))piece(s0,s1,0,H);
@@ -1773,7 +1998,7 @@ function buildItem(it){const g=new THREE.Group();(BUILD[it.type]||BUILD.box)(g,i
 function placeItem(g,it){g.position.set(it.x/1000,(it.z||0)/1000,it.y/1000);g.rotation.y=-it.r*D2R;}
 function sync3D(force){
   if(!T3.inited||T3.failed)return;
-  const sk=JSON.stringify([model.walls,model.rooms,model.meta.ceiling,model.meta.paint,ui.cut,ui.doorAngle,ui.ceiling,ui.structHi,T3.walkMode]);
+  const sk=JSON.stringify([model.walls,model.rooms,model.meta.ceiling,model.meta.paint,ui.cut,ui.doorAngle,ui.ceiling,ui.structHi,ui.layers.hack,T3.walkMode]);
   if(force||sk!==T3.staticKey){T3.staticKey=sk;buildStatic();}
   const seen=new Set();
   for(const it of model.items){seen.add(it.id);let e=T3.items.get(it.id);const k=itemKey(it);
@@ -1878,8 +2103,8 @@ const Store={col:null,writing:false,again:false,timerL:0,timerC:0,
       this.col=db.collection('data/users/'+id);
       const snap=await this.col.doc('current').get();
       if(snap.exists){const d=snap.data();const local=readLocal();
-        if(d&&d.model&&validModel(d.model)&&(!local||(d.savedAt||'')>(local.savedAt||''))){model=copy(d.model);sel=null;histReset();changed(true);toast('Loaded your saved design');}}
-      setSave('ok','Saved to your account');
+        if(d&&d.model&&validModel(d.model)&&(!local||(d.savedAt||'')>(local.savedAt||''))){if(explore){explore.snapshot=normalize(copy(d.model));}else{model=normalize(copy(d.model));sel=null;histReset();pristine=false;changed(true);toast('Loaded your saved design');}}}
+      if(!explore)setSave('ok','Saved to your account');
     }catch(e){this.col=null;}
   },
   schedule(){
@@ -1928,7 +2153,7 @@ async function openDesigns(confirmId){
     if(b.dataset.dd){await Store.remove(b.dataset.dd);toast('Version deleted');openDesigns();}};
 }
 $('#b-designs').onclick=()=>openDesigns();
-$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();};};
+$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="h"><b>Knock down</b><span>See which walls you can remove and try ideas</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();if(b.dataset.f==='h')openKnock();};};
 
 // ============================================================ export & import
 let dlCap;
@@ -1948,7 +2173,7 @@ function planImage(){
   const tb=700,m=110,b={x0:-1500,y0:-1500,x1:14100,y1:10700},aw=W-tb-m*3,ah=H-m*2;
   const s=Math.min(aw/(b.x1-b.x0),ah/(b.y1-b.y0));const v={s,ox:m+(aw-(b.x1-b.x0)*s)/2-b.x0*s,oy:m+(ah-(b.y1-b.y0)*s)/2-b.y0*s};
   const keep=sel,keepH=hov;sel=null;hov=null;const keepD=draft;draft=null;
-  drawPlan(g,W,H,v,{pal:LIGHT_PAL,dpr:1,k:2.6,export:true,layers:Object.assign({},ui.layers,{grid:0,clash:0})});
+  drawPlan(g,W,H,v,{pal:LIGHT_PAL,dpr:1,k:2.6,export:true,layers:Object.assign({},ui.layers,{grid:0,clash:0,hack:0})});
   sel=keep;hov=keepH;draft=keepD;
   // title block
   const x0=W-tb-m,y0=m,P=LIGHT_PAL;g.setTransform(1,0,0,1,0,0);g.strokeStyle=P.ink;g.lineWidth=4;g.strokeRect(m/2,m/2,W-m,H-m);g.lineWidth=3;g.strokeRect(x0,y0,tb,H-2*m);
@@ -1959,8 +2184,8 @@ function planImage(){
   T('DRAWING',26,600,P.ink3);y+=52;T('Furnished floor plan',42,600);y+=50;T('All dimensions in millimetres',30,400,P.ink2,'"Barlow",sans-serif');rule();
   T('AREA',26,600,P.ink3);y+=52;const ga=model.rooms.reduce((a,r)=>a+polyArea(r.poly),0);T('93 m² floor area incl. A/C ledge',36,500,P.ink,'"Barlow",sans-serif');y+=48;T(m2(ga)+' m² clear floor across all rooms',30,400,P.ink2,'"Barlow",sans-serif');rule();
   T('LEGEND',26,600,P.ink3);y+=40;
-  const leg=(fill,stroke,label,hatch)=>{g.fillStyle=fill;g.fillRect(tx,y,90,34);if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.strokeRect(tx,y,90,34);}if(hatch){g.strokeStyle=hatch;g.setLineDash(hatch===P.warn?[14,10]:[]);g.strokeRect(tx,y,90,34);g.setLineDash([]);}g.fillStyle=P.ink;g.font='400 30px "Barlow",sans-serif';g.textBaseline='middle';g.fillText(label,tx+120,y+18);g.textBaseline='alphabetic';y+=58;};
-  leg(P.struct,null,'Structural — do not hack');leg('#ffffff',P.ink,'Non-structural partition');leg(P.newfill,P.accent,'New partition');leg('#ffffff',null,'Marked for removal',P.warn);
+  const leg=(fill,stroke,label,hatch)=>{g.fillStyle=fill;g.fillRect(tx,y,90,34);if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.strokeRect(tx,y,90,34);}if(hatch){g.strokeStyle=hatch;g.setLineDash(hatch===P.ink2?[14,10]:[]);g.strokeRect(tx,y,90,34);g.setLineDash([]);}g.fillStyle=P.ink;g.font='400 30px "Barlow",sans-serif';g.textBaseline='middle';g.fillText(label,tx+120,y+18);g.textBaseline='alphabetic';y+=58;};
+  leg(P.struct,null,'Structural — do not hack');leg('#ffffff',P.ink,'Non-structural partition');leg(P.newfill,P.accent,'New partition');leg('#ffffff',null,'Marked for removal',P.ink2);
   y+=10;rule();
   const notes=renoNotes();T('RENOVATION CHANGES',26,600,P.ink3);y+=48;
   g.font='400 26px "Barlow",sans-serif';g.fillStyle=P.ink;
@@ -2004,7 +2229,8 @@ function changed(skipSave){
   updUndo();requestDraw();renderInspector();renderSelbar();
   if(viewMode!=='plan')sync3D();else if(T3.inited)T3.staticKey+='~';
   minimapDirty=true;
-  if(!skipSave)Store.schedule();
+  if(explore){const c=model.meta.combo==='none'?'':model.meta.combo;const i=c===undefined?-1:COMBOS.indexOf(c);if(i>=0&&i!==explore.i){explore.i=i;updExplore();}}
+  else if(!skipSave)Store.schedule();
 }
 
 // ============================================================ theme
@@ -2017,17 +2243,18 @@ new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,
 function topHeight(){const h=$('#topbar').getBoundingClientRect().height,s=$('#status').getBoundingClientRect().height;document.documentElement.style.setProperty('--top-h',(h+(parseFloat(getComputedStyle(document.documentElement).paddingTop)||0))+'px');document.documentElement.style.setProperty('--status-h',s+'px');}
 function boot(){
   readPal();
-  const local=readLocal();model=normalize(local?copy(local.model):defaultModel());histReset();
+  const local=readLocal();model=normalize(local?copy(local.model):defaultModel());histReset();pristine=!local;updHackLeg();
   renderLibrary();updChips();setTool('select');setTab('inspect');updateSun();
   topHeight();resizePlan();fitView();
   const ro=new ResizeObserver(()=>{topHeight();const keep=toW(CW/2,CH/2);resizePlan();if(view._fitted){view.ox=CW/2-keep[0]*view.s;view.oy=CH/2-keep[1]*view.s;}resize3D();});ro.observe(stage);view._fitted=true;
   const h=location.hash.slice(1);if(h==='model'||h==='walk')setView(h,true);
   setSave(local?'ok':'ok',local?'Saved on this device':'Saved on this device');
+  const c0=parseCombo(h);if(c0!==null)enterExplore(c0);
   Store.init();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{requestDraw();renderLibrary();});
 }
 boot();
-window.__hcad={get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
+window.__hcad={loadIdea,enterExplore,goCombo,exitExplore,COMBOS,get explore(){return explore;},clashes:()=>[...clashSet()].map(id=>{const it=getItem(id);return it.name+'@'+it.x+','+it.y;}),get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
 })();
 </script>
 
