@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and knock-down combinations.">
+<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and the best knock-down layouts.">
 <title>4-Room Type 3 Home CAD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -153,6 +153,9 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .mv svg{width:15px;height:15px}
 .mv[aria-pressed="true"]{background:var(--ok-bg);border-color:color-mix(in srgb,var(--ok) 55%,transparent);color:var(--ok)}
 .ex-end{grid-area:end;display:flex;gap:6px}
+.ex-moves .why{font-size:12.5px;color:var(--ink-2);line-height:1.4;flex:1 1 280px;min-width:0;align-self:center}
+.ex-moves .tag{display:inline-flex;gap:4px;align-items:center;font-size:12px;color:var(--ok);background:var(--ok-bg);border-radius:99px;padding:3px 10px 3px 6px;white-space:nowrap;align-self:center}
+.ex-moves .tag svg{width:13px;height:13px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .fld{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -755,7 +758,13 @@ const MOVES=[
   {k:'c',label:'Join Bedrooms 3 + 2',walls:1},
   {k:'e',label:'Open kitchen to yard',walls:1},
 ];
-const COMBOS=['','a','b','c','e','ab','ac','ae','bc','be','ce','abc','abe','ace','bce','abce'];
+const COMBOS=['a','b','ab','c'];
+const COMBO_FOR={
+  a:'Best for working from home: a brighter living room with a study corner, and 2 bedrooms kept.',
+  b:'Best for couples: a walk-in wardrobe off the main bedroom, with a spare bedroom kept.',
+  ab:'Best for couples without kids: the most open living area, plus a walk-in wardrobe.',
+  c:'Best for families with two young kids: one big shared room that can be split back into two later.',
+};
 const COMBO_BASE={'':'As built',a:'Open study',b:'Master suite',c:'Twin kids’ room',ab:'Study + master suite',ac:'Study + family area',bc:'Master suite with study',abc:'Open-plan suite'};
 function comboTitle(f){const base=COMBO_BASE[f.replace('e','')];return f.includes('e')?(base==='As built'?'Bigger kitchen':base+' + bigger kitchen'):base;}
 function comboSub(f){
@@ -1687,8 +1696,8 @@ function openKnock(){
     <div><i class="k-no"></i><div><b>Must stay</b><span>Structural walls (black on your HDB plan), the household shelter, and the external walls and windows.</span></div></div>
   </div>
   <div class="row"><button class="tb" data-k="toggle">${ui.layers.hack?'Hide the check':'Show the check on my plan'}</button></div>
-  <div class="sec"><h4>Try the combinations</h4><p class="note">Four knock-downs you can mix: open up Bedroom 3, turn Bedroom 2 into a walk-in wardrobe, join Bedrooms 3 and 2, and open the kitchen to the yard. That makes 16 layouts to step through on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p>
-  <div class="row"><button class="tb primary" data-k="explore">Explore all 16 combinations</button><button class="tb" data-k="list">See the list</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
+  <div class="sec"><h4>The 4 best knock-down layouts</h4><p class="note">Picked from every combination HDB allows here: an open study, a master suite with a walk-in wardrobe, both together, and a big shared kids’ room. Step through them on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p>
+  <div class="row"><button class="tb primary" data-k="explore">See the 4 layouts</button><button class="tb" data-k="list">Compare them</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
   <p class="callout info">Every knock-down needs HDB’s written approval and a contractor from HDB’s Directory of Renovation Contractors. The sales plan doesn’t show which partitions are lightweight and which are reinforced concrete; reinforced concrete ones need a Professional Engineer to supervise. Confirm with your contractor before work starts.</p>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
@@ -1705,7 +1714,7 @@ async function loadIdea(k){
 $('#b-knock').onclick=openKnock;
 
 // ============================================================ combination explorer
-function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slice(6);if(c==='as-built')return '';return COMBOS.includes(c)?c:null;}
+function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slice(6);return COMBOS.includes(c)?c:null;}
 function exploreHeight(){const el=$('#explore');const h=el.hidden?0:Math.ceil(el.getBoundingClientRect().height);stage.style.setProperty('--exh',h+'px');}
 function enterExplore(f){
   const first=!explore;if(first)explore={i:0,snapshot:copy(model)};
@@ -1721,7 +1730,7 @@ function goCombo(i){
 function updExplore(){
   if(!explore)return;const f=COMBOS[explore.i];
   $('#ex-count').textContent=(explore.i+1)+' of '+COMBOS.length;$('#ex-name').textContent=comboTitle(f);$('#ex-sub').textContent=comboSub(f);
-  $('#ex-moves').innerHTML=MOVES.map(m=>{const on=f.includes(m.k);return `<button class="mv" data-mv="${m.k}" aria-pressed="${on}" title="${on?'Put this wall back':'Knock this down'}">${on?ICON.check:ICON.dot}<span>${esc(m.label)}</span></button>`;}).join('');
+  $('#ex-moves').innerHTML=`<span class="why">${esc(COMBO_FOR[f]||'')}</span>`+MOVES.filter(m=>f.includes(m.k)).map(m=>`<span class="tag">${ICON.check}${esc(m.label)}</span>`).join('');
   exploreHeight();
 }
 function toggleMove(k){const set=new Set(COMBOS[explore.i].split(''));set.has(k)?set.delete(k):set.add(k);goCombo(COMBOS.indexOf('abce'.split('').filter(c=>set.has(c)).join('')));}
@@ -1733,7 +1742,7 @@ function exitExplore(restore,quiet){
   try{history.replaceState(null,'','#'+viewMode);}catch(e){}
 }
 function showAllCombos(){
-  openModal('All 16 combinations',`<div class="ideas">${COMBOS.map((f,i)=>`<button data-ci="${i}" class="${explore&&explore.i===i?'on':''}"><b>${i+1}. ${esc(comboTitle(f))}</b><span>${esc(comboSub(f))}</span></button>`).join('')}</div>`);
+  openModal('The 4 best layouts',`<div class="ideas">${COMBOS.map((f,i)=>`<button data-ci="${i}" class="${explore&&explore.i===i?'on':''}"><b>${i+1}. ${esc(comboTitle(f))}</b><span>${esc(comboSub(f))}</span><span>${esc(COMBO_FOR[f]||'')}</span></button>`).join('')}</div>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-ci]');if(!b)return;const i=+b.dataset.ci;closeModal();if(explore)goCombo(i);else enterExplore(COMBOS[i]);};
 }
 $('#ex-prev').innerHTML=ICON.chevL;$('#ex-next').innerHTML=ICON.chevR;

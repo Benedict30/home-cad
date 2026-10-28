@@ -11,7 +11,7 @@ A browser-based home planner for a 4-Room Type 3 HDB flat, traced from the HDB f
 - **3D and Walk** – a dollhouse model with wall-height cutaways, plus a first-person walkthrough at eye height.
 - **Sun study** – sun position for Singapore by month and time of day.
 - **Knock-down check** – every wall coloured by what HDB's renovation guidelines allow: partitions that can go with a permit, restricted bathroom walls, and walls that must stay.
-- **Knock-down combinations** – four knock-downs (open up Bedroom 3, Bedroom 2 into a walk-in wardrobe, join Bedrooms 3 and 2, open the kitchen to the yard) mixed into 16 furnished layouts. Step through them on the plan, in 3D or walking. Each has its own link, for example [#combo-ab](https://benedict30.github.io/home-cad/#combo-ab); start at [#combo-as-built](https://benedict30.github.io/home-cad/#combo-as-built).
+- **The 4 best knock-down layouts** – an open study ([#combo-a](https://benedict30.github.io/home-cad/#combo-a)), a master suite with walk-in wardrobe ([#combo-b](https://benedict30.github.io/home-cad/#combo-b)), both together ([#combo-ab](https://benedict30.github.io/home-cad/#combo-ab)), and a big shared kids' room ([#combo-c](https://benedict30.github.io/home-cad/#combo-c)). Each is furnished; step through them on the plan, in 3D or walking.
 - **Schedule** – room areas, a flooring estimate from your own rates, a furniture list, and a list of renovation changes.
 - **Export** – A4 plan drawing (PNG), 3D view (PNG), project file (JSON) and schedule (CSV).
 
