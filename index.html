@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and the best knock-down layouts.">
+<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and 8 knock-down layouts.">
 <title>4-Room Type 3 Home CAD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -758,24 +758,26 @@ const MOVES=[
   {k:'c',label:'Join Bedrooms 3 + 2',walls:1},
   {k:'e',label:'Open kitchen to yard',walls:1},
 ];
-const COMBOS=['a','b','ab','c'];
-const COMBO_FOR={
-  a:'Best for working from home: a brighter living room with a study corner, and 2 bedrooms kept.',
-  b:'Best for couples: a walk-in wardrobe off the main bedroom, with a spare bedroom kept.',
-  ab:'Best for couples without kids: the most open living area, plus a walk-in wardrobe.',
-  c:'Best for families with two young kids: one big shared room that can be split back into two later.',
-};
-const COMBO_BASE={'':'As built',a:'Open study',b:'Master suite',c:'Twin kids’ room',ab:'Study + master suite',ac:'Study + family area',bc:'Master suite with study',abc:'Open-plan suite'};
-function comboTitle(f){const base=COMBO_BASE[f.replace('e','')];return f.includes('e')?(base==='As built'?'Bigger kitchen':base+' + bigger kitchen'):base;}
-function comboSub(f){
-  const A=f.includes('a'),B=f.includes('b'),C=f.includes('c');
-  const beds=1+((!A&&!C)?1:0)+((!B&&!C)?1:0)+((C&&!A&&!B)?1:0),extra=[];
-  if(A||(B&&C))extra.push('study');if(B)extra.push('walk-in wardrobe');if(A&&C&&!B)extra.push('family area');
-  const walls=MOVES.filter(m=>f.includes(m.k)).reduce((n,m)=>n+m.walls,0);
-  return beds+' bedroom'+(beds>1?'s':'')+(extra.length?' + '+extra.join(' + '):'')+' · '+(walls?walls+' wall'+(walls>1?'s':'')+' down':'no walls down');
-}
+// eight layouts: the walls part of the key says what comes down, the part after '-' is a different use of the same walls
+const LAYOUTS=[
+  {k:'a',title:'Open study',sub:'2 bedrooms + study · 2 walls down',for:'Best for working from home: a brighter living room with a study corner, and 2 bedrooms kept.'},
+  {k:'a-dining',title:'Open dining',sub:'2 bedrooms + dining room · 2 walls down',for:'Best for hosting: a dining room for 6, and a kitchen island with stools where the dining table was.'},
+  {k:'b',title:'Master suite',sub:'2 bedrooms + walk-in wardrobe · 1 wall down',for:'Best for couples: a walk-in wardrobe off the main bedroom, with a spare bedroom kept.'},
+  {k:'ab',title:'Study + master suite',sub:'1 bedroom + study + walk-in wardrobe · 3 walls down',for:'Best for couples without kids: the most open living area, plus a walk-in wardrobe.'},
+  {k:'bc',title:'Master suite with private study',sub:'1 bedroom + private study + walk-in wardrobe · 2 walls down',for:'Best when one of you works from home: a quiet study inside the suite, away from the living room.'},
+  {k:'ac',title:'Study + family area',sub:'1 bedroom + study + family area · 3 walls down',for:'Best for entertaining: a study and a family TV area that open onto the living room.'},
+  {k:'c',title:'Twin kids’ room',sub:'2 bedrooms · 1 wall down',for:'Best for families with two young kids: one big shared room that can be split back into two later.'},
+  {k:'c-office',title:'Home office for two',sub:'1 bedroom + shared office · 1 wall down',for:'Best for two people working from home: a shared office with a desk under each window.'},
+];
+const COMBOS=LAYOUTS.map(l=>l.k);
+const layoutOf=f=>LAYOUTS.find(l=>l.k===f)||{title:'',sub:'',for:''};
+const COMBO_FOR=Object.fromEntries(LAYOUTS.map(l=>[l.k,l.for]));
+function comboTitle(f){return layoutOf(f).title;}
+function comboSub(f){return layoutOf(f).sub;}
+function comboWalls(f){return (f||'').split('-')[0];}
 function buildCombo(f){
-  const A=f.includes('a'),B=f.includes('b'),C=f.includes('c'),E=f.includes('e');
+  const wk=comboWalls(f),v=(f||'').split('-')[1]||'';
+  const A=wk.includes('a'),B=wk.includes('b'),C=wk.includes('c'),E=wk.includes('e');
   const m=defaultModel(),R=id=>m.rooms.find(r=>r.id===id),r3=R('br3'),r2=R('br2');
   const ids=[];if(A)ids.push('p1','p4a');if(B)ids.push('p6');if(C)ids.push('p5');if(E)ids.push('p8');knock(m,ids);
   if(B)m.walls.find(w=>w.id==='p4b').openings=[];
@@ -784,13 +786,19 @@ function buildCombo(f){
   // living and dining
   if(A){I('rug',2050,1980,90,{w:1800,d:1500});I('sofa3',850,1980,270,{w:1800});I('coffee',2050,1980,90);I('tv',3350,1800,90,{w:1400});I('aircon',3425,1800,90);I('lamp',600,3150,0);}
   else{I('rug',2050,2300,90,{w:2200,d:1500});I('sofa3',850,2300,270);I('coffee',2050,2300,90);I('tv',3350,2300,90);I('aircon',3425,2300,90);I('lamp',600,1350,0);I('side',800,3650,0);I('plant',3300,3540,0);}
-  I('dining4',1900,5650,0);I('shoecab',2270,7175,180);
+  if(v==='dining'){I('kbase',3500,6000,90,{name:'Kitchen island',w:1500,d:900});I('chair',2750,5650,270,{name:'Bar stool'});I('chair',2750,6350,270,{name:'Bar stool'});I('plant',800,5400,0);}
+  else I('dining4',1900,5650,0);
+  I('shoecab',2270,7175,180);
   // bedroom 3
-  if(A){r3.name='Study';r3.floor='porcelain';r3.label=[4750,1380];I('desk',4900,525,0,{w:1600});
+  if(A&&v==='dining'){r3.name='Dining room';r3.floor='porcelain';r3.label=[5150,600];
+    I('dining6',5150,1900,0);I('dresser',6415,1900,90,{name:'Sideboard',w:1600,d:450});I('aircon',6515,1500,90);I('plant',4200,3250,0);
+  }else if(A){r3.name='Study';r3.floor='porcelain';r3.label=[4750,1380];I('desk',4900,525,0,{w:1600});
     if(!C){I('shelf',6465,1500,90,{w:1800});I('aircon',6515,1500,90);I('rug',4950,2350,0,{w:2000,d:1400,col:'#b9c4d0'});I('armchair',5850,2600,90,{col:'#5c7a52'});I('side',5850,3300,0);I('plant',4200,3250,0);}
     else{I('aircon',4055,1300,270);if(!B)I('shelf',6700,525,0,{w:1600});I('rug',5000,2300,0,{w:1800,d:1400,col:'#b9c4d0'});I('armchair',5500,2300,90,{col:'#5c7a52'});I('side',5500,3050,0);I('plant',4200,3250,0);}
-  }else if(C&&B){r3.name='Suite study';r3.label=[5000,1450];
+  }else if(C&&B){r3.name='Private study';r3.label=[5000,1450];
     I('desk',4900,525,0,{w:1600});I('shelf',3871,3100,270,{w:1200});I('armchair',5200,2500,0,{col:'#8a6f8e'});I('side',5900,2500,0);I('aircon',4055,1300,270);
+  }else if(C&&v==='office'){r3.name='Home office';r3.label=[6700,2550];r3.merge=['br2'];r2.nolabel=1;
+    I('desk',4900,525,0,{w:1600});I('shelf',6700,525,0,{w:1600});I('sofa3',4146,3100,270,{name:'Loveseat',w:1200});I('aircon',4055,1300,270);I('rug',6700,2100,0,{w:1800,d:1400,col:'#b9c4d0'});I('plant',5300,3350,0);
   }else if(C){r3.name='Kids’ room';r3.label=[6700,2550];r3.merge=['br2'];r2.nolabel=1;
     I('bedSS',4955,1500,270);I('wardrobe',3996,3100,270,{w:1200});I('desk',6800,650,0,{w:1600});I('aircon',4055,1300,270);I('rug',6700,2100,0,{w:1400,d:1800,col:'#c9b8a6'});
   }else{I('bedSS',5590,1500,90);I('desk',4230,1300,270);I('wardrobe',3996,3100,270,{w:1200});I('aircon',6515,1500,90);}
@@ -800,13 +808,14 @@ function buildCombo(f){
     I('wardrobe',8400,3400,180,{w:2000});I('dresser',8300,1900,0,{name:'Wardrobe island',w:1200,d:600,h:900});
   }else if(C&&A){r2.name='Family area';r2.floor='porcelain';r2.label=[8300,3300];
     I('sofa3',7210,1850,270,{w:1800});I('tv',9325,1850,90,{w:1800});I('coffee',8350,1850,90);I('rug',8300,1850,90,{w:2000,d:1600});I('aircon',9400,1850,90);
+  }else if(C&&v==='office'){I('desk',8550,525,0,{w:1600});I('shelf',9350,2400,90,{w:1400});I('aircon',9400,1500,90);I('plant',8100,3350,0);
   }else if(C){I('bedSS',8475,1500,90,{col:'#c9b8a6'});I('wardrobe',8500,3400,180,{w:1600});
   }else{I('bedSS',8475,1500,90,{col:'#c9b8a6'});I('wardrobe',7060,1350,270,{w:1600});I('desk',8550,3400,180);I('aircon',6885,2700,270);}
   // main bedroom
   I('bedQ',10700,1900,270);I('night',9825,800,270);I('night',9825,3000,270);I('wardrobe',11300,4600,180,{w:2000});I('armchair',11900,3400,90,{col:'#8a6f8e'});
   if(B)I('aircon',12125,1000,90);else I('aircon',9750,1900,270);
   if(E)R('sy').name='Utility area';
-  m.meta.name=comboTitle(f);m.meta.combo=f||'none';
+  m.meta.name=comboTitle(f)||'Layout';m.meta.combo=f||'none';
   return m;
 }
 // opening helpers
@@ -1696,8 +1705,8 @@ function openKnock(){
     <div><i class="k-no"></i><div><b>Must stay</b><span>Structural walls (black on your HDB plan), the household shelter, and the external walls and windows.</span></div></div>
   </div>
   <div class="row"><button class="tb" data-k="toggle">${ui.layers.hack?'Hide the check':'Show the check on my plan'}</button></div>
-  <div class="sec"><h4>The 4 best knock-down layouts</h4><p class="note">Picked from every combination HDB allows here: an open study, a master suite with a walk-in wardrobe, both together, and a big shared kids’ room. Step through them on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p>
-  <div class="row"><button class="tb primary" data-k="explore">See the 4 layouts</button><button class="tb" data-k="list">Compare them</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
+  <div class="sec"><h4>8 knock-down layouts</h4><p class="note">Each suits a different household: an open study or dining room, a master suite with a walk-in wardrobe, a private study inside the suite, a family area, a shared kids’ room, and an office for two. Step through them on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p>
+  <div class="row"><button class="tb primary" data-k="explore">See the 8 layouts</button><button class="tb" data-k="list">Compare them</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
   <p class="callout info">Every knock-down needs HDB’s written approval and a contractor from HDB’s Directory of Renovation Contractors. The sales plan doesn’t show which partitions are lightweight and which are reinforced concrete; reinforced concrete ones need a Professional Engineer to supervise. Confirm with your contractor before work starts.</p>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
@@ -1730,7 +1739,7 @@ function goCombo(i){
 function updExplore(){
   if(!explore)return;const f=COMBOS[explore.i];
   $('#ex-count').textContent=(explore.i+1)+' of '+COMBOS.length;$('#ex-name').textContent=comboTitle(f);$('#ex-sub').textContent=comboSub(f);
-  $('#ex-moves').innerHTML=`<span class="why">${esc(COMBO_FOR[f]||'')}</span>`+MOVES.filter(m=>f.includes(m.k)).map(m=>`<span class="tag">${ICON.check}${esc(m.label)}</span>`).join('');
+  $('#ex-moves').innerHTML=`<span class="why">${esc(COMBO_FOR[f]||'')}</span>`+MOVES.filter(m=>comboWalls(f).includes(m.k)).map(m=>`<span class="tag">${ICON.check}${esc(m.label)}</span>`).join('');
   exploreHeight();
 }
 function toggleMove(k){const set=new Set(COMBOS[explore.i].split(''));set.has(k)?set.delete(k):set.add(k);goCombo(COMBOS.indexOf('abce'.split('').filter(c=>set.has(c)).join('')));}
@@ -1742,7 +1751,7 @@ function exitExplore(restore,quiet){
   try{history.replaceState(null,'','#'+viewMode);}catch(e){}
 }
 function showAllCombos(){
-  openModal('The 4 best layouts',`<div class="ideas">${COMBOS.map((f,i)=>`<button data-ci="${i}" class="${explore&&explore.i===i?'on':''}"><b>${i+1}. ${esc(comboTitle(f))}</b><span>${esc(comboSub(f))}</span><span>${esc(COMBO_FOR[f]||'')}</span></button>`).join('')}</div>`);
+  openModal('8 knock-down layouts',`<div class="ideas">${COMBOS.map((f,i)=>`<button data-ci="${i}" class="${explore&&explore.i===i?'on':''}"><b>${i+1}. ${esc(comboTitle(f))}</b><span>${esc(comboSub(f))}</span><span>${esc(COMBO_FOR[f]||'')}</span></button>`).join('')}</div>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-ci]');if(!b)return;const i=+b.dataset.ci;closeModal();if(explore)goCombo(i);else enterExplore(COMBOS[i]);};
 }
 $('#ex-prev').innerHTML=ICON.chevL;$('#ex-next').innerHTML=ICON.chevR;
