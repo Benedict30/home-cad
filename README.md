@@ -16,6 +16,8 @@ A browser-based home planner for a 4-Room Type 3 HDB flat, traced from the HDB f
 - **Schedule** – room areas, a flooring estimate from your own rates, a furniture list, and a list of renovation changes.
 - **Export** – A4 plan drawing (PNG), 3D view (PNG), project file (JSON) and schedule (CSV).
 
+All 8 out-of-the-box layouts as CAD drawings on one sheet: [out-of-the-box-cad-plans.png](https://benedict30.github.io/home-cad/out-of-the-box-cad-plans.png)
+
 Edits are saved in your own browser. Use Export → Project file to keep a copy or move it to another device.
 
 ## Notes
