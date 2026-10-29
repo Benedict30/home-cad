@@ -22,6 +22,10 @@ All 8 out-of-the-box layouts as CAD drawings on one sheet: [out-of-the-box-cad-p
 
 Edits are saved in your own browser. Use Export → Project file to keep a copy or move it to another device.
 
+## Plan your own flat
+
+Got a different HDB flat? Copy the prompt at **https://benedict30.github.io/home-cad/prompt/**, attach your floor plan, and send both to Claude. You get a wall-by-wall knock-down check, 4 layouts for your household, a style plan and to-scale drawings.
+
 ## Notes
 
 Room positions are traced from a photo of the HDB plan and may be off by around 100 mm in places. Check against the official plan or measure on site before ordering built-in furniture. Hacking any wall needs HDB approval; structural walls cannot be altered.

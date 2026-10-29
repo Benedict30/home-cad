@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Plan Your HDB Flat</title>
+<meta name="description" content="One prompt and a photo of your HDB floor plan: find out which walls you can knock down, get layout ideas for your household, and a style plan that works in Singapore.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef0f3; --card:#fbfcfd; --ink:#151920; --ink-2:#4f5865; --ink-3:#7c8592; --line:#d5dae1;
+  --accent:#2646c8; --accent-2:#e2e8fd; --on-accent:#fff; --ok:#28704a; --ok-bg:#e2f2e8; --warn:#9a5a06; --warn-bg:#fcf0dc;
+  --fill:#f3e7c8; --fill-ink:#6b4e10;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",sans-serif; --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1216; --card:#161a20; --ink:#e6e9ee; --ink-2:#a3acb9; --ink-3:#7a8390; --line:#2a313b;
+  --accent:#8ea5ff; --accent-2:#1c2547; --on-accent:#0c0f13; --ok:#62c08a; --ok-bg:#132a1e; --warn:#e5a84d; --warn-bg:#2d2312;
+  --fill:#3a2f14; --fill-ink:#f0d48e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --card:#161a20; --ink:#e6e9ee; --ink-2:#a3acb9; --ink-3:#7a8390; --line:#2a313b;
+  --accent:#8ea5ff; --accent-2:#1c2547; --on-accent:#0c0f13; --ok:#62c08a; --ok-bg:#132a1e; --warn:#e5a84d; --warn-bg:#2d2312;
+  --fill:#3a2f14; --fill-ink:#f0d48e; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 64px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:700 17px var(--f-display);letter-spacing:.02em}
+.brand svg{width:28px;height:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 15px var(--f-body);padding:9px 16px;border-radius:9px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn svg{width:18px;height:18px}
+h1{font:700 clamp(36px,8vw,56px)/1.02 var(--f-display);letter-spacing:-.01em;margin:28px 0 14px}
+.lede{font-size:18.5px;color:var(--ink-2);max-width:620px;margin:0 0 28px}
+h2{font:700 26px/1.15 var(--f-display);margin:44px 0 14px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:700 16px var(--f-display);margin-bottom:10px}
+.steps b{display:block;font-weight:600;margin-bottom:2px}
+.steps span{color:var(--ink-2);font-size:14.5px}
+.prompt{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.prompt-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 18px;border-bottom:1px solid var(--line)}
+.prompt-bar small{color:var(--ink-3);font-size:13.5px}
+pre{margin:0;padding:18px;font:14px/1.6 var(--f-mono);white-space:pre-wrap;word-break:break-word;color:var(--ink);max-height:none}
+pre mark{background:var(--fill);color:var(--fill-ink);border-radius:4px;padding:0 3px}
+.gets{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.gets li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.gets li svg{width:24px;height:24px;color:var(--ok);margin-top:1px}
+.gets b{font-weight:600}
+.gets span{color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 12px 5px 9px}
+.legend i{width:22px;height:6px;border-radius:2px;display:inline-block}
+figure{margin:16px 0 0}
+figure img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:#fff}
+figcaption{font-size:14px;color:var(--ink-3);margin-top:8px}
+.note{background:var(--warn-bg);color:var(--ink);border-radius:12px;padding:14px 16px;font-size:15px;margin-top:28px}
+.note b{color:var(--warn)}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+footer{margin-top:48px;color:var(--ink-3);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:640px){.steps{grid-template-columns:1fr}.lede{font-size:17px}pre{font-size:13px;padding:14px}h2{margin-top:36px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../"><svg viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="var(--ink)"/><path d="M7 8h10v5h6v9H7z" fill="none" stroke="var(--card)" stroke-width="1.6"/><path d="M7 15h7m3-2v4" stroke="var(--card)" stroke-width="1.6"/><rect x="7" y="8" width="2.4" height="4" fill="var(--card)"/><path d="M17 22a4 4 0 0 1 4-4" fill="none" stroke="var(--accent)" stroke-width="1.4"/></svg>Home CAD</a>
+    <a class="btn" href="../">Open the 3D planner</a>
+  </header>
+
+  <h1>Plan your HDB flat with AI</h1>
+  <p class="lede">Snap your floor plan, paste one prompt, and get a wall-by-wall knock-down check, layout ideas for the way your household lives, and a style plan that works in Singapore.</p>
+
+  <ol class="steps">
+    <li><b>Get your floor plan</b><span>A clear photo or screenshot of the plan from your BTO brochure or HDB.</span></li>
+    <li><b>Copy the prompt</b><span>Fill in the yellow parts: who lives with you, your style, must-haves and budget.</span></li>
+    <li><b>Send both to Claude</b><span>Attach the floor plan and paste the prompt in one message.</span></li>
+  </ol>
+
+  <h2>The prompt</h2>
+  <div class="prompt">
+    <div class="prompt-bar"><small>Works best with a clear, straight photo of the plan</small><button class="btn primary" id="copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg><span>Copy prompt</span></button></div>
+    <pre id="prompt">I've attached the floor plan of my HDB flat. Be my Singapore interior designer and help me plan the renovation.
+
+About us:
+- Who lives here: <mark>[e.g. couple + 1 toddler, both work from home, 1 cat]</mark>
+- Style we like: <mark>[e.g. Japandi, Scandinavian, modern, industrial]</mark>
+- Must-haves: <mark>[e.g. dining for 6, a home office, lots of storage]</mark>
+- Budget: <mark>[e.g. $50k]</mark>
+
+Please:
+1. Read the plan. List every room with its rough size, and point out the windows, the household shelter, the kitchen, the service yard and the bathrooms.
+2. Wall check. Go through every internal wall and say if it can be knocked down, using HDB's rules:
+   - Structural walls (shaded black or marked on the plan's legend) must stay.
+   - Household shelter walls must stay.
+   - Bathroom walls and floor finishes can't be hacked for the first 3 years after the block is completed.
+   - Other thin partitions can go with HDB approval and an HDB-registered (DRC) contractor; reinforced concrete ones need a Professional Engineer.
+   Tell me which walls you're unsure about and how to check.
+3. Give me 4 layout ideas that suit our household. Include at least one that knocks down nothing. For each: which walls come down, what each room becomes, furniture that fits (sizes in mm), and the pros and cons.
+4. Suggest colours, flooring and 3 key built-ins for our style. Keep it practical for Singapore living, and cover shoe storage at the door, the shelter as a storeroom, the service yard, aircon, humidity and wok cooking.
+5. Draw each layout as a simple floor plan to scale: walls that must stay in black (bathroom and external walls too), walls that can go in green, removed walls as dashed lines, and furniture as labelled boxes.
+
+End with what I should confirm with HDB or my contractor before any hacking.</pre>
+  </div>
+
+  <h2>What you get</h2>
+  <ul class="gets">
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Every room, read off your plan</b> <span>with rough sizes, windows, the shelter, kitchen, yard and bathrooms.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>A wall-by-wall knock-down check</b> <span>using HDB’s rules: structural and shelter walls stay, bathroom walls wait 3 years, partitions need a permit.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>4 layouts for your household</b> <span>from a no-hacking option to bigger changes, with furniture sizes in mm and the pros and cons.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>A style plan that works in Singapore</b> <span>colours, flooring and built-ins that handle shoes, humidity, aircon and wok cooking.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Floor plans you can look at</b> <span>each layout drawn to scale, with the walls colour-coded.</span></div></li>
+  </ul>
+
+  <figure><img src="../wall-check.png" alt="A 4-Room HDB floor plan with each wall coloured: green for partitions that can be knocked down with a permit, amber for bathroom walls, black for structural walls" loading="lazy" width="1600" height="1180"><figcaption>The wall check on a 4-Room Type 3 flat.</figcaption></figure>
+  <div class="legend"><span><i style="background:#28704a"></i>Can go, with permit</span><span><i style="background:#c9822a"></i>Bathroom, restricted</span><span><i style="background:#151920"></i>Must stay</span></div>
+
+  <figure><img src="../households-cad-plans.png" alt="Eight furnished layouts of the same flat, each planned for a different kind of household" loading="lazy" width="1654" height="2890"><figcaption>One flat, eight households: big family, gaming and cinema, pets, collectors, work and workout, hosts and home chefs, creators and musicians, and elder care.</figcaption></figure>
+
+  <h2>See it in 3D</h2>
+  <p>I turned my own 4-Room flat into a free 3D planner with 32 ready-made layouts. Walk through each one, check every wall, and move the furniture around.</p>
+  <div class="cta"><a class="btn primary" href="../">Open the 3D planner</a><a class="btn" href="../#combo-bigfamily">Jump to the household layouts</a></div>
+
+  <p class="note"><b>Before you hack anything:</b> AI can misread a photo. Check every wall against your official HDB floor plan, and get HDB’s approval and an HDB-registered (DRC) contractor before any work starts.</p>
+
+  <footer>Made with Claude. Not affiliated with HDB.</footer>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('copy'),t=b.querySelector('span'),src=document.getElementById('prompt');
+  b.addEventListener('click',function(){
+    var text=src.innerText;
+    function done(ok){t.textContent=ok?'Copied':'Select and copy';setTimeout(function(){t.textContent='Copy prompt';},2200);}
+    try{navigator.clipboard.writeText(text).then(function(){done(true);},function(){fallback();});}catch(e){fallback();}
+    function fallback(){try{var r=document.createRange();r.selectNodeContents(src);var s=getSelection();s.removeAllRanges();s.addRange(r);done(document.execCommand('copy'));}catch(e){done(false);}}
+  });
+})();
+</script>
+</body>
+</html>
