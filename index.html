@@ -147,7 +147,8 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .hub b i{font-style:normal;font-size:12px;font-weight:500;color:var(--accent)}
 .hub span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .hub em{font-style:normal;font-size:12px;color:var(--ink-3);line-height:1.4}
-.hub-all{margin-top:12px;display:flex;justify-content:center}
+.hub-all{margin-top:12px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.hub-all a.tb{text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
 @media (max-width:560px){.hub{grid-template-columns:1fr}}
 .explore{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'nav end' 'moves moves';align-items:center;gap:6px 12px;padding-block:8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgb(0 0 0 / .07)}
 .ex-nav{grid-area:nav;display:flex;align-items:center;gap:2px;min-width:0}
@@ -2223,7 +2224,7 @@ async function loadIdea(k){
 $('#b-knock').onclick=openKnock;
 const HUB={ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
 function openLayouts(){
-  openModal('Ready-made layouts',`<p class="note">32 furnished layouts of your flat in 4 sets. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all 32 in one list</button></div>`);
+  openModal('Ready-made layouts',`<p class="note">32 furnished layouts of your flat in 4 sets. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all 32 in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/prompt/" target="_blank" rel="noopener">Plan your own flat with AI</a></div>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
 }
 $('#b-layouts').onclick=openLayouts;
