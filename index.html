@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough, and practical and out-of-the-box knock-down layouts.">
+<meta name="description" content="Home CAD planner for a 4-Room Type 3 HDB flat: floor plan, 3D model, walkthrough and practical design ideas.">
 <title>4-Room Type 3 Home CAD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -517,7 +517,7 @@ const ICON={
 };
 
 // ============================================================ catalog
-const CATS=['Living','Dining','Bedroom','Kitchen','Bath & utility','Leisure','Generic'];
+const CATS=['Living','Dining','Bedroom','Kitchen','Bath & utility','Storage','Leisure','Generic'];
 const TYPES={
   sofa3:{n:'3-seat sofa',c:'Living',w:2100,d:900,h:800,col:'#8a94a3'},
   sofaL:{n:'L-shaped sofa',c:'Living',w:2700,d:1600,h:800,col:'#9b9186'},
@@ -570,9 +570,18 @@ const TYPES={
   sauna:{n:'Infrared sauna',c:'Leisure',w:1100,d:1100,h:2000,col:'#c49a6c'},
   dbrack:{n:'Dumbbell rack',c:'Leisure',w:1000,d:500,h:900,col:'#2b2e33'},
   art:{n:'Wall art',c:'Leisure',w:900,d:40,h:700,z:1150,col:'#3f5f8a'},
+  feature:{n:'TV feature wall',c:'Living',w:2000,d:60,h:2500,col:'#d6bc94'},
+  pendant:{n:'Pendant light',c:'Dining',w:450,d:450,h:300,z:1650,col:'#f4f3ef'},
+  table:{n:'Dining table',c:'Dining',w:1600,d:850,h:750,col:'#6b4a33'},
+  banquette:{n:'Banquette with storage',c:'Dining',w:1800,d:500,h:850,col:'#b48a5a'},
+  bunk:{n:'Bunk bed',c:'Bedroom',w:1000,d:2000,h:1650,col:'#d6bc94'},
+  daybed:{n:'Day bed with trundle',c:'Bedroom',w:2000,d:900,h:750,col:'#d8cfbf'},
+  tallcab:{n:'Oven & pantry tower',c:'Kitchen',w:600,d:600,h:2100,col:'#e8e4dc'},
+  shoetall:{n:'Shoe cabinet with seat',c:'Storage',w:800,d:380,h:2100,col:'#e8e4dc'},
+  racks:{n:'Storage racks',c:'Storage',w:1200,d:400,h:1800,col:'#9ea3a9'},
   cyl:{n:'Custom cylinder',c:'Generic',w:600,d:600,h:600,col:'#a9b4c2'},
 };
-const OVERHEAD=new Set(['kwall','aircon','screen','art']);
+const OVERHEAD=new Set(['kwall','aircon','screen','art','pendant']);
 const FLOORISH=new Set(['rug','platform','tatami','playmat']);
 const FLOORS={
   oak:{n:'Natural oak plank',base:'#c49a6c',kind:'plank'},
@@ -584,6 +593,9 @@ const FLOORS={
   hdbtile:{n:'Homogeneous tile 300×300',base:'#c9c3b9',kind:'tile',size:300},
   screed:{n:'Cement screed',base:'#b4b1ab',kind:'screed'},
   rubber:{n:'Rubber gym floor',base:'#43484f',kind:'terrazzo'},
+  lightoak:{n:'Light oak vinyl',base:'#d9c29c',kind:'plank'},
+  greytile:{n:'Light grey tile 600×600',base:'#d0d1cf',kind:'tile',size:600},
+  concretetile:{n:'Concrete-look tile 600×600',base:'#a6a49f',kind:'tile',size:600},
 };
 const PAINTS=[['Chalk','#f2f0eb'],['Linen','#ebe2d4'],['Mist','#dde4ea'],['Sage','#c7d1be'],['Clay','#d8b7a0'],['Harbour','#8fa5b7'],['Olive','#8d8c69'],['Charcoal','#4a4e55']];
 const COLORS=['#f7f7f5','#e8e4dc','#c8c2b8','#8a94a3','#5d6878','#2b2e33','#c49a6c','#b48a5a','#6b4a33','#b07a55','#5c7a52','#8a6f8e','#c9a24a','#3f5f8a'];
@@ -796,6 +808,7 @@ function comboTitle(f){return layoutOf(f).title;}
 function comboSub(f){return layoutOf(f).sub;}
 function comboWalls(f){return (f||'').split('-')[0];}
 function buildCombo(f){
+  const DL=DESIGN.find(l=>l.k===f);if(DL)return buildIdea(DL);
   const BL=BOLD.find(l=>l.k===f);if(BL)return buildBold(BL);
   const wk=comboWalls(f),v=(f||'').split('-')[1]||'';
   const A=wk.includes('a'),B=wk.includes('b'),C=wk.includes('c'),E=wk.includes('e');
@@ -934,9 +947,125 @@ function buildBold(L){
   };
   L.build(h);m.meta.name=L.title;m.meta.combo=L.k;return m;
 }
-LAYOUTS.forEach(l=>l.set='practical');BOLD.forEach(l=>l.set='bold');
-const ALL_LAYOUTS=[...LAYOUTS,...BOLD];
-const SETS={practical:LAYOUTS,bold:BOLD},SET_NAMES={practical:'Practical',bold:'Out of the box'};
+// ---- design ideas: styles from popular 4-room BTO renovations, kept practical for everyday Singapore living
+const DESIGN=[
+  {k:'scandi',title:'Scandinavian family home',sub:'3 bedrooms (kids’ room + study/guest) · no walls down',
+   for:'For young families. Light oak, white and soft grey with plenty of closed storage, like the Bidadari project in the article. Bedroom 3 is a study that doubles as a guest room.',
+   tags:['Study doubles as guest room','Kids’ room with bunk bed','Shelter as storeroom'],
+   s:{paint:'#f2f0eb',floors:{living:'lightoak',corridor:'lightoak',br3:'lightoak',br2:'lightoak',mb:'lightoak'},sofa:{t:'sofaL',col:'#c8c2b8'},rug:'#e8e4dc',coffee:'#d9c29c',tv:'#f2f2ef',
+      feature:{finish:'oak',col:'#d9c29c'},dining:{t:'dining4',col:'#d9c29c'},pendant:{col:'#f4f3ef'},shoe:'#f2f2ef',lower:'#f2f2ef',upper:'#f2f2ef',wardrobe:'#f2f2ef',
+      br3:'studyguest',br2:'kids',master:{style:'std',col:'#c8c2b8'},accents:[['p5',-1,'#dde4ea']]}},
+  {k:'japandi',title:'Japandi calm',sub:'3 bedrooms (guest/nursery + study) · no walls down',
+   for:'For couples planning a family. Warm timber, linen tones and a low platform bed, like the Woodlands project in the article. Bedroom 2 is a sage guest room that can become the nursery.',
+   tags:['Low platform bed','Fluted timber TV wall','Nursery-ready guest room'],
+   s:{paint:'#ebe2d4',floors:{living:'oak',corridor:'oak',br3:'oak',br2:'oak',mb:'oak'},sofa:{t:'sofa3',col:'#d8cfbf'},rug:'#c9c0b2',coffee:'#8b6a4e',tv:'#b48a5a',
+      feature:{finish:'fluted',col:'#b48a5a'},dining:{t:'dining4',col:'#b48a5a'},pendant:{col:'#f3ead8'},shoe:'#d9c29c',lower:'#e8e4dc',upper:'#d9c29c',wardrobe:'#d9c29c',daybed:'#d8cfbf',
+      br3:'studyguest',br2:'guest',master:{style:'low',col:'#d8cfbf'},accents:[['p5',-1,'#c7d1be'],['p6',-1,'#d8c7b0']]}},
+  {k:'semiopen',title:'Semi-open kitchen',sub:'3 bedrooms · glass kitchen doors, no walls down',
+   for:'For households that cook often. Glass sliding doors close off the open kitchen, so wok smoke and oil stay out of the living room, and an oven and pantry tower adds storage.',
+   tags:['Glass sliding kitchen doors','Oven & pantry tower','Two-tone cabinets'],
+   s:{paint:'#f2f0eb',floors:{living:'greytile',corridor:'greytile',kitchen:'greytile',br3:'vinyl',br2:'vinyl',mb:'vinyl'},sofa:{t:'sofa3',col:'#8a94a3'},rug:'#c9c0b2',coffee:'#b48a5a',tv:'#e3ded6',
+      feature:{finish:'oak',col:'#c49a6c'},dining:{t:'dining4',col:'#b48a5a'},pendant:{col:'#f4f3ef'},lower:'#5d6878',upper:'#f2f2ef',tall:true,glassKitchen:true,
+      br3:'studyguest',br2:'kids',master:{style:'std',col:'#c8c2b8'}}},
+  {k:'minimal',title:'Minimalist open study',sub:'2 bedrooms + open study · 2 walls down',
+   for:'For couples who work from home. Bedroom 3 opens up as a study, like the Clementi project in the article, with white walls and a full-height storage wall that hides the clutter.',
+   tags:['Bedroom 3 opened as study','Hidden full-height storage','Olive accent wall'],
+   s:{knock:['p1','p4a'],paint:'#f7f7f5',floors:{living:'greytile',corridor:'greytile',br3:'greytile',br2:'lightoak',mb:'lightoak'},sofa:{t:'sofa3',col:'#e3ded6'},rug:'#e8e4dc',coffee:'#f2f2ef',tv:'#f7f7f5',
+      dining:{t:'dining4',col:'#f2f2ef'},pendant:{col:'#f4f3ef'},shoe:'#f7f7f5',lower:'#f7f7f5',upper:'#f7f7f5',wardrobe:'#f7f7f5',
+      br3:'open',br2:'guest',master:{style:'std',col:'#e3ded6'},accents:[['p5',1,'#8d8c69']]}},
+  {k:'modern',title:'Modern contemporary',sub:'3 bedrooms · glass kitchen screen, no walls down',
+   for:'For a hotel-like finish without hacking. A marble-look TV wall, glass kitchen screen, two-tone cabinets and a padded headboard, like the Sengkang and Bukit Batok projects in the article.',
+   tags:['Marble-look TV wall','Two-tone kitchen','Dressing table'],
+   s:{paint:'#f2f0eb',floors:{living:'marble',corridor:'marble',kitchen:'porcelain',br3:'vinyl',br2:'vinyl',mb:'vinyl'},sofa:{t:'sofaL',col:'#8a94a3'},rug:'#c9c0b2',coffee:'#e3ded6',tv:'#2b2e33',
+      feature:{finish:'marble'},dining:{t:'dining6',col:'#e3ded6'},pendant:{col:'#c9a24a',n:2},lower:'#3f5f8a',upper:'#e8e4dc',glassKitchen:true,
+      br3:'studyguest',br2:'kids',master:{style:'modern',col:'#c8c2b8'},accents:[['p6',-1,'#d8cfc4']]}},
+  {k:'industrial',title:'Industrial chic',sub:'2 bedrooms + home office · glass kitchen, no walls down',
+   for:'For young couples. Concrete-look tiles, charcoal walls, a black-frame glass kitchen and a reclaimed-wood dining table under cage lights, like the Northshore project in the article.',
+   tags:['Concrete-look tiles','Black-frame glass kitchen','Home office'],
+   s:{paint:'#e4e2de',floors:{living:'concretetile',corridor:'concretetile',kitchen:'concretetile',br3:'walnut',br2:'walnut',mb:'walnut'},sofa:{t:'sofa3',col:'#6b4a33'},rug:'#5d6878',coffee:'#2b2e33',tv:'#2b2e33',
+      feature:{finish:'concrete'},dining:{t:'dining6',col:'#6b4a33'},pendant:{col:'#2b2e33',n:2},shoe:'#2b2e33',lower:'#2b2e33',upper:'#6b4a33',wardrobe:'#4a4e55',glassKitchen:true,
+      br3:'office',br2:'guest',master:{style:'std',col:'#2b2e33'},accents:[['p6',-1,'#4a4e55'],['s3',1,'#4a4e55']]}},
+  {k:'multigen',title:'Three generations',sub:'3 bedrooms (grandparents + kids) · no walls down',
+   for:'For living with parents. Grandparents get Bedroom 2 beside the common bathroom, there is a seat at the shoe cabinet, a 6-seat dining table, and no rugs to trip on.',
+   tags:['Grandparents near common bath','Shoe cabinet with seat','6-seat dining'],
+   s:{paint:'#f2f0eb',floors:{living:'greytile',corridor:'greytile',kitchen:'greytile',br3:'lightoak',br2:'lightoak',mb:'lightoak'},sofa:{t:'sofa3',col:'#8a94a3'},rug:null,coffee:'#b48a5a',tv:'#e3ded6',
+      feature:{finish:'oak',col:'#c49a6c'},dining:{t:'dining6',col:'#b48a5a'},pendant:{col:'#f4f3ef'},
+      br3:'kids',br2:'grand',master:{style:'std',col:'#c8c2b8'},accents:[['p5',-1,'#ebe2d4']]}},
+  {k:'hosting',title:'Family that hosts',sub:'3 bedrooms · dining for 6, no walls down',
+   for:'For families who host. A banquette with storage seats 6, a sideboard holds the extra plates, and Bedroom 3 is ready for visiting relatives. A Scandinavian living room meets an industrial dining corner.',
+   tags:['Banquette dining with storage','Sideboard + pendants','Guest-ready study'],
+   s:{paint:'#f2f0eb',floors:{living:'lightoak',corridor:'lightoak',br3:'lightoak',br2:'lightoak',mb:'lightoak'},sofa:{t:'sofaL',col:'#c8c2b8'},rug:'#e8e4dc',coffee:'#d9c29c',tv:'#f2f2ef',
+      feature:{finish:'fluted',col:'#d9c29c'},dining:{t:'banquette',col:'#d9c29c',table:'#6b4a33',chair:'#2b2e33',side:'#2b2e33'},pendant:{col:'#2b2e33'},
+      br3:'studyguest',br2:'kids',master:{style:'std',col:'#c8c2b8'},accents:[['s3',1,'#4a4e55']]}},
+];
+function buildIdea(L){
+  const S=L.s,m=defaultModel(),R=id=>m.rooms.find(r=>r.id===id),W=id=>m.walls.find(w=>w.id===id);
+  m.items=m.items.filter(it=>TYPES[it.type]&&TYPES[it.type].fixture);
+  const I=(...a)=>m.items.push(mkItem(...a));
+  const paint=(id,side,col)=>{const w=W(id);if(w)w[side>0?'paintPos':'paintNeg']=col;};
+  const glass=(id,a,b,o)=>{const w=Object.assign({id,a,b,t:80,kind:'new',glass:1,openings:[]},o||{});w.openings=w.openings.map((p,i)=>Object.assign({id:id+'-o'+i,added:true,type:'door',style:'sliding',head:2100,hinge:0,side:1},p));m.walls.push(w);};
+  if(S.knock)knock(m,S.knock);
+  m.meta.paint=S.paint;
+  for(const[id,fl]of Object.entries(S.floors||{}))R(id).floor=fl;
+  for(const[id,side,col]of S.accents||[])paint(id,side,col);
+  const wd=S.wardrobe||'#e8e4dc',open=(S.knock||[]).includes('p1');
+  // entrance, kitchen, yard, shelter and ledge: the everyday basics
+  I('shoetall',2270,7155,180,{col:S.shoe||'#e8e4dc'});
+  const lo=S.lower||'#e8e4dc',up=S.upper||lo;
+  I('fridge',3380,8675,180);I('ksink',4330,8725,180,{col:lo});I('khob',5725,8725,180,{w:1590,col:lo});I('kwall',5125,8850,180,{w:2790,col:up});
+  if(S.tall){I('kbase',5250,7086,0,{w:1300,col:lo});I('tallcab',6220,7086,0,{col:up});}else I('kbase',5500,7086,0,{w:1800,col:lo});
+  if(S.glassKitchen){glass('k1',[3030,6786],[4241,6786],{openings:[{at:160,w:900}]});glass('k2',[3030,6786],[3030,7180]);}
+  I('washer',7600,8700,180);I('tallcab',6925,8800,180,{name:'Utility cabinet',w:600,d:450,oven:false,col:'#f2f2ef'});
+  I('racks',6425,5850,90);I('racks',5180,6286,180);R('hs').name='Shelter storeroom';
+  I('condenser',9400,7500,180);I('condenser',10500,7500,180);
+  // living
+  const ty=open?1900:2100,sofa=S.sofa||{t:'sofa3',col:'#8a94a3'};
+  if(sofa.t==='sofaL'){I('sofaL',1150,2250,270,{w:2400,col:sofa.col});I('coffee',2350,2250,90,{col:S.coffee});if(S.rug)I('rug',2200,2250,90,{w:2000,d:1700,col:S.rug});}
+  else{I('sofa3',850,2100,270,{w:2100,col:sofa.col});I('coffee',2050,2100,90,{col:S.coffee});if(S.rug)I('rug',2050,2100,90,{w:2200,d:1500,col:S.rug});}
+  if(S.feature)I('feature',3520,open?1800:2100,90,{w:open?1400:2000,finish:S.feature.finish,col:S.feature.col||TYPES.feature.col});
+  I('tv',3290,ty,90,{w:1600,col:S.tv});
+  if(open)I('aircon',3425,1500,90);else I('aircon',3471,3400,90);
+  I('lamp',550,3750,0);I('plant',3250,3500,0);
+  // dining
+  const dn=S.dining||{t:'dining4',col:'#b48a5a'},pc=(S.pendant||{}).col||'#f4f3ef';
+  if(dn.t==='banquette'){
+    I('banquette',600,5650,270,{w:1800,col:dn.col});I('table',1325,5650,90,{w:1600,d:850,col:dn.table});
+    for(const y of[5150,5650,6150])I('chair',2000,y,90,{col:dn.chair});
+    I('dresser',4016,5650,90,{name:'Sideboard',w:1600,d:450,h:850,col:dn.side});
+    for(const y of[5250,6050])I('pendant',1325,y,0,{col:pc});
+  }else{I(dn.t,1900,5650,0,{col:dn.col});if(((S.pendant||{}).n||1)>1){for(const x of[1450,2350])I('pendant',x,5650,0,{col:pc});}else I('pendant',1900,5650,0,{col:pc});}
+  // bedroom 3
+  const r3=R('br3');
+  if(S.br3==='studyguest'){r3.name='Study / guest room';
+    I('desk',4800,525,0,{w:1600});I('shelf',4105,1700,270,{w:1200,d:350});I('daybed',6190,1500,90,{col:S.daybed||'#d8cfbf'});I('wardrobe',3996,3100,270,{w:1200,col:wd});I('aircon',6515,1500,90);
+  }else if(S.br3==='kids'){r3.name='Kids’ room';
+    I('bunk',5640,1400,90);I('desk',4230,1300,270,{w:1200});I('wardrobe',3996,3100,270,{w:1200,col:wd});I('shelf',5000,3525,180,{name:'Toy shelf',w:1300,h:900,col:'#f2f2ef'});I('aircon',6515,2400,90);
+  }else if(S.br3==='open'){r3.name='Open study';r3.label=[5300,3050];
+    I('wardrobe',4155,1325,270,{name:'Full-height storage wall',w:2200,d:450,col:wd});I('desk',5150,525,0,{w:1300,col:'#f2f2ef'});I('armchair',5950,2200,90,{col:'#8d8c69'});I('rug',5200,2300,0,{w:1800,d:1300,col:'#e8e4dc'});I('aircon',6515,1500,90);I('plant',6300,3350,0);
+  }else if(S.br3==='office'){r3.name='Home office';
+    I('desk',4800,525,0,{w:1600,col:'#2b2e33'});I('shelf',4105,1700,270,{name:'Open shelving',w:1200,col:'#2b2e33'});I('armchair',6215,1600,90,{name:'Leather armchair',col:'#6b4a33'});I('wardrobe',3996,3100,270,{w:1200,col:wd});I('aircon',6515,2400,90);
+  }
+  // bedroom 2
+  const r2=R('br2');
+  if(S.br2==='kids'){r2.name='Kids’ room';r2.label=[8100,3100];
+    I('bunk',8525,2300,90);I('desk',8550,525,0,{w:1400});I('wardrobe',7060,1350,270,{w:1600,col:wd});I('shelf',8700,3525,180,{name:'Toy shelf',w:1300,h:900,col:'#f2f2ef'});I('aircon',6885,2700,270);
+  }else if(S.br2==='guest'){r2.name='Guest / nursery';r2.label=[8100,2700];
+    I('bedSS',8475,1500,90,{col:'#c8c2b8'});I('wardrobe',7060,1350,270,{w:1600,col:wd});I('dresser',8550,3475,180,{name:'Dresser (changing table later)',w:1000});I('aircon',6885,2700,270);
+  }else if(S.br2==='grand'){r2.name='Grandparents’ room';r2.label=[8100,2700];
+    I('bedS',7400,1360,0,{col:'#c8c2b8'});I('bedS',8750,1260,0,{col:'#c8c2b8'});I('night',8075,560,0,{w:340});I('wardrobe',8650,3400,180,{w:1600,col:wd});I('aircon',9400,1500,90);
+  }
+  // main bedroom
+  const ms=S.master||{style:'std'};
+  if(ms.style==='low'){I('platform',10875,1900,270,{name:'Low timber platform',w:2600,d:2500,h:150,col:'#c49a6c'});I('bedQ',10700,1900,270,{z:150,h:750,col:ms.col});I('night',9825,800,270,{z:150,col:'#b48a5a'});I('night',9825,3000,270,{z:150,col:'#b48a5a'});}
+  else if(ms.style==='modern'){I('bedK',10700,1900,270,{col:ms.col});I('night',9825,650,270);I('night',9825,3150,270);}
+  else{I('bedQ',10700,1900,270,{col:ms.col});I('night',9825,800,270,{col:ms.col==='#2b2e33'?'#2b2e33':undefined});I('night',9825,3000,270,{col:ms.col==='#2b2e33'?'#2b2e33':undefined});}
+  I('wardrobe',11300,4600,180,{w:2000,col:wd});I('dresser',12150,3400,90,{name:'Dressing table',w:1000,col:ms.style==='low'?'#b48a5a':undefined});I('aircon',9750,1900,270);
+  m.items.forEach(it=>{if(it.col===undefined)it.col=TYPES[it.type].col;});
+  m.meta.name=L.title;m.meta.combo=L.k;return m;
+}
+DESIGN.forEach(l=>l.set='ideas');LAYOUTS.forEach(l=>l.set='practical');BOLD.forEach(l=>l.set='bold');
+const ALL_LAYOUTS=[...DESIGN,...LAYOUTS,...BOLD];
+const SETS={ideas:DESIGN,practical:LAYOUTS,bold:BOLD},SET_NAMES={ideas:'Design ideas',practical:'Layouts',bold:'Out of the box'};
 const COMBOS=ALL_LAYOUTS.map(l=>l.k);
 const layoutOf=f=>ALL_LAYOUTS.find(l=>l.k===f)||{title:'',sub:'',for:'',set:''};
 const COMBO_FOR=Object.fromEntries(ALL_LAYOUTS.map(l=>[l.k,l.for]));
@@ -1049,6 +1178,15 @@ function drawSymbol(c,it,u,P){
     case 'mirror':{R(-hw,-hd,w,d,0);FS();lw(.4);for(let x=-hw+80;x<hw;x+=160)ln(x,-hd,x+40,hd);break;}
     case 'sauna':R(-hw,-hd,w,d,20);FS();lw(.6);ln(-hw+80,-hd+400,hw-80,-hd+400);R(-hw+150,hd-60,w-300,40,0);S();break;
     case 'dbrack':{R(-hw,-hd,w,d,20);FS();lw(.6);const n=Math.max(3,Math.round(w/180));for(let i=0;i<n;i++){const x=-hw+w*(i+.5)/n;ln(x,-hd+80,x,hd-80);circ(x,-hd+110,30);circ(x,hd-110,30);}break;}
+    case 'feature':{R(-hw,-hd,w,d,0);FS();lw(.4);for(let x=-hw+40;x<hw;x+=80)ln(x,-hd,x+d*.8,hd);break;}
+    case 'pendant':c.setLineDash([30,25]);circ(0,0,hw);c.setLineDash([]);lw(.6);circ(0,0,hw*.25);ln(-hw*.5,0,hw*.5,0);ln(0,-hw*.5,0,hw*.5);break;
+    case 'table':R(-hw,-hd,w,d,30);FS();lw(.6);R(-hw+50,-hd+50,w-100,d-100,20);S();break;
+    case 'banquette':{R(-hw,-hd,w,d,30);FS();lw(.6);R(-hw,-hd,w,110,20);S();for(let i=1;i<3;i++)ln(-hw+w*i/3,-hd+110,-hw+w*i/3,hd);break;}
+    case 'bunk':{R(-hw,-hd,w,d,30);FS();lw(.6);paperFill();R(-hw+60,-hd+80,w-120,300,60);FS();c.fillStyle=base;c.setLineDash([45,30]);R(-hw+30,-hd+30,w-60,d-60,25);S();c.setLineDash([]);for(let x=-180;x<=180;x+=360)ln(x,hd,x,hd+90);for(let y=hd+20;y<hd+90;y+=35)ln(-180,y,180,y);break;}
+    case 'daybed':{R(-hw,-hd,w,d,40);FS();lw(.6);R(-hw,-hd,w,140,30);S();for(let i=0;i<3;i++){const cw=(w-300)/3;R(-hw+150+i*cw+15,-hd+150,cw-30,170,50);S();}break;}
+    case 'tallcab':R(-hw,-hd,w,d,6);FS();lw(.6);ln(-hw,hd-40,hw,hd-40);if(it.oven!==false){R(-hw+70,-hd+70,w-140,d-180,10);S();}else{ln(0,-hd,0,hd-40);}break;
+    case 'shoetall':R(-hw,-hd,w,d,10);FS();lw(.6);ln(-hw,hd-50,hw,hd-50);ln(0,-hd,0,hd-50);c.setLineDash([30,25]);R(-hw+40,-hd+40,w-80,d-100,6);S();c.setLineDash([]);break;
+    case 'racks':{R(-hw,-hd,w,d,6);FS();lw(.5);const n=3;for(let i=0;i<n;i++){R(-hw+30+i*(w-60)/n+15,-hd+40,(w-60)/n-30,d-80,8);S();}break;}
     case 'art':c.fillStyle=it.col?mix(it.col,P.paper,P.dark?.3:.2):base;R(-hw,-hd,w,d,0);FS();break;
     default:R(-hw,-hd,w,d,6);FS();lw(.5);ln(-hw,-hd,hw,hd);ln(-hw,hd,hw,-hd);
   }
@@ -1594,7 +1732,7 @@ function setView(v,fromHash){
   if(!fromHash&&!explore){try{history.replaceState(null,'','#'+v);}catch(e){}}
 }
 $$('.views button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-addEventListener('hashchange',()=>{const h=location.hash.slice(1);const c=parseCombo(h);if(c!==null){const i=COMBOS.indexOf(c);if(!explore)enterExplore(c);else if(i!==explore.i)goCombo(i);return;}if(h&&h!==viewMode)setView(h,true);});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1);const c=parseCombo(h);if(c!==null){if(!explore||model.meta.combo!==c)enterExplore(c);return;}if(h&&h!==viewMode)setView(h,true);});
 
 // ============================================================ library
 const thumbs={};
@@ -1847,12 +1985,12 @@ function openKnock(){
     <div><i class="k-no"></i><div><b>Must stay</b><span>Structural walls (black on your HDB plan), the household shelter, and the external walls and windows.</span></div></div>
   </div>
   <div class="row"><button class="tb" data-k="toggle">${ui.layers.hack?'Hide the check':'Show the check on my plan'}</button></div>
-  <div class="sec"><h4>Knock-down layouts</h4><p class="note">Two sets of 8. <b>Out of the box</b>: a home cinema, a tatami room, a jungle lounge, a glass office, a studio loft, a gym with a sauna, a loop house and a corridor lit through glass. <b>Practical</b>: an open study, a master suite, a family area, an office for two and more. Your own layout stays saved and comes back when you finish.</p>
-  <div class="row"><button class="tb primary" data-k="bold">Out-of-the-box ideas</button><button class="tb" data-k="explore">Practical layouts</button><button class="tb" data-k="list">Compare all</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
+  <div class="sec"><h4>Layouts to try</h4><p class="note"><b>Design ideas</b>: 8 popular BTO styles kept practical for everyday living, from a Scandinavian family home to a semi-open kitchen for heavy cooking and a home for three generations. Each comes with a full-height shoe cabinet with a seat, the household shelter set up as a storeroom with free-standing racks, and a utility cabinet in the service yard. <b>Layouts</b> and <b>Out of the box</b> show more ways to use the walls you can knock down. Your own layout stays saved and comes back when you finish.</p>
+  <div class="row"><button class="tb primary" data-k="ideas">Design ideas</button><button class="tb" data-k="explore">Layouts</button><button class="tb" data-k="bold">Out of the box</button><button class="tb" data-k="list">Compare all</button><button class="tb" data-k="shell">Show only what must stay</button></div></div>
   <p class="callout info">Every knock-down needs HDB’s written approval and a contractor from HDB’s Directory of Renovation Contractors. The sales plan doesn’t show which partitions are lightweight and which are reinforced concrete; reinforced concrete ones need a Professional Engineer to supervise. Confirm with your contractor before work starts.</p>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('button');if(!b)return;
     if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
-    if(b.dataset.k==='explore')enterExplore(null,'practical');if(b.dataset.k==='bold')enterExplore(null,'bold');if(b.dataset.k==='list')showAllCombos();if(b.dataset.k==='shell'){if(explore)exitExplore(false,true);loadIdea('shell');}};
+    if(b.dataset.k==='ideas')enterExplore(null,'ideas');if(b.dataset.k==='explore')enterExplore(null,'practical');if(b.dataset.k==='bold')enterExplore(null,'bold');if(b.dataset.k==='list')showAllCombos();if(b.dataset.k==='shell'){if(explore)exitExplore(false,true);loadIdea('shell');}};
 }
 async function loadIdea(k){
   const I=IDEAS[k];if(!I)return;
@@ -1869,7 +2007,7 @@ function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slic
 function exploreHeight(){const el=$('#explore');const h=el.hidden?0:Math.ceil(el.getBoundingClientRect().height);stage.style.setProperty('--exh',h+'px');}
 function setList(){return SETS[explore.set]||LAYOUTS;}
 function enterExplore(f,setName){
-  const first=!explore;if(first)explore={set:'practical',i:0,snapshot:copy(model)};
+  const first=!explore;if(first)explore={set:'ideas',i:0,snapshot:copy(model)};
   const L=f?layoutOf(f):null;explore.set=L&&L.set?L.set:(setName||explore.set||'practical');
   $('#explore').hidden=false;$('#app').classList.add('exploring');closeModal();closePanels();setSave('off','Exploring, not saved');
   goCombo(L&&L.set?setList().findIndex(l=>l.k===f):0);
@@ -1897,7 +2035,7 @@ function exitExplore(restore,quiet){
 }
 function showAllCombos(){
   const sec=s=>`<h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin:4px 0 0">${SET_NAMES[s]}</h4><div class="ideas">${SETS[s].map((l,i)=>`<button data-ck="${l.k}" class="${explore&&explore.set===s&&explore.i===i?'on':''}"><b>${i+1}. ${esc(l.title)}</b><span>${esc(l.sub)}</span><span>${esc(l.for)}</span></button>`).join('')}</div>`;
-  openModal('Knock-down layouts',sec('bold')+sec('practical'));
+  openModal('Layouts to try',sec('ideas')+sec('practical')+sec('bold'));
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-ck]');if(!b)return;closeModal();enterExplore(b.dataset.ck);};
 }
 $('#ex-prev').innerHTML=ICON.chevL;$('#ex-next').innerHTML=ICON.chevR;
@@ -2178,6 +2316,36 @@ const BUILD={
   sauna:(g,it)=>{B(g,it.w,it.h,it.d,0,0,0,wood(it.col),10);B(g,it.w-260,it.h-360,12,0,180,it.d/2+2,mat('#3d4955',.1,.2,{transparent:true,opacity:.55}));B(g,it.w+40,60,it.d+40,0,it.h,0,wood('#8b6a4e'),10);},
   dbrack:(g,it)=>{const m2=metal();B(g,it.w,40,it.d,0,560,0,m2);B(g,it.w,40,it.d,0,260,0,m2);for(const sx of[-1,1])for(const sz of[-1,1])B(g,40,620,40,sx*(it.w/2-30),0,sz*(it.d/2-30),m2);
     const n=Math.max(3,Math.round(it.w/180));for(let i=0;i<n;i++){const x=-it.w/2+it.w*(i+.5)/n;for(const y of[600,300]){const db=Cy(g,40+i*4,40+i*4,it.d*.7,x,y,0,mat('#1b1e24',.5),12);db.rotation.x=Math.PI/2;db.position.y=(y+90)/1000;}}},
+  feature:(g,it)=>{const f=it.finish||'oak',w=it.w,h=it.h,d=it.d;
+    if(f==='marble'){const slab=mat('#e4e0da',.16,.05),v1=mat('#a9a39b',.3),v2=mat('#c9c3bb',.3),n=Math.max(2,Math.round(w/1000));
+      B(g,w,h,d,0,0,0,slab,0);for(let k=1;k<n;k++)B(g,4,h,3,-w/2+w*k/n,0,d/2+1,mat('#bdb7af',.4));
+      for(let k=0;k<n;k++){const cx=-w/2+w*(k+.5)/n,sg=k%2?-1:1;for(let i=0;i<5;i++){const v=B(g,10+(i%2)*8,h*(.5+(i%3)*.15),3,cx+sg*(i-2)*w/n*.16,h*.08+i*90,d/2+2,i%2?v2:v1);v.rotation.z=sg*(.38+i*.07);}}
+      B(g,w+40,40,d+30,0,0,15,mat('#2b2e33',.5,.3));}
+    else if(f==='concrete'){B(g,w,h,d,0,0,0,mat('#a9a8a4',.95),0);const j=mat('#8e8d89',.95);for(let y=600;y<h;y+=600)B(g,w,8,3,0,y,d/2+1,j);for(let x=-w/2+300;x<w/2;x+=600)for(let y=300;y<h;y+=600){const c=Cy(g,11,11,6,x,y,d/2+1,mat('#6f6e6a',.9),10);c.rotation.x=Math.PI/2;c.position.y=y/1000;}}
+    else if(f==='fluted'){B(g,w,h,d-14,0,0,-7,wood(shade(it.col,.72)),0);for(let x=-w/2+25;x<w/2;x+=50)B(g,32,h,16,x,0,d/2-8,wood(it.col),7);}
+    else{B(g,w,h,d,0,0,0,wood(it.col),0);const ln=mat(shade(it.col,.78),.7);for(let x=-w/2+300;x<w/2-10;x+=300)B(g,6,h,3,x,0,d/2+1,ln);}
+    B(g,w,18,d+30,0,h-18,15,mat('#fff6e0',.5,0,{emissive:'#7a6838'}));},
+  pendant:(g,it)=>{const sh=Math.min(it.h,320),top=(model.meta.ceiling||2600)-(it.z||0);Cy(g,4,4,Math.max(10,top-sh),0,sh,0,metal(),6);
+    if(it.col==='#2b2e33'){const m2=metal();Cy(g,it.w*.16,it.w*.16,24,0,sh-24,0,m2,16);for(let i=0;i<8;i++){const a=i/8*Math.PI*2,r=it.w*.28;B(g,7,sh*.85,7,Math.cos(a)*r,sh*.08,Math.sin(a)*r,m2);}Cy(g,it.w*.28,it.w*.28,8,0,sh*.06,0,m2,24);Sp(g,55,75,55,0,sh*.45,0,mat('#ffe2a0',.3,0,{emissive:'#e0a441'}));}
+    else{Cy(g,it.w*.2,it.w/2,sh*.75,0,sh*.25,0,mat(it.col,.55,it.col==='#c9a24a'?.7:0,{emissive:shade(it.col,.3)}),28);Sp(g,45,45,45,0,sh*.3,0,mat('#fff3d0',.3,0,{emissive:'#e0b86a'}));}},
+  table:(g,it)=>{const top=wood(it.col),leg=metal();B(g,it.w,40,it.d,0,it.h-40,0,top,10);for(const sx of[-1,1]){B(g,40,it.h-40,40,sx*(it.w/2-90),0,-it.d/2+80,leg);B(g,40,it.h-40,40,sx*(it.w/2-90),0,it.d/2-80,leg);B(g,40,30,it.d-160,sx*(it.w/2-90),120,0,leg);}},
+  banquette:(g,it)=>{const c=wood(it.col),w=it.w,d=it.d;B(g,w,420,d,0,0,0,c,8);B(g,w-20,80,d-90,0,420,35,fabric('#c8c2b8'),30);B(g,w,it.h-420,90,0,420,-d/2+45,c,8);
+    for(let i=0;i<3;i++)B(g,w/3-50,330,110,-w/2+w*(i+.5)/3,500,-d/2+150,fabric('#8a94a3'),40);for(let i=1;i<3;i++)B(g,4,320,4,-w/2+w*i/3,50,d/2+1,mat('#6b4a33',.6));},
+  bunk:(g,it)=>{const wd=wood(it.col),w=it.w,d=it.d,wh=mat('#f6f5f1',.95);for(const sx of[-1,1])for(const sz of[-1,1])B(g,60,it.h,60,sx*(w/2-30),0,sz*(d/2-30),wd,6);
+    for(const y of[200,1030]){B(g,w,120,d,0,y,0,wd,10);B(g,w-80,170,d-80,0,y+120,0,wh,40);B(g,w-200,90,320,0,y+290,-d/2+260,mat('#ffffff',.95),40);}
+    B(g,w-60,60,d*.55,0,490,d*.18,fabric('#9fb3c8'),25);B(g,w-60,60,d*.55,0,1320,d*.18,fabric('#e2c58f'),25);
+    B(g,40,260,d-600,w/2-20,1300,-120,wd,6);for(const sx of[-1,1])B(g,30,it.h-150,30,sx*190,0,d/2+30,wd);for(let y=260;y<it.h-200;y+=260)B(g,410,25,30,0,y,d/2+30,wd);},
+  daybed:(g,it)=>{const wd=wood('#b48a5a'),w=it.w,d=it.d;B(g,w,320,d,0,0,0,wd,12);B(g,w-40,160,d-80,0,320,30,fabric(it.col),40);B(g,w,it.h-320,110,0,320,-d/2+55,wd,10);
+    for(const sx of[-1,1])B(g,110,it.h-480,d,sx*(w/2-55),320,0,wd,10);for(let i=0;i<3;i++)B(g,(w-320)/3-30,360,150,-w/2+160+(w-320)*(i+.5)/3,480,-d/2+190,fabric(shade(it.col,.9)),50);},
+  tallcab:(g,it)=>{const c=mat(it.col,.55);B(g,it.w,it.h,it.d,0,0,0,c,4);
+    if(it.oven!==false){B(g,it.w-60,560,10,0,780,it.d/2+1,mat('#15171b',.15,.3));B(g,it.w-140,18,28,0,1300,it.d/2+15,chrome());B(g,it.w-60,360,10,0,1420,it.d/2+1,mat('#15171b',.15,.3));}
+    else B(g,4,it.h-200,4,0,100,it.d/2+1,mat('#8d8880',.6));
+    B(g,it.w-60,4,4,0,it.h-260,it.d/2+1,mat('#8d8880',.6));},
+  shoetall:(g,it)=>{const c=mat(it.col,.55),w=it.w,d=it.d;B(g,w,420,d,0,0,0,c,4);B(g,w-30,60,d-30,0,420,0,fabric('#8a94a3'),22);B(g,w,580,20,0,420,-d/2+10,c);
+    for(const sx of[-1,1])B(g,20,580,d,sx*(w/2-10),420,0,c);B(g,w,it.h-1000,d,0,1000,0,c,4);B(g,4,it.h-1060,4,0,1030,d/2+1,mat('#8d8880',.6));B(g,w-40,6,10,0,1000-12,d/2-40,mat('#fff6e0',.5,0,{emissive:'#7a6838'}));},
+  racks:(g,it)=>{const m2=mat('#9ea3a9',.4,.6),n=4;for(const sx of[-1,1])for(const sz of[-1,1])B(g,30,it.h,30,sx*(it.w/2-15),0,sz*(it.d/2-15),m2);
+    for(let i=0;i<=n;i++)B(g,it.w,18,it.d,0,60+i*(it.h-80)/n,0,m2,2);const cols=['#e8e4dc','#c9b8a6','#7fa0b8','#b9c4d0','#d8b7a0'];
+    for(let i=0;i<n;i++)for(let j=0;j<3;j++){if((i*3+j)%4===3)continue;B(g,it.w/3-60,(it.h-80)/n-110,it.d-60,-it.w/2+it.w*(j+.5)/3,80+i*(it.h-80)/n,0,mat(cols[(i+j)%5],.8),14);}},
   art:(g,it)=>{B(g,it.w+40,it.h+40,it.d,0,-20,-6,mat('#1b1e24',.5));B(g,it.w,it.h,it.d,0,0,4,mat(it.col,.8));B(g,it.w*.5,it.h*.35,it.d+2,-it.w*.12,it.h*.2,5,mat(shade(it.col,1.5),.8));},
 };
 function diningSet(g,it,n){const td=Math.min(900,it.d-560),c=wood(it.col);B(g,it.w,40,td,0,it.h-40,0,c,12);for(const sx of[-1,1])for(const sz of[-1,1])B(g,50,it.h-40,50,sx*(it.w/2-90),0,sz*(td/2-90),c);
@@ -2193,7 +2361,7 @@ function bed(g,it){const fr=fabric(it.col),w=it.w,d=it.d;
 function counter(g,it){const c=mat(it.col,.55);B(g,it.w,760,it.d-30,0,100,-15,c,4);B(g,it.w,100,it.d-90,0,0,-45,mat('#3a3d42',.8));B(g,it.w+10,40,it.d+10,0,860,0,mat('#ece9e3',.25),4);
   const n=Math.max(1,Math.round(it.w/600));for(let i=1;i<n;i++)B(g,5,720,4,-it.w/2+it.w*i/n,120,it.d/2-28,mat('#8d8880',.6));for(let i=0;i<n;i++)B(g,180,14,22,-it.w/2+it.w*(i+.5)/n,780,it.d/2-20,chrome());}
 
-function itemKey(it){return JSON.stringify([it.type,it.w,it.d,it.h,it.col,it.z])+(itemVisible(it)?'':'h')+(PAL.dark?'d':'');}
+function itemKey(it){return JSON.stringify([it.type,it.w,it.d,it.h,it.col,it.z,it.finish,it.oven])+(itemVisible(it)?'':'h')+(PAL.dark?'d':'');}
 function buildItem(it){const g=new THREE.Group();(BUILD[it.type]||BUILD.box)(g,it);g.traverse(o=>{if(o.isMesh){if(!o.material.transparent)o.castShadow=true;o.receiveShadow=true;}});g.userData={itemId:it.id};placeItem(g,it);return g;}
 function placeItem(g,it){g.position.set(it.x/1000,(it.z||0)/1000,it.y/1000);g.rotation.y=-it.r*D2R;}
 function sync3D(force){
@@ -2464,7 +2632,7 @@ boot();
     await fetch(location.pathname,{cache:'reload'});location.reload();
   }catch(e){}
 })();
-window.__hcad={loadIdea,enterExplore,goCombo,exitExplore,COMBOS,get explore(){return explore;},clashes:()=>[...clashSet()].map(id=>{const it=getItem(id);return it.name+'@'+it.x+','+it.y;}),get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
+window.__hcad={get walk(){return walk;},placeWalkCam,get ui(){return ui;},fitView,drawNow:()=>drawPlan(cx,CW,CH,view,{dpr:DPR}),buildCombo,loadIdea,enterExplore,goCombo,exitExplore,COMBOS,get explore(){return explore;},clashes:()=>[...clashSet()].map(id=>{const it=getItem(id);return it.name+'@'+it.x+','+it.y;}),get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
 })();
 </script>
 
