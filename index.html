@@ -139,6 +139,15 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .ideas b{font-weight:600;font-size:14px}
 .ideas span{font-size:12.5px;color:var(--ink-3)}
 .ideas button.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.hub{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hub button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:4px;color:var(--ink)}
+.hub button:hover{border-color:var(--accent)}
+.hub b{font-size:15px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.hub b i{font-style:normal;font-size:12px;font-weight:500;color:var(--accent)}
+.hub span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.hub em{font-style:normal;font-size:12px;color:var(--ink-3);line-height:1.4}
+.hub-all{margin-top:12px;display:flex;justify-content:center}
+@media (max-width:560px){.hub{grid-template-columns:1fr}}
 .explore{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'nav end' 'moves moves';align-items:center;gap:6px 12px;padding-block:8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgb(0 0 0 / .07)}
 .ex-nav{grid-area:nav;display:flex;align-items:center;gap:2px;min-width:0}
 .ex-nav .ib{flex-shrink:0;border-color:var(--line-2)}
@@ -339,6 +348,12 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
   .brand-t{display:none}
   .seg button{padding:5px 9px}
   .exset button{padding:4px 7px;font-size:12px}
+  .brand{display:none}
+}
+@media (max-width: 389px){
+  .topbar{padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}
+  .seg button{padding:5px 7px}
+  .tb{padding:6px 7px}
 }
 @media (max-width: 760px){
   .explore{grid-template-columns:minmax(0,1fr);grid-template-areas:'nav' 'moves' 'end'}
@@ -370,6 +385,7 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
       <button class="ib" id="b-undo" title="Undo (Ctrl+Z)" aria-label="Undo"></button>
       <button class="ib" id="b-redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"></button>
       <span class="savestate" id="savestate" data-s="ok">Saved</span>
+      <button class="tb primary" id="b-layouts">Layouts</button>
       <button class="tb" id="b-knock">Knock down</button>
       <button class="tb" id="b-designs">Designs</button>
       <button class="tb" id="b-export">Export</button>
@@ -2046,7 +2062,7 @@ function renderInspector(mode){
     h+=`<div class="sec">${txtF('Project name','pname',model.meta.name)}</div>`;
     h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.</p></div>`;
     if(model.items.some(i=>i.sample))h+=`<p class="callout info"><b>The furniture is a sample layout</b> so you can see the tool working. Move it, resize it, or clear it and start from an empty flat.</p>`;
-    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
+    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small primary" data-act="layouts">Browse 32 ready-made layouts</button><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
     if(mode==='confirmClear')h+=`<div class="callout warn"><b>Remove every piece of furniture?</b> HDB-provided toilets and basins stay. You can undo this.</div><div class="row"><button class="tb danger" data-act="doClear">Clear furniture</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else if(mode==='confirmReset')h+=`<div class="callout warn"><b>Go back to the original HDB layout?</b> Walls, finishes and furniture all reset. Save a version first if you want to keep this one.</div><div class="row"><button class="tb danger" data-act="doReset">Reset to original</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else h+=`<div class="sec row"><button class="tb small" data-act="askClear">Clear furniture…</button><button class="tb small" data-act="askReset">Reset to original plan…</button></div>`;
@@ -2112,7 +2128,7 @@ $('#tabbody').addEventListener('click',e=>{
     case 'flipH':{const o=getOpening(sel.wid,sel.id);if(o){o.hinge=o.hinge?0:1;commit();}break;}
     case 'flipS':{const o=getOpening(sel.wid,sel.id);if(o){o.side=(o.side||1)*-1;commit();}break;}
     case 'selWall':setSel({kind:'wall',id:sel.wid});break;
-    case 'knock':openKnock();break;
+    case 'knock':openKnock();break;case 'layouts':openLayouts();break;
     case 'askClear':renderInspector('confirmClear');break;case 'askReset':renderInspector('confirmReset');break;
     case 'doClear':model.items=model.items.filter(i=>TYPES[i.type]?.fixture);sel=null;commit();toast('Furniture cleared — toilets and basins kept');break;
     case 'doReset':model=defaultModel();sel=null;commit();toast('Back to the original HDB layout');break;
@@ -2201,6 +2217,12 @@ async function loadIdea(k){
   toast('Loaded “'+I.name+'”. Undo goes back.');
 }
 $('#b-knock').onclick=openKnock;
+const HUB={ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
+function openLayouts(){
+  openModal('Ready-made layouts',`<p class="note">32 furnished layouts of your flat in 4 sets. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all 32 in one list</button></div>`);
+  $('#m-body').onclick=e=>{const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
+}
+$('#b-layouts').onclick=openLayouts;
 
 // ============================================================ combination explorer
 function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slice(6);return COMBOS.includes(c)?c:null;}
@@ -2789,7 +2811,7 @@ async function openDesigns(confirmId){
     if(b.dataset.dd){await Store.remove(b.dataset.dd);toast('Version deleted');openDesigns();}};
 }
 $('#b-designs').onclick=()=>openDesigns();
-$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="h"><b>Knock down</b><span>See which walls you can remove and try ideas</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();if(b.dataset.f==='h')openKnock();};};
+$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="l"><b>Layouts</b><span>32 ready-made layouts: design ideas, households and more</span></button><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="h"><b>Knock down</b><span>See which walls you can remove and try ideas</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();if(b.dataset.f==='h')openKnock();if(b.dataset.f==='l')openLayouts();};};
 
 // ============================================================ export & import
 let dlCap;
