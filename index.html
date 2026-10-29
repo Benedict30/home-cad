@@ -42,6 +42,7 @@
 html{height:100%;box-sizing:border-box}
 [hidden]{display:none !important}
 *,*::before,*::after{box-sizing:inherit}
+@supports (height:100dvh){html,body{height:100dvh}}
 body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);overflow:hidden;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -150,7 +151,10 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 @media (max-width:560px){.hub{grid-template-columns:1fr}}
 .explore{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'nav end' 'moves moves';align-items:center;gap:6px 12px;padding-block:8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgb(0 0 0 / .07)}
 .ex-nav{grid-area:nav;display:flex;align-items:center;gap:2px;min-width:0}
-.ex-nav .ib{flex-shrink:0;border-color:var(--line-2)}
+.ex-nav .ib{flex-shrink:0;width:44px;height:44px;border:0;border-radius:10px;background:var(--accent);color:#fff;box-shadow:0 2px 8px rgb(0 0 0 / .18)}
+.ex-nav .ib:hover{background:var(--accent);filter:brightness(1.12)}
+.ex-nav .ib svg{width:24px;height:24px;stroke-width:2.2}
+.ex-nav{gap:6px}
 .ex-title{border:0;background:none;text-align:left;display:flex;flex-direction:column;min-width:0;padding:2px 8px;border-radius:6px;flex:1}
 .ex-title:hover{background:var(--panel-2)}
 .ex-title .c{font:500 11px var(--f-mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
@@ -2913,15 +2917,18 @@ function boot(){
 }
 boot();
 // on the public website, pick up a newer published version instead of a copy the browser saved (GitHub Pages lets browsers keep one for 10 minutes)
-(async()=>{
+// retries at most twice per published version, and checks again whenever the tab comes back into view
+async function checkNewer(){
   if(window.claude||!/^https?:$/.test(location.protocol))return;
   try{
     const r=await fetch(location.pathname,{method:'HEAD',cache:'no-store'});const lm=Date.parse(r.headers.get('last-modified')||''),mine=Date.parse(document.lastModified);
     if(!(lm>mine+1000))return;
-    let n=0;try{n=+(sessionStorage.getItem('hcad.refresh')||0);}catch(e){}if(n>=2)return;try{sessionStorage.setItem('hcad.refresh',n+1);}catch(e){}
+    let st={};try{st=JSON.parse(sessionStorage.getItem('hcad.refresh2')||'{}');}catch(e){}
+    if(st.v!==lm)st={v:lm,n:0};if(st.n>=2)return;st.n++;try{sessionStorage.setItem('hcad.refresh2',JSON.stringify(st));}catch(e){}
     await fetch(location.pathname,{cache:'reload'});location.reload();
   }catch(e){}
-})();
+}
+checkNewer();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkNewer();});
 window.__hcad={get walk(){return walk;},placeWalkCam,get ui(){return ui;},fitView,drawNow:()=>drawPlan(cx,CW,CH,view,{dpr:DPR}),buildCombo,loadIdea,enterExplore,goCombo,exitExplore,COMBOS,get explore(){return explore;},clashes:()=>[...clashSet()].map(id=>{const it=getItem(id);return it.name+'@'+it.x+','+it.y;}),get model(){return model;},get view(){return view;},setSel,setView,sync3D,T3,planImage};
 })();
 </script>
