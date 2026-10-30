@@ -11,7 +11,7 @@ Plan your BTO with Claude. This repo has a free Claude skill for any BTO or resa
 3. **Send your floor plan** with a clear photo of your HDB plan attached, and a few lines about your home (must-haves are optional):
 
 ```
-Plan my BTO. Floor plan attached.
+Plan my home. Floor plan attached.
 We are: couple, no kids, 1 Shih Tzu
 Coming up: more work from home
 Must-haves: a dog wash spot
@@ -31,7 +31,7 @@ The skill is plain text plus one drawing template. Read [SKILL.md](skill/bto-hom
 <summary>Not using Claude skills? Paste this prompt with your floor plan instead.</summary>
 
 ```
-I've attached the floor plan of my BTO flat. Help me plan how we'll live in it.
+I've attached the floor plan of my HDB flat. Help me plan how we'll live in it.
 We are: [e.g. couple, both work from home, 1 cat]
 Coming up: [e.g. baby next year, my mum may move in]
 Must-haves: [e.g. a proper home office]

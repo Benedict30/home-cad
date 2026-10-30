@@ -1,6 +1,6 @@
 ---
 name: bto-home-planner
-description: Use when someone shares a BTO or other HDB floor plan and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view they can walk through.
+description: Use when someone shares a BTO or other HDB floor plan, or asks to plan their home or flat with one attached, and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view they can walk through.
 ---
 
 # BTO home planner
