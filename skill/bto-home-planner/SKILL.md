@@ -1,6 +1,6 @@
 ---
 name: bto-home-planner
-description: Use when someone shares a BTO or other HDB floor plan, or asks to plan their home or flat with one attached, and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view they can walk through.
+description: Use when someone shares a BTO or other HDB floor plan, or asks to plan their home or flat with one attached, and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and a CAD app of their flat with 2D plans, 3D and a walk-through.
 ---
 
 # BTO home planner
@@ -114,31 +114,27 @@ Everyday Singapore must-haves for any layout:
 - aircon trunking
 - glass doors if they cook with a wok
 
-## 5. Draw the plans in 2D and 3D
+## 5. Build their CAD app
 
-Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing code.
+Use the bundled app, `assets/home-cad.html`: a home CAD planner with a floor plan, a 3D model, a walk-through, furniture editing and export. Don't write your own drawing code.
 
-- Copy the file exactly and replace only the JSON between `/*PLAN-START*/` and `/*PLAN-END*/`. The comment above it explains every field.
+- Copy the file exactly and replace only `null` between `/*PLAN-START*/` and `/*PLAN-END*/` with the plan JSON. The comment above it explains every field.
 - **Describe the flat once:**
   - every wall, tagged as in the wall check, with its ends in mm, its thickness and its type
   - the doors and windows on each wall; give doors `hinge` and `flip` so they swing as on the plan
   - each room's outline
   - optionally `start`, a point just inside the main door, if the Walk view starts in the wrong place
-  Use the plan's dimension chains, so everything is to scale. Put walls on their centre-lines; the viewer's overall dimension is the centre-line total, so it reads a little less than the plan's outside-face figure.
+  Use the plan's dimension chains, so everything is to scale. Put walls on their centre-lines; the app's overall dimension is the centre-line total, so it reads a little less than the plan's outside-face figure.
 - **Add one entry per layout:**
   - the walls removed, and any new walls
   - the room names for that layout
-  - the furniture: centre point, width, depth, height, rotation and kind
+  - the furniture: centre point, width, depth, height, rotation and kind, with a plain name ("Queen bed", "Cot", "Cat tree", "Fridge"), because the name picks the 3D model
   Put the best layout first and set `best` on it (on both entries if it has a now and an after). For a life change, add separate "now" and "after" entries. If several layouts share the same "now", add it once.
 - **Check the furniture fits:**
   - every piece stays inside its room, clear of walls and door swings
   - walkways stay at least 800 mm wide (beside a bed, about 550 mm is fine)
   - beds have their headboard against a wall
-- Publish the result as an HTML artifact. It shows:
-  - a 3D model people can turn, or walk through at eye height with a small floor plan showing where they are, with a button for each layout
-  - a wall key
-  - each layout's floor plan next to a 3D snapshot
-  The wall colours and the legend are built in.
+- Publish the result as an HTML artifact. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. People can move furniture, try their own changes and export a plan drawing.
 
 ## 6. Reply
 

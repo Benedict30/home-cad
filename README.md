@@ -20,12 +20,12 @@ Must-haves: a dog wash spot
 You get:
 - a wall-by-wall knock-down check under HDB's rules
 - 4 layouts for how you live, with "now" and "after" plans if a change is coming
-- every layout drawn to scale, with a 3D model you can turn or walk through
+- a CAD app of your flat: every layout to scale in 2D and 3D, with a walk-through, furniture you can move, and export
 - a short list of things to confirm with HDB and your contractor before any hacking
 
 It works for dog owners, hardcore collectors, couples who both work from home, gamers, a baby on the way, parents moving in, big families, a live-in helper, a home gym, hosting and cooking, creators and musicians, renting out a room, and kids moving out.
 
-The skill is plain text plus one drawing template. Read [SKILL.md](skill/bto-home-planner/SKILL.md) and [plan-viewer.html](skill/bto-home-planner/assets/plan-viewer.html) before adding it.
+The skill is plain text plus the CAD app it fills in with your plan. Read [SKILL.md](skill/bto-home-planner/SKILL.md) and [home-cad.html](skill/bto-home-planner/assets/home-cad.html) before adding it.
 
 <details>
 <summary>Not using Claude skills? Paste this prompt with your floor plan instead.</summary>

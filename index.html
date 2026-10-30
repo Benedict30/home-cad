@@ -370,14 +370,12 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
 </style>
-</head>
-<body>
 
 <div id="app" class="is-plan">
   <header class="topbar" id="topbar">
     <div class="brand">
       <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="var(--ink)"/><path d="M7 8h10v5h6v9H7z" fill="none" stroke="var(--paper)" stroke-width="1.6"/><path d="M7 15h7m3-2v4" stroke="var(--paper)" stroke-width="1.6"/><rect x="7" y="8" width="2.4" height="4" fill="var(--paper)"/><path d="M17 22a4 4 0 0 1 4-4" fill="none" stroke="var(--accent)" stroke-width="1.4"/></svg>
-      <div class="brand-t"><b>Home CAD</b><span>4-Room Type 3 · HDB</span></div>
+      <div class="brand-t"><b>Home CAD</b><span id="brand-sub">4-Room Type 3 · HDB</span></div>
     </div>
     <div class="seg views" role="tablist" aria-label="View">
       <button role="tab" data-view="plan" aria-selected="true">Plan</button>
@@ -506,7 +504,25 @@ const HAS3=typeof THREE!=='undefined' && !!THREE.OrbitControls;
 function hex2rgb(h){h=String(h).replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16)||0;return[(n>>16)&255,(n>>8)&255,n&255];}
 function mix(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);return'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')+')';}
 function shade(hex,f){return'#'+hex2rgb(hex).map(v=>clamp(Math.round(v*f),0,255).toString(16).padStart(2,'0')).join('');}
-const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}};
+/* ===== A plan drawn by the BTO home planner skill. null = the flat traced below.
+To open any HDB floor plan in this app, replace only the JSON between the PLAN-START and PLAN-END markers. All sizes in mm; x to the right, y down, as the plan is drawn.
+walls:    {id, a:[x,y], b:[x,y], t: thickness, type: structural|shelter|bathroom|external|partition|open}   (open = an edge with no wall, drawn dashed)
+openings: {wall: wall id, type: door|window, at: mm from the wall's a end, w: width}
+          doors only, optional: hinge: "a"|"b" (the end the hinge is at, default "a"), flip: true (swing to the other side of the wall)
+rooms:    {id, name, poly: [[x,y],...], label?: [x,y]}
+layouts:  {id, title, summary, best: true|false, phase: "now"|"after"|"",
+           removed: [wall ids], added: [{a, b, type: "partition"|"glass"}],
+           rooms: {room id: {name, color}},
+           furniture: [{name, kind, x, y, w, d, h, rot, z?, color?}]}
+optional: start: [x,y] and startYaw (degrees, 0 = facing +x) for the Walk view; it starts just inside the main door if left out.
+furniture x,y is the centre; w runs along x and d along y before rotating; rot is degrees clockwise; the front (a sofa's seat, a bed's foot) faces +y before rotating.
+kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other. The name also picks the 3D model (e.g. "Queen bed", "Cot", "Cat tree", "Fridge").
+The app opens on the layouts with arrows to step through them, in 2D, 3D and Walk; "Knock down" colours and tags the walls. */
+const PLANDATA=/*PLAN-START*/null/*PLAN-END*/;
+const strHash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return(h>>>0).toString(36);};
+const PLANKEY=PLANDATA?'p'+strHash(JSON.stringify(PLANDATA.walls||[])):'';   // keeps each plan's saves apart
+const lsKey=k=>PLANKEY?k.replace(/^hcad\./,'hcad.'+PLANKEY+'.'):k;
+const LS={get(k){try{return localStorage.getItem(lsKey(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(lsKey(k),v);return true}catch(e){return false}}};
 
 // ============================================================ icons
 const ic=(d,extra='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
@@ -643,11 +659,11 @@ const PAINTS=[['Chalk','#f2f0eb'],['Linen','#ebe2d4'],['Mist','#dde4ea'],['Sage'
 const COLORS=['#f7f7f5','#e8e4dc','#c8c2b8','#8a94a3','#5d6878','#2b2e33','#c49a6c','#b48a5a','#6b4a33','#b07a55','#5c7a52','#8a6f8e','#c9a24a','#3f5f8a'];
 
 // ============================================================ the flat, traced from the HDB plan (mm, x right, y down)
-const OUTLINE=[[0,700],[3550,700],[3550,0],[12600,0],[12600,5150],[11550,5150],[11550,7750],[8672,7750],[8672,9025],[8070,9025],[8070,9350],[2700,9350],[2700,7500],[0,7500]];
-const LEDGE={x0:8672,y0:6850,x1:11550,y1:7750,t:100};
-const RACK={x0:8070,y0:6950,x1:8620,y1:9025};
+let OUTLINE=[[0,700],[3550,700],[3550,0],[12600,0],[12600,5150],[11550,5150],[11550,7750],[8672,7750],[8672,9025],[8070,9025],[8070,9350],[2700,9350],[2700,7500],[0,7500]];
+let LEDGE={x0:8672,y0:6850,x1:11550,y1:7750,t:100};
+let RACK={x0:8070,y0:6950,x1:8620,y1:9025};
 const KITCHEN_EDGE=[[3030,7180],[3030,6786],[4241,6786]];
-const DIMS=[ // exterior dimension chains, exactly as on the plan
+let DIMS=[ // exterior dimension chains, exactly as on the plan
   {ax:'x',line:-450,from:[[0,700],[3550,0],[6700,0],[9575,0],[12600,0]]},
   {ax:'x',line:-1000,from:[[0,700],[12600,0]]},
   {ax:'x',line:9850,from:[[0,7500],[2700,9350],[8070,9350],[11550,7750]]},
@@ -657,6 +673,7 @@ const DIMS=[ // exterior dimension chains, exactly as on the plan
   {ax:'y',line:13600,from:[[12600,0],[8070,9350]]},
 ];
 function defaultModel(){
+  if(PLANDATA)return planModel(PLANDATA.layouts.find(l=>l.best)||PLANDATA.layouts[0]||null);
   const walls=[];
   const W=(id,a,b,t,kind,ops=[])=>walls.push({id,a,b,t,kind,openings:ops.map((o,i)=>Object.assign({id:id+'-o'+i,orig:true},o))});
   const win=(at,w,x)=>Object.assign({type:'window',at,w,sill:900,head:2400},x||{});
@@ -722,7 +739,47 @@ function defaultModel(){
   I('condenser',9400,7500,180); I('condenser',10500,7500,180);
   return {v:1,meta:{name:'My 4-Room flat',north:0,ceiling:2600,paint:'#f2f0eb'},walls,rooms,items,dims:[]};
 }
-const ORIG=defaultModel();
+// ---- plan mode: build the app's model from the skill's PLAN
+function planKind(n){n=(n||'').toLowerCase();return /shelter/.test(n)?'shelter':/bath|\bwc\b|toilet/.test(n)?'bath':/kitchen/.test(n)?'kitchen':/yard|service/.test(n)?'service':/ledge|a\/c|air.?con/.test(n)?'ledge':/corridor|hall|passage|foyer/.test(n)?'corridor':/living|dining/.test(n)?'living':'bed';}
+const KIND_FLOOR={living:'porcelain',corridor:'porcelain',bed:'vinyl',bath:'hdbtile',shelter:'screed',kitchen:'hdbtile',service:'hdbtile',ledge:'screed'};
+const PLAN_TYPES=[[/\bcot\b|crib/,'cot'],[/bunk/,'bunk'],[/sofa ?bed|day ?bed/,'daybed'],[/\bking\b/,'bedK'],[/queen/,'bedQ'],[/single bed|super single/,'bedSS'],
+  [/sofa|couch|loveseat|settee/,'sofa3'],[/armchair|glider|recliner/,'armchair'],[/coffee/,'coffee'],[/bedside|night ?stand|side table/,'night'],[/\btv\b|television/,'tv'],
+  [/play ?mat/,'playmat'],[/\brug\b|carpet/,'rug'],[/dresser|changing/,'dresser'],[/shoe/,'shoetall'],[/pet wash|dog wash|wash tub/,'petwash'],[/cat tree|cat tower/,'cattree'],
+  [/dog bed|pet bed|cat bed|litter/,'petbed'],[/pet gate|baby gate|\bgate\b/,'petgate'],[/desk/,'desk'],[/coffee|dining|table/,'table'],[/chair|stool/,'chair'],
+  [/wardrobe|closet/,'wardrobe'],[/display|showcase|vitrine/,'display'],[/book|shelf|divider/,'shelf'],[/\brack/,'racks'],[/aquarium|fish tank/,'aquarium'],[/piano/,'piano'],[/drum/,'drums'],
+  [/fridge|refrigerator/,'fridge'],[/washer|dryer|laundry/,'washer'],[/\bhob\b|stove|cooker/,'khob'],[/sink/,'ksink'],[/pantry|oven/,'tallcab'],[/counter/,'kbase'],
+  [/plant/,'plant'],[/lamp/,'lamp'],[/projector/,'projector'],[/treadmill/,'treadmill'],[/mirror/,'mirror'],[/dehumid/,'dehumid'],[/aircon|fan coil/,'aircon'],[/toilet|\bwc\b/,'wc'],[/basin|vanity/,'basin'],[/shower/,'shower']];
+const PLAN_KIND_TYPE={bed:'bedQ',sofa:'sofa3',chair:'chair',table:'table',desk:'desk',wardrobe:'wardrobe',cabinet:'box',shelf:'shelf',display:'display',tv:'tv',plant:'plant',rug:'rug',counter:'kbase',appliance:'box',bath:'basin',pet:'petbed',other:'box'};
+function planType(f){const n=(f.name||'').toLowerCase(),k=f.kind;if(k==='rug')return /play/.test(n)?'playmat':'rug';if(k==='display')return'display';for(const[re,t]of PLAN_TYPES)if(re.test(n))return t;return PLAN_KIND_TYPE[k]||'box';}
+function planCentroid(p){let a=0,cx=0,cy=0;for(let i=0,j=p.length-1;i<p.length;j=i++){const f=p[j][0]*p[i][1]-p[i][0]*p[j][1];a+=f;cx+=(p[j][0]+p[i][0])*f;cy+=(p[j][1]+p[i][1])*f;}a/=2;return Math.abs(a)<1?p[0].slice():[Math.round(cx/(6*a)),Math.round(cy/(6*a))];}
+function planModel(L){
+  const P=PLANDATA,rm=new Set((L&&L.removed)||[]),KIND={structural:'structural',shelter:'structural',bathroom:'partition',external:'facade',partition:'partition'};
+  const rooms=P.rooms.map(r=>{const k=planKind(r.name),o=((L&&L.rooms)||{})[r.id]||{};return{id:r.id,name:o.name||r.name,kind:k,poly:r.poly.map(p=>p.slice()),floor:KIND_FLOOR[k],label:r.label||planCentroid(r.poly),rate:''};});
+  const inRoom=(x,y)=>rooms.some(r=>inPoly([x,y],r.poly));
+  const walls=[];
+  for(const w of P.walls){if(w.type==='open')continue;const len=Math.hypot(w.b[0]-w.a[0],w.b[1]-w.a[1])||1,nx=-(w.b[1]-w.a[1])/len,ny=(w.b[0]-w.a[0])/len;
+    const ops=(P.openings||[]).filter(o=>o.wall===w.id).map((o,i)=>{if(o.type==='window')return{id:w.id+'-o'+i,orig:true,type:'window',at:o.at,w:o.w,sill:900,head:2100};
+      const c=[w.a[0]+(w.b[0]-w.a[0])*(o.at+o.w/2)/len,w.a[1]+(w.b[1]-w.a[1])*(o.at+o.w/2)/len],main=inRoom(c[0]+nx*600,c[1]+ny*600)!==inRoom(c[0]-nx*600,c[1]-ny*600);
+      return{id:w.id+'-o'+i,orig:true,type:'door',at:o.at,w:o.w,head:2100,hinge:o.hinge==='b'?1:0,side:o.flip?-1:1,style:main?'main':'single'};});
+    const W={id:w.id,a:w.a.slice(),b:w.b.slice(),t:w.t||120,kind:KIND[w.type]||'partition',ptype:w.type,openings:ops};if(rm.has(w.id))W.removed=true;walls.push(W);}
+  ((L&&L.added)||[]).forEach((a,i)=>{const W={id:'new'+i,a:a.a.slice(),b:a.b.slice(),t:a.type==='glass'?80:100,kind:'new',openings:[]};if(a.type==='glass')W.glass=1;walls.push(W);});
+  const items=((L&&L.furniture)||[]).map(f=>{const t=planType(f),T=TYPES[t];return{id:uid('it'),type:t,name:f.name||T.n,x:f.x,y:f.y,r:(((f.rot||0)%360)+360)%360,w:f.w||T.w,d:f.d||T.d,h:f.h||T.h,z:f.z||T.z||0,col:f.color||T.col};});
+  const m={v:1,meta:{name:L?L.title:'My flat',north:0,ceiling:2600,paint:'#f2f0eb'},walls,rooms,items,dims:[]};
+  if(L)m.meta.combo='L'+P.layouts.indexOf(L);return m;
+}
+function planStart(m){   // just inside the main door, facing in
+  for(const w of m.walls)for(const o of w.openings){if(o.type!=='door'||o.style!=='main')continue;const f=wf(w),c=wpt(w,f,o.at+o.w/2,0);
+    for(const sg of[1,-1]){const x=c[0]+f.nx*sg*800,y=c[1]+f.ny*sg*800;if(m.rooms.some(r=>inPoly([x,y],r.poly)))return{x,y,yaw:Math.atan2(f.nx*sg,-f.ny*sg)};}}
+  const r=m.rooms.reduce((a,b)=>polyArea(b.poly)>polyArea(a.poly)?b:a),c=planCentroid(r.poly);return{x:c[0],y:c[1],yaw:0};
+}
+const ORIG=PLANDATA?planModel(null):defaultModel();
+let OPEN_EDGES=[KITCHEN_EDGE],WALK0={x:1215,y:6600,yaw:0};
+if(PLANDATA){
+  OUTLINE=null;LEDGE=null;RACK=null;OPEN_EDGES=PLANDATA.walls.filter(w=>w.type==='open').map(w=>[w.a,w.b]);WALK0=planStart(ORIG);
+  if(Array.isArray(PLANDATA.start)){const a=(PLANDATA.startYaw||0)*Math.PI/180;WALK0={x:PLANDATA.start[0],y:PLANDATA.start[1],yaw:Math.atan2(Math.cos(a),-Math.sin(a))};}
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const w of PLANDATA.walls){if(w.type==='open')continue;const h=(w.t||120)/2;for(const p of[w.a,w.b]){x0=Math.min(x0,p[0]-h);y0=Math.min(y0,p[1]-h);x1=Math.max(x1,p[0]+h);y1=Math.max(y1,p[1]+h);}}
+  DIMS=[{ax:'x',line:y0-450,from:[[x0,y0],[x1,y0]]},{ax:'y',line:x0-450,from:[[x0,y0],[x0,y1]]}];
+}
 const ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));
 const ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));
 
@@ -812,6 +869,8 @@ const HACK={
 function wallSides(w){const f=wf(w),out=[];for(const sg of[-1,1])for(const fr of[.25,.5,.75]){const p=wpt(w,f,f.L*fr,sg*(w.t/2+150));const r=roomAt(p[0],p[1]);if(r&&!out.includes(r))out.push(r);}return out;}
 function hackInfo(w){
   if(w.kind==='new')return{v:'yes',t:'Yes',why:HACK.added};
+  if(w.ptype==='bathroom')return{v:'restricted',t:'Restricted',why:HACK.bath};
+  if(w.ptype==='shelter')return{v:'no',t:'Must stay',why:HACK.shelter};
   if(w.kind==='facade')return{v:'no',t:'Must stay',why:HACK.facade};
   const rs=wallSides(w);
   if(w.kind==='structural')return{v:'no',t:'Must stay',why:rs.some(r=>r.kind==='shelter')?HACK.shelter:HACK.struct};
@@ -825,7 +884,7 @@ function dropItemsIn(m,ids){m.items=m.items.filter(it=>{if(TYPES[it.type]&&TYPES
 function knock(m,ids){for(const w of m.walls)if(ids.includes(w.id))w.removed=true;}
 const IDEAS={
   shell:{name:'Only what must stay',sub:'Every wall HDB lets you knock down, removed.',hack:1,apply(m){
-    knock(m,['p1','p4a','p4b','p5','p6','p7','p8']);m.items=m.items.filter(i=>TYPES[i.type]&&TYPES[i.type].fixture);
+    knock(m,PLANDATA?m.walls.filter(w=>w.ptype==='partition').map(w=>w.id):['p1','p4a','p4b','p5','p6','p7','p8']);m.items=m.items.filter(i=>TYPES[i.type]&&TYPES[i.type].fixture);
   }},
 };
 // ---- knock-down combinations: a open Bedroom 3, b Bedroom 2 into a walk-in, c join Bedrooms 3 and 2, e open the kitchen to the yard
@@ -850,6 +909,7 @@ function comboTitle(f){return layoutOf(f).title;}
 function comboSub(f){return layoutOf(f).sub;}
 function comboWalls(f){return (f||'').split('-')[0];}
 function buildCombo(f){
+  if(PLANDATA){const P=PLANLIST.find(l=>l.k===f);return planModel(P?P.plan:null);}
   const DL=DESIGN.find(l=>l.k===f);if(DL)return buildIdea(DL);
   const HL=HOMES.find(l=>l.k===f);if(HL)return buildHome(HL);
   const BL=BOLD.find(l=>l.k===f);if(BL)return buildBold(BL);
@@ -1258,8 +1318,11 @@ function buildHome(L){
   m.meta.name=L.title;m.meta.combo=L.k;return m;
 }
 DESIGN.forEach(l=>l.set='ideas');HOMES.forEach(l=>l.set='homes');LAYOUTS.forEach(l=>l.set='practical');BOLD.forEach(l=>l.set='bold');
-const ALL_LAYOUTS=[...DESIGN,...HOMES,...LAYOUTS,...BOLD];
-const SETS={ideas:DESIGN,homes:HOMES,practical:LAYOUTS,bold:BOLD},SET_NAMES={ideas:'Design ideas',homes:'Households',practical:'Layouts',bold:'Out of the box'};
+const PLANLIST=PLANDATA?PLANDATA.layouts.map((L,i)=>{const n=(L.removed||[]).length,g=(L.added||[]).length;
+  return{k:'L'+i,set:'plan',plan:L,title:L.title,sub:[L.phase?(L.phase[0].toUpperCase()+L.phase.slice(1)):'',n?n+(n>1?' walls':' wall')+' down':'No hacking',g?g+' new':''].filter(Boolean).join(' · '),for:L.summary||'',
+    tags:[L.best?'Best fit':'',...(L.removed||[]).map(id=>id+' comes down')].filter(Boolean)};}):[];
+const ALL_LAYOUTS=PLANDATA?PLANLIST:[...DESIGN,...HOMES,...LAYOUTS,...BOLD];
+const SETS=PLANDATA?{plan:PLANLIST}:{ideas:DESIGN,homes:HOMES,practical:LAYOUTS,bold:BOLD},SET_NAMES=PLANDATA?{plan:'Your layouts'}:{ideas:'Design ideas',homes:'Households',practical:'Layouts',bold:'Out of the box'};
 const COMBOS=ALL_LAYOUTS.map(l=>l.k);
 const layoutOf=f=>ALL_LAYOUTS.find(l=>l.k===f)||{title:'',sub:'',for:'',set:''};
 const COMBO_FOR=Object.fromEntries(ALL_LAYOUTS.map(l=>[l.k,l.for]));
@@ -1502,11 +1565,11 @@ function drawPlan(c,W,H,v,o){
   for(const w of model.walls){if(!w.removed)continue;const f=wf(w);let r=null;for(const sg of[-1,1]){const p=wpt(w,f,f.L/2,sg*(w.t/2+120));r=roomAt(p[0],p[1]);if(r)break;}
     if(!r)continue;const F=FLOORS[r.floor]||FLOORS.screed;c.beginPath();polyPath(c,spanPoly(w,f,0,f.L));c.fillStyle=mix(F.base,P.paper,P.dark?.86:.72);c.fill();}
   // ledge parapet & laundry rack & open-kitchen edge
-  c.strokeStyle=P.ink;c.lineWidth=.9*u;c.strokeRect(LEDGE.x0,LEDGE.y0,LEDGE.x1-LEDGE.x0,LEDGE.y1-LEDGE.y0);
-  c.strokeRect(LEDGE.x0+LEDGE.t,LEDGE.y0,LEDGE.x1-LEDGE.x0-2*LEDGE.t,LEDGE.y1-LEDGE.y0-LEDGE.t);
-  c.lineWidth=.8*u;c.strokeRect(RACK.x0,RACK.y0,RACK.x1-RACK.x0,RACK.y1-RACK.y0);
-  c.beginPath();for(const x of[RACK.x0+90,RACK.x1-90]){c.moveTo(x,RACK.y0+60);c.lineTo(x,RACK.y1-60);}for(let y=RACK.y0+160;y<RACK.y1-60;y+=170){c.moveTo(RACK.x0+90,y);c.lineTo(RACK.x1-90,y);}c.stroke();
-  c.setLineDash([8*u,6*u]);c.lineWidth=.9*u;c.beginPath();KITCHEN_EDGE.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.stroke();c.setLineDash([]);
+  c.strokeStyle=P.ink;c.lineWidth=.9*u;if(LEDGE){c.strokeRect(LEDGE.x0,LEDGE.y0,LEDGE.x1-LEDGE.x0,LEDGE.y1-LEDGE.y0);
+  c.strokeRect(LEDGE.x0+LEDGE.t,LEDGE.y0,LEDGE.x1-LEDGE.x0-2*LEDGE.t,LEDGE.y1-LEDGE.y0-LEDGE.t);}
+  if(RACK){c.lineWidth=.8*u;c.strokeRect(RACK.x0,RACK.y0,RACK.x1-RACK.x0,RACK.y1-RACK.y0);
+  c.beginPath();for(const x of[RACK.x0+90,RACK.x1-90]){c.moveTo(x,RACK.y0+60);c.lineTo(x,RACK.y1-60);}for(let y=RACK.y0+160;y<RACK.y1-60;y+=170){c.moveTo(RACK.x0+90,y);c.lineTo(RACK.x1-90,y);}c.stroke();}
+  c.setLineDash([8*u,6*u]);c.lineWidth=.9*u;c.beginPath();for(const E of OPEN_EDGES)E.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.stroke();c.setLineDash([]);
   // furniture under walls
   clashes=o.mini?new Set():clashSet();
   const items=model.items.filter(itemVisible);
@@ -1530,6 +1593,8 @@ function drawPlan(c,W,H,v,o){
   c.beginPath();for(const w of st)for(const p of wallPolys(w))polyPath(c,p);c.fillStyle=P.struct;c.fill();
   if(L.hack&&!o.mini){for(const w of vis){const h=hackInfo(w);c.beginPath();for(const p of wallPolys(w))polyPath(c,p);c.fillStyle=h.v==='yes'?P.ok:h.v==='restricted'?P.warn:P.struct;c.fill();}}
   for(const w of vis){const f=wf(w);for(const op of w.openings||[]){if(op.type!=='window')drawDoor(c,w,f,op,u,P);}}
+  if(L.hack&&!o.mini&&PLANDATA){const r=11*u;c.font=`600 ${9.5*u}px Barlow,system-ui,sans-serif`;c.textAlign='center';c.textBaseline='middle';   // wall tags, as in the skill's answer
+    for(const w of vis){if(!w.ptype)continue;const f=wf(w),m=wpt(w,f,f.L/2,0),h=hackInfo(w);c.beginPath();c.arc(m[0],m[1],r,0,Math.PI*2);c.fillStyle=P.paper;c.fill();c.lineWidth=1.2*u;c.strokeStyle=h.v==='yes'?P.ok:h.v==='restricted'?P.warn:P.ink;c.stroke();c.fillStyle=P.ink;c.fillText(w.id,m[0],m[1]+.5*u);}}
   if(L.demo&&!o.mini){c.strokeStyle=P.ink2;c.lineWidth=1.3*u;c.setLineDash([7*u,5*u]);
     for(const w of model.walls){if(!w.removed)continue;const f=wf(w);c.beginPath();polyPath(c,spanPoly(w,f,0,f.L));c.stroke();
       const A=wpt(w,f,0,-w.t/2),B=wpt(w,f,f.L,w.t/2),C2=wpt(w,f,0,w.t/2),D=wpt(w,f,f.L,-w.t/2);c.beginPath();c.moveTo(A[0],A[1]);c.lineTo(B[0],B[1]);c.moveTo(C2[0],C2[1]);c.lineTo(D[0],D[1]);c.stroke();}
@@ -2062,12 +2127,12 @@ function renderInspector(mode){
     h+=`<div class="ititle"><div><h3>Dimension</h3><p>${nf(Math.hypot(d.b[0]-d.a[0],d.b[1]-d.a[1]))} mm</p></div></div><div class="sec"><div class="grid3">${numF('Offset','doff',d.off||0,'mm',50)}</div></div><div class="sec row"><button class="tb small danger" data-act="del">Delete dimension</button></div>`;
   }else{
     const gross=model.rooms.reduce((a,r)=>a+polyArea(r.poly),0),ni=model.items.length,notes=renoNotes();
-    h+=`<div class="ititle"><div><h3>${esc(model.meta.name)}</h3><p>4-Room Type 3 · 93 m² floor area, including the A/C ledge</p></div></div>`;
+    h+=`<div class="ititle"><div><h3>${esc(model.meta.name)}</h3><p>${PLANDATA?'From your floor plan · '+m2(model.rooms.reduce((a,r)=>a+polyArea(r.poly),0))+' m² of rooms, measured from a photo':'4-Room Type 3 · 93 m² floor area, including the A/C ledge'}</p></div></div>`;
     h+=`<div class="stats"><div><b>${m2(gross)}</b><span>m² clear floor, all rooms</span></div><div><b>${model.rooms.length}</b><span>rooms & spaces</span></div><div><b>${ni}</b><span>furniture & fixtures</span></div><div><b>${notes.length}</b><span>renovation changes</span></div></div>`;
     h+=`<div class="sec">${txtF('Project name','pname',model.meta.name)}</div>`;
     h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.</p></div>`;
     if(model.items.some(i=>i.sample))h+=`<p class="callout info"><b>The furniture is a sample layout</b> so you can see the tool working. Move it, resize it, or clear it and start from an empty flat.</p>`;
-    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small primary" data-act="layouts">Browse 32 ready-made layouts</button><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
+    h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small primary" data-act="layouts">${PLANDATA?'Browse your '+ALL_LAYOUTS.length+' layouts':'Browse 32 ready-made layouts'}</button><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
     if(mode==='confirmClear')h+=`<div class="callout warn"><b>Remove every piece of furniture?</b> HDB-provided toilets and basins stay. You can undo this.</div><div class="row"><button class="tb danger" data-act="doClear">Clear furniture</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else if(mode==='confirmReset')h+=`<div class="callout warn"><b>Go back to the original HDB layout?</b> Walls, finishes and furniture all reset. Save a version first if you want to keep this one.</div><div class="row"><button class="tb danger" data-act="doReset">Reset to original</button><button class="tb" data-act="cancel">Cancel</button></div>`;
     else h+=`<div class="sec row"><button class="tb small" data-act="askClear">Clear furniture…</button><button class="tb small" data-act="askReset">Reset to original plan…</button></div>`;
@@ -2108,7 +2173,7 @@ $('#tabbody').addEventListener('change',e=>{
     commit();return;}
   if(sel&&sel.kind==='room'){const r=getRoom(sel.id);if(r&&k==='rname'){r.name=v.trim()||r.name;commit();}return;}
   if(sel&&sel.kind==='dim'){const d=getDim(sel.id);if(d&&!isNaN(n)){d.off=Math.round(n);commit();}return;}
-  if(!sel){if(k==='pname')model.meta.name=v.trim()||'My 4-Room flat';if(k==='ceil'&&!isNaN(n))model.meta.ceiling=clamp(Math.round(n),2300,3200);if(k==='north'&&!isNaN(n))model.meta.north=((Math.round(n)%360)+360)%360;commit();}
+  if(!sel){if(k==='pname')model.meta.name=v.trim()||(PLANDATA?'My flat':'My 4-Room flat');if(k==='ceil'&&!isNaN(n))model.meta.ceiling=clamp(Math.round(n),2300,3200);if(k==='north'&&!isNaN(n))model.meta.north=((Math.round(n)%360)+360)%360;commit();}
 });
 $('#tabbody').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -2199,6 +2264,7 @@ function updHackLeg(){const el=$('#hackleg');if(el)el.hidden=!(ui.layers.hack&&v
 function onHack(){requestDraw();sync3D();updHackLeg();if(tab==='layers')renderInspector();}
 $('#hack-off').innerHTML=ICON.close;$('#hack-off').onclick=()=>{ui.layers.hack=0;saveUI();onHack();};
 function openKnock(){
+  if(PLANDATA)return openKnockPlan();
   openModal('What can I knock down?',`<p class="note">Every wall in your flat, sorted by what HDB allows. Turn on the check to colour the walls on the plan and in 3D.</p>
   <div class="klist">
     <div><i class="k-yes"></i><div><b>Can be knocked down, with a permit</b><span>Bedroom 3’s wall facing the living room (only the lower 1.25 m; the top 2.5 m is structural) and its corridor wall, the walls between the bedrooms, the main bedroom entrance wall, and the kitchen to service yard wall.</span></div></div>
@@ -2213,6 +2279,18 @@ function openKnock(){
     if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
     if(b.dataset.k==='ideas')enterExplore(null,'ideas');if(b.dataset.k==='homes')enterExplore(null,'homes');if(b.dataset.k==='explore')enterExplore(null,'practical');if(b.dataset.k==='bold')enterExplore(null,'bold');if(b.dataset.k==='list')showAllCombos();if(b.dataset.k==='shell'){if(explore)exitExplore(false,true);loadIdea('shell');}};
 }
+function openKnockPlan(){
+  const ws=PLANDATA.walls.filter(w=>w.type!=='open'),ids=t=>ws.filter(w=>w.type===t).map(w=>w.id).join(', ')||'none';
+  openModal('What can I knock down?',`<p class="note">Every wall in your flat, sorted by what HDB allows. Turn on the check to colour the walls on the plan and in 3D.</p>
+  <div class="klist"><div><i class="k-yes"></i><div><b>Can be knocked down, with a permit</b><span>${esc(ids('partition'))}</span></div></div>
+  <div><i class="k-res"></i><div><b>Bathroom walls, restricted</b><span>${esc(ids('bathroom'))}. No hacking for the first 3 years after the block is completed; after that only limited changes, with a permit.</span></div></div>
+  <div><i class="k-no"></i><div><b>Must stay</b><span>Structural walls, the household shelter, and the external walls and windows.</span></div></div></div>
+  <div class="row"><button class="tb" data-k="toggle">${ui.layers.hack?'Hide the check':'Show the check on my plan'}</button><button class="tb primary" data-k="explore">Your layouts</button><button class="tb" data-k="list">Compare all</button><button class="tb" data-k="shell">Show only what must stay</button></div>
+  <p class="callout info">Every knock-down needs HDB’s written approval and a contractor from HDB’s Directory of Renovation Contractors. Reinforced concrete walls also need a Professional Engineer. This plan was read from a photo, so confirm every wall with your contractor before work starts.</p>`);
+  $('#m-body').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.k==='toggle'){ui.layers.hack=ui.layers.hack?0:1;saveUI();onHack();closeModal();}
+    if(b.dataset.k==='explore')enterExplore(null,'plan');if(b.dataset.k==='list')showAllCombos();if(b.dataset.k==='shell'){if(explore)exitExplore(false,true);loadIdea('shell');}};
+}
 async function loadIdea(k){
   const I=IDEAS[k];if(!I)return;
   if(!pristine){try{await Store.save('Before “'+I.name+'”');}catch(e){}}
@@ -2222,9 +2300,9 @@ async function loadIdea(k){
   toast('Loaded “'+I.name+'”. Undo goes back.');
 }
 $('#b-knock').onclick=openKnock;
-const HUB={ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
+const HUB={plan:'The layouts Claude drew for your household, best fit first.',ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
 function openLayouts(){
-  openModal('Ready-made layouts',`<p class="note">32 furnished layouts of your flat in 4 sets. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all 32 in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
+  openModal('Ready-made layouts',`<p class="note">${ALL_LAYOUTS.length} furnished layouts of your flat${Object.keys(SETS).length>1?' in '+Object.keys(SETS).length+' sets':''}. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all ${ALL_LAYOUTS.length} in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
 }
 $('#b-layouts').onclick=openLayouts;
@@ -2234,8 +2312,8 @@ function parseCombo(h){if(!h||!h.startsWith('combo-'))return null;const c=h.slic
 function exploreHeight(){const el=$('#explore');const h=el.hidden?0:Math.ceil(el.getBoundingClientRect().height);stage.style.setProperty('--exh',h+'px');}
 function setList(){return SETS[explore.set]||LAYOUTS;}
 function enterExplore(f,setName){
-  const first=!explore;if(first)explore={set:'ideas',i:0,snapshot:copy(model)};
-  const L=f?layoutOf(f):null;explore.set=L&&L.set?L.set:(setName||explore.set||'practical');
+  const first=!explore;if(first)explore={set:Object.keys(SETS)[0],i:0,snapshot:copy(model)};
+  const L=f?layoutOf(f):null;explore.set=L&&L.set?L.set:(setName||explore.set||'practical');if(!SETS[explore.set])explore.set=Object.keys(SETS)[0];
   $('#explore').hidden=false;$('#app').classList.add('exploring');closeModal();closePanels();setSave('off','Exploring, not saved');
   goCombo(L&&L.set?setList().findIndex(l=>l.k===f):0);
   if(first&&viewMode==='plan')fitView();
@@ -2394,8 +2472,9 @@ function buildStatic(){
   const G=T3.staticG;disposeGroup(G);
   const H=model.meta.ceiling,top=wallTop();
   // slab
-  const sh=new THREE.Shape();OUTLINE.forEach((p,i)=>i?sh.lineTo(p[0]/1000,-p[1]/1000):sh.moveTo(p[0]/1000,-p[1]/1000));
-  const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.2,bevelEnabled:false}),mat('#c4c0b9',.95));slab.rotation.x=-Math.PI/2;slab.position.y=-.202;slab.receiveShadow=true;slab.castShadow=true;G.add(slab);
+  const slabOf=poly=>{const sh=new THREE.Shape();poly.forEach((p,i)=>i?sh.lineTo(p[0]/1000,-p[1]/1000):sh.moveTo(p[0]/1000,-p[1]/1000));
+  const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.2,bevelEnabled:false}),mat('#c4c0b9',.95));slab.rotation.x=-Math.PI/2;slab.position.y=-.202;slab.receiveShadow=true;slab.castShadow=true;G.add(slab);};
+  if(OUTLINE)slabOf(OUTLINE);else{for(const r of model.rooms)slabOf(r.poly);for(const w of model.walls){const f=wf(w);slabOf(spanPoly(w,f,0,f.L));}}
   // floors
   for(const r of model.rooms){const s=new THREE.Shape();r.poly.forEach((p,i)=>i?s.lineTo(p[0]/1000,-p[1]/1000):s.moveTo(p[0]/1000,-p[1]/1000));
     const geo=new THREE.ShapeGeometry(s);geo.rotateX(-Math.PI/2);const m=new THREE.Mesh(geo,floorMat(r.floor));m.position.y=.002;m.receiveShadow=true;m.userData={kind:'room',id:r.id};G.add(m);
@@ -2431,8 +2510,8 @@ function buildStatic(){
   // A/C ledge parapet & laundry rack
   const conc=mat('#d3d0ca',.9),ph=Math.min(1000,top);
   const par=(x0,y0,x1,y1)=>{const m=B(G,x1-x0,ph,y1-y0,(x0+x1)/2,0,(y0+y1)/2,conc);m.castShadow=m.receiveShadow=true;};
-  par(LEDGE.x0,LEDGE.y0,LEDGE.x0+LEDGE.t,LEDGE.y1);par(LEDGE.x0,LEDGE.y1-LEDGE.t,LEDGE.x1,LEDGE.y1);par(LEDGE.x1-LEDGE.t,LEDGE.y0,LEDGE.x1,LEDGE.y1);
-  if(top>=1800){const steel=mat('#b9bdc2',.35,.6);for(const x of[8170,8300,8430,8560]){const p=Cy(G,14,14,RACK.y1-RACK.y0,x,1850-(RACK.y1-RACK.y0)/2,(RACK.y0+RACK.y1)/2,steel,8);p.rotation.x=Math.PI/2;p.position.y=1.85;p.castShadow=true;}
+  if(LEDGE){par(LEDGE.x0,LEDGE.y0,LEDGE.x0+LEDGE.t,LEDGE.y1);par(LEDGE.x0,LEDGE.y1-LEDGE.t,LEDGE.x1,LEDGE.y1);par(LEDGE.x1-LEDGE.t,LEDGE.y0,LEDGE.x1,LEDGE.y1);}
+  if(top>=1800&&RACK){const steel=mat('#b9bdc2',.35,.6);for(const x of[8170,8300,8430,8560]){const p=Cy(G,14,14,RACK.y1-RACK.y0,x,1850-(RACK.y1-RACK.y0)/2,(RACK.y0+RACK.y1)/2,steel,8);p.rotation.x=Math.PI/2;p.position.y=1.85;p.castShadow=true;}
     for(const y of[RACK.y0+80,RACK.y1-80])B(G,RACK.x1-RACK.x0,30,30,(RACK.x0+RACK.x1)/2,1820,y,steel);}
 }
 function buildWindow(G,w,f,o,ang,top,glass,frame,trim){
@@ -2713,17 +2792,17 @@ function camPos(k){const a=T3.cam.aspect||1.6,vf=T3.cam.fov*D2R/2,hf=Math.atan(M
 function stepTween(now){const tw=T3.tween;const t=clamp((now-tw.t0)/550,0,1),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;T3.cam.position.lerpVectors(tw.p0,tw.p1,e);T3.controls.target.lerpVectors(tw.q0,tw.q1,e);if(t>=1)T3.tween=null;T3.need=true;return true;}
 
 // ---------- walk mode
-const walk={x:1215,y:6600,yaw:0,pitch:-.04,keys:{},eye:1600};
+const walk={x:WALK0.x,y:WALK0.y,yaw:WALK0.yaw,pitch:-.04,keys:{},eye:1600};
 let blockers=[],minimapDirty=true;const mmBg=document.createElement('canvas');const mmView={s:1,ox:0,oy:0};
 function buildBlockers(){blockers=[];
   for(const w of model.walls){if(w.removed)continue;const f=wf(w);for(const[s0,s1]of spans(w,f,true))blockers.push({seg:[wpt(w,f,s0,0),wpt(w,f,s1,0)],h:w.t/2});}
-  for(const p of[[LEDGE.x0,LEDGE.y0,LEDGE.x0,LEDGE.y1],[LEDGE.x0,LEDGE.y1,LEDGE.x1,LEDGE.y1],[LEDGE.x1,LEDGE.y0,LEDGE.x1,LEDGE.y1]])blockers.push({seg:[[p[0],p[1]],[p[2],p[3]]],h:60});
+  if(LEDGE)for(const p of[[LEDGE.x0,LEDGE.y0,LEDGE.x0,LEDGE.y1],[LEDGE.x0,LEDGE.y1,LEDGE.x1,LEDGE.y1],[LEDGE.x1,LEDGE.y0,LEDGE.x1,LEDGE.y1]])blockers.push({seg:[[p[0],p[1]],[p[2],p[3]]],h:60});
   for(const it of model.items){if(it.type==='rug'||(it.z||0)>900||it.h<300||!itemVisible(it))continue;blockers.push({poly:itemCorners(it)});}
 }
 function blocked(x,y){const R=220;for(const b of blockers){if(b.seg){if(segDist(x,y,b.seg[0][0],b.seg[0][1],b.seg[1][0],b.seg[1][1])<b.h+R)return true;}else{if(inPoly([x,y],b.poly))return true;const p=b.poly;for(let i=0;i<4;i++){const q=p[(i+1)%4];if(segDist(x,y,p[i][0],p[i][1],q[0],q[1])<R*.7)return true;}}}return false;}
 function placeWalkCam(){const c=T3.cam;c.position.set(walk.x/1000,walk.eye/1000,walk.y/1000);const cp=Math.cos(walk.pitch);c.lookAt((walk.x+Math.sin(walk.yaw)*cp*1000)/1000,(walk.eye+Math.sin(walk.pitch)*1000)/1000,(walk.y-Math.cos(walk.yaw)*cp*1000)/1000);T3.need=true;}
 function enterWalk(){if(!T3.inited||T3.failed)return;if(T3.walkMode)return;T3.orbitSave={p:T3.cam.position.clone(),t:T3.controls.target.clone()};T3.walkMode=true;T3.controls.enabled=false;T3.cam.fov=70;T3.cam.updateProjectionMatrix();
-  buildBlockers();if(blocked(walk.x,walk.y)){walk.x=1215;walk.y=6600;walk.yaw=0;}sync3D(true);placeWalkCam();minimapDirty=true;}
+  buildBlockers();if(blocked(walk.x,walk.y)){walk.x=WALK0.x;walk.y=WALK0.y;walk.yaw=WALK0.yaw;}sync3D(true);placeWalkCam();minimapDirty=true;}
 function exitWalk(){if(!T3.inited||T3.failed||!T3.walkMode)return;T3.walkMode=false;walk.keys={};if(T3.orbitSave){T3.cam.position.copy(T3.orbitSave.p);T3.controls.target.copy(T3.orbitSave.t);}T3.cam.fov=40;T3.cam.updateProjectionMatrix();T3.controls.enabled=true;T3.controls.update();sync3D(true);}
 function walkStep(dt){
   const k=walk.keys;let f=(k.fwd?1:0)-(k.back?1:0),s=(k.right?1:0)-(k.left?1:0);let turned=false;
@@ -2816,7 +2895,7 @@ async function openDesigns(confirmId){
     if(b.dataset.dd){await Store.remove(b.dataset.dd);toast('Version deleted');openDesigns();}};
 }
 $('#b-designs').onclick=()=>openDesigns();
-$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="l"><b>Layouts</b><span>32 ready-made layouts: design ideas, households and more</span></button><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="h"><b>Knock down</b><span>See which walls you can remove and try ideas</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();if(b.dataset.f==='h')openKnock();if(b.dataset.f==='l')openLayouts();};};
+$('#b-file').onclick=()=>{openModal('File',`<div class="exp"><button data-f="l"><b>Layouts</b><span>${PLANDATA?ALL_LAYOUTS.length+' layouts for your household':'32 ready-made layouts: design ideas, households and more'}</span></button><button data-f="d"><b>Designs</b><span>Save this layout as a version, or open another</span></button><button data-f="e"><b>Export</b><span>Plan drawing, 3D view, project file, schedule</span></button><button data-f="h"><b>Knock down</b><span>See which walls you can remove and try ideas</span></button><button data-f="k"><b>Shortcuts</b><span>Keyboard shortcuts for desktop</span></button></div>`);$('#m-body').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;if(b.dataset.f==='d')openDesigns();if(b.dataset.f==='e')$('#b-export').click();if(b.dataset.f==='k')showShortcuts();if(b.dataset.f==='h')openKnock();if(b.dataset.f==='l')openLayouts();};};
 
 // ============================================================ export & import
 let dlCap;
@@ -2843,9 +2922,9 @@ function planImage(){
   let y=y0+60;const tx=x0+44;
   const T=(txt,size,wt,col,font)=>{g.fillStyle=col||P.ink;g.font=`${wt||500} ${size}px ${font||'"Barlow Semi Condensed","Arial Narrow",sans-serif'}`;g.textAlign='left';g.textBaseline='alphabetic';g.fillText(txt,tx,y);};
   const rule=()=>{y+=34;g.strokeStyle=P.line||'#c0c8d2';g.lineWidth=2;g.beginPath();g.moveTo(x0,y);g.lineTo(x0+tb,y);g.stroke();y+=64;};
-  T('HOME CAD',30,700,P.ink2);y+=72;T(model.meta.name,58,700);y+=56;T('4-Room Type 3 · HDB flat',34,500,P.ink2,'"Barlow",sans-serif');rule();
+  T('HOME CAD',30,700,P.ink2);y+=72;T(model.meta.name,58,700);y+=56;T(PLANDATA?'HDB flat · drawn from a photo of the floor plan':'4-Room Type 3 · HDB flat',34,500,P.ink2,'"Barlow",sans-serif');rule();
   T('DRAWING',26,600,P.ink3);y+=52;T('Furnished floor plan',42,600);y+=50;T('All dimensions in millimetres',30,400,P.ink2,'"Barlow",sans-serif');rule();
-  T('AREA',26,600,P.ink3);y+=52;const ga=model.rooms.reduce((a,r)=>a+polyArea(r.poly),0);T('93 m² floor area incl. A/C ledge',36,500,P.ink,'"Barlow",sans-serif');y+=48;T(m2(ga)+' m² clear floor across all rooms',30,400,P.ink2,'"Barlow",sans-serif');rule();
+  T('AREA',26,600,P.ink3);y+=52;const ga=model.rooms.reduce((a,r)=>a+polyArea(r.poly),0);T(PLANDATA?m2(ga)+' m² of rooms':'93 m² floor area incl. A/C ledge',36,500,P.ink,'"Barlow",sans-serif');y+=48;T(m2(ga)+' m² clear floor across all rooms',30,400,P.ink2,'"Barlow",sans-serif');rule();
   T('LEGEND',26,600,P.ink3);y+=40;
   const leg=(fill,stroke,label,hatch)=>{g.fillStyle=fill;g.fillRect(tx,y,90,34);if(stroke){g.strokeStyle=stroke;g.lineWidth=3;g.strokeRect(tx,y,90,34);}if(hatch){g.strokeStyle=hatch;g.setLineDash(hatch===P.ink2?[14,10]:[]);g.strokeRect(tx,y,90,34);g.setLineDash([]);}g.fillStyle=P.ink;g.font='400 30px "Barlow",sans-serif';g.textBaseline='middle';g.fillText(label,tx+120,y+18);g.textBaseline='alphabetic';y+=58;};
   leg(P.struct,null,'Structural — do not hack');leg('#ffffff',P.ink,'Non-structural partition');leg(P.newfill,P.accent,'New partition');leg('#ffffff',null,'Marked for removal',P.ink2);
@@ -2905,14 +2984,14 @@ new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,
 // ============================================================ boot
 function topHeight(){const h=$('#topbar').getBoundingClientRect().height,s=$('#status').getBoundingClientRect().height;document.documentElement.style.setProperty('--top-h',(h+(parseFloat(getComputedStyle(document.documentElement).paddingTop)||0))+'px');document.documentElement.style.setProperty('--status-h',s+'px');}
 function boot(){
-  readPal();
+  readPal();if(PLANDATA){const bs=document.getElementById('brand-sub');if(bs)bs.textContent='Your HDB flat';document.title='Home CAD · your flat';}
   const local=readLocal();model=normalize(local?copy(local.model):defaultModel());histReset();pristine=!local;updHackLeg();
   renderLibrary();updChips();setTool('select');setTab('inspect');updateSun();
   topHeight();resizePlan();fitView();
   const ro=new ResizeObserver(()=>{topHeight();const keep=toW(CW/2,CH/2);resizePlan();if(view._fitted){view.ox=CW/2-keep[0]*view.s;view.oy=CH/2-keep[1]*view.s;}resize3D();});ro.observe(stage);view._fitted=true;
   const h=location.hash.slice(1);if(h==='model'||h==='walk')setView(h,true);
   setSave(local?'ok':'ok',local?'Saved on this device':'Saved on this device');
-  const c0=parseCombo(h);if(c0!==null)enterExplore(c0);
+  const c0=parseCombo(h);if(c0!==null)enterExplore(c0);else if(PLANDATA&&!local)enterExplore(null,Object.keys(SETS)[0]);
   Store.init();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{requestDraw();renderLibrary();});
 }
