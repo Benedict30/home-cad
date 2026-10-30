@@ -24,7 +24,7 @@ Edits are saved in your own browser. Use Export → Project file to keep a copy 
 
 ## Plan your own flat
 
-Got a different HDB flat? Copy the prompt at **https://benedict30.github.io/home-cad/prompt/**, attach your floor plan, and send both to Claude. You get a wall-by-wall knock-down check, 4 layouts for your household, a style plan and to-scale drawings.
+Got a different HDB flat? Get the free Claude skill at **https://benedict30.github.io/home-cad/prompt/**, add it in Claude under Customize › Skills, then attach your floor plan and say who lives with you. You get a wall-by-wall knock-down check under HDB's rules and 4 layouts for how you live, with "now" and "after" plans if a baby is coming or parents may move in, all drawn to scale.
 
 ## Notes
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Plan Your HDB Flat</title>
-<meta name="description" content="One prompt and a photo of your HDB floor plan: find out which walls you can knock down, get layout ideas for your household, and a style plan that works in Singapore.">
+<meta name="description" content="A free Claude skill for HDB flats: attach your floor plan, say who lives with you, and get a wall-by-wall knock-down check and layouts for how you live.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -41,7 +41,8 @@ h2{font:700 26px/1.15 var(--f-display);margin:44px 0 14px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0;padding:0;list-style:none;counter-reset:s}
 .steps li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;counter-increment:s}
 .steps li::before{content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:700 16px var(--f-display);margin-bottom:10px}
-.steps b{display:block;font-weight:600;margin-bottom:2px}
+.steps li>b{display:block;font-weight:600;margin-bottom:2px}
+.steps span b{font-weight:600;color:var(--ink)}
 .steps span{color:var(--ink-2);font-size:14.5px}
 .prompt{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .prompt-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 18px;border-bottom:1px solid var(--line)}
@@ -62,6 +63,17 @@ figcaption{font-size:14px;color:var(--ink-3);margin-top:8px}
 .note{background:var(--warn-bg);color:var(--ink);border-radius:12px;padding:14px 16px;font-size:15px;margin-top:28px}
 .note b{color:var(--warn)}
 .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.uses{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.uses li{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:15px}
+.steps .btn{margin-top:12px}
+.path{font:500 14px var(--f-mono);background:var(--accent-2);border-radius:5px;padding:1px 6px;white-space:nowrap}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px}
+details summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'+';color:var(--ink-3);font-weight:500}
+details[open] summary::after{content:'–'}
+details .prompt{border:0;border-top:1px solid var(--line);border-radius:0 0 14px 14px}
+.example{display:grid;gap:4px;margin-top:16px}
 footer{margin-top:48px;color:var(--ink-3);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
 @media (max-width:640px){.steps{grid-template-columns:1fr}.lede{font-size:17px}pre{font-size:13px;padding:14px}h2{margin-top:36px}}
 </style>
@@ -74,51 +86,39 @@ footer{margin-top:48px;color:var(--ink-3);font-size:14px;border-top:1px solid va
   </header>
 
   <h1>Plan your HDB flat with AI</h1>
-  <p class="lede">Snap your floor plan, paste one prompt, and get a wall-by-wall knock-down check, layout ideas for the way your household lives, and a style plan that works in Singapore.</p>
+  <p class="lede">Add a free skill to Claude, attach your floor plan and say who lives with you. You get a wall-by-wall knock-down check and layouts for how you live, whether that’s a baby on the way, parents moving in or both of you working from home.</p>
 
   <ol class="steps">
-    <li><b>Get your floor plan</b><span>A clear photo or screenshot of the plan from your BTO brochure or HDB.</span></li>
-    <li><b>Copy the prompt</b><span>Fill in the yellow parts: who lives with you, your style, must-haves and budget.</span></li>
-    <li><b>Send both to Claude</b><span>Attach the floor plan and paste the prompt in one message.</span></li>
+    <li><b>Download the skill</b><span>One small file with HDB’s renovation rules and layout know-how built in.</span><br><a class="btn primary" href="hdb-home-planner.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download skill</a></li>
+    <li><b>Add it to Claude</b><span>Go to <span class="path">Customize › Skills</span>, click <b>+</b>, then <b>Create skill › Upload a skill</b>. Choose the ZIP and switch it on. Skills need <b>Code execution</b> turned on in <span class="path">Settings › Capabilities</span>.</span></li>
+    <li><b>Send your floor plan</b><span>Attach a clear photo of your HDB plan and send the short message below, filled in for your home.</span></li>
   </ol>
 
-  <h2>The prompt</h2>
+  <h2>What to send</h2>
   <div class="prompt">
-    <div class="prompt-bar"><small>Works best with a clear, straight photo of the plan</small><button class="btn primary" id="copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg><span>Copy prompt</span></button></div>
-    <pre id="prompt">I've attached the floor plan of my HDB flat. Be my Singapore interior designer and help me plan the renovation.
-
-About us:
-- Who lives here: <mark>[e.g. couple + 1 toddler, both work from home, 1 cat]</mark>
-- Style we like: <mark>[e.g. Japandi, Scandinavian, modern, industrial]</mark>
-- Must-haves: <mark>[e.g. dining for 6, a home office, lots of storage]</mark>
-- Budget: <mark>[e.g. $50k]</mark>
-
-Please:
-1. Read the plan. List every room with its rough size, and point out the windows, the household shelter, the kitchen, the service yard and the bathrooms.
-2. Wall check. Go through every internal wall and say if it can be knocked down, using HDB's rules:
-   - Structural walls (shaded black or marked on the plan's legend) must stay.
-   - Household shelter walls must stay.
-   - Bathroom walls and floor finishes can't be hacked for the first 3 years after the block is completed.
-   - Other thin partitions can go with HDB approval and an HDB-registered (DRC) contractor; reinforced concrete ones need a Professional Engineer.
-   Tell me which walls you're unsure about and how to check.
-3. Give me 4 layout ideas that suit our household. Include at least one that knocks down nothing. For each: which walls come down, what each room becomes, furniture that fits (sizes in mm), and the pros and cons.
-4. Suggest colours, flooring and 3 key built-ins for our style. Keep it practical for Singapore living, and cover shoe storage at the door, the shelter as a storeroom, the service yard, aircon, humidity and wok cooking.
-5. Draw each layout as a simple floor plan to scale: walls that must stay in black (bathroom and external walls too), walls that can go in green, removed walls as dashed lines, and furniture as labelled boxes.
-
-End with what I should confirm with HDB or my contractor before any hacking.</pre>
+    <div class="prompt-bar"><small>Fill in the yellow parts</small><button class="btn primary" data-copy="short" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg><span>Copy</span></button></div>
+    <pre id="short">Plan my HDB flat. Floor plan attached.
+We are: <mark>[couple, both work from home]</mark>
+Coming up: <mark>[baby next year, my mum may move in]</mark>
+Must-haves: <mark>[a proper home office]</mark></pre>
   </div>
+
+  <h2>Works for how you live</h2>
+  <ul class="uses"><li>Baby on the way</li><li>Parents moving in</li><li>Big family</li><li>Live-in helper</li><li>Working from home</li><li>Pets</li><li>Home gym</li><li>Hosting and cooking</li><li>Creators and musicians</li><li>Collectors</li><li>Renting out a room</li><li>Kids moved out</li></ul>
 
   <h2>What you get</h2>
   <ul class="gets">
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Every room, read off your plan</b> <span>with rough sizes, windows, the shelter, kitchen, yard and bathrooms.</span></div></li>
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>A wall-by-wall knock-down check</b> <span>using HDB’s rules: structural and shelter walls stay, bathroom walls wait 3 years, partitions need a permit.</span></div></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>4 layouts for your household</b> <span>from a no-hacking option to bigger changes, with furniture sizes in mm and the pros and cons.</span></div></li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>A style plan that works in Singapore</b> <span>colours, flooring and built-ins that handle shoes, humidity, aircon and wok cooking.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>4 layouts for how you live</b> <span>including one with no hacking, with furniture sizes in mm and the pros and cons.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Now and after</b> <span>if a baby is coming or parents may move in, you see the layout today and after the change.</span></div></li>
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Floor plans you can look at</b> <span>each layout drawn to scale, with the walls colour-coded.</span></div></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>What to check before hacking</b> <span>a short list to confirm with HDB and your contractor.</span></div></li>
   </ul>
 
+  
+
   <figure><img src="../wall-check.png" alt="A 4-Room HDB floor plan with each wall coloured: green for partitions that can be knocked down with a permit, amber for bathroom walls, black for structural walls" loading="lazy" width="1600" height="1180"><figcaption>The wall check on a 4-Room Type 3 flat.</figcaption></figure>
-  <div class="legend"><span><i style="background:#28704a"></i>Can go, with permit</span><span><i style="background:#c9822a"></i>Bathroom, restricted</span><span><i style="background:#151920"></i>Must stay</span></div>
+  <div class="legend"><span><i style="background:#28704a"></i>Can go, with permit</span><span><i style="background:#9a5a06"></i>Bathroom, restricted</span><span><i style="background:#151920"></i>Must stay</span></div>
 
   <figure><img src="../households-cad-plans.png" alt="Eight furnished layouts of the same flat, each planned for a different kind of household" loading="lazy" width="1654" height="2890"><figcaption>One flat, eight households: big family, gaming and cinema, pets, collectors, work and workout, hosts and home chefs, creators and musicians, and elder care.</figcaption></figure>
 
@@ -126,18 +126,39 @@ End with what I should confirm with HDB or my contractor before any hacking.</pr
   <p>I turned my own 4-Room flat into a free 3D planner with 32 ready-made layouts. Walk through each one, check every wall, and move the furniture around.</p>
   <div class="cta"><a class="btn primary" href="../">Open the 3D planner</a><a class="btn" href="../#combo-bigfamily">Jump to the household layouts</a></div>
 
+  <h2>Can’t use skills?</h2>
+  <p>Using another AI, or Claude without code execution? Paste this longer prompt with your floor plan instead.</p>
+  <details>
+    <summary>Show the full prompt</summary>
+    <div class="prompt">
+      <div class="prompt-bar"><small>Fill in the yellow parts</small><button class="btn primary" data-copy="prompt" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg><span>Copy</span></button></div>
+      <pre id="prompt">I've attached the floor plan of my HDB flat. Help me plan how we'll live in it.
+We are: <mark>[e.g. couple, both work from home, 1 cat]</mark>
+Coming up: <mark>[e.g. baby next year, my mum may move in]</mark>
+Must-haves: <mark>[e.g. a proper home office]</mark>
+
+1. Read the plan: rooms with rough sizes, windows, the household shelter, kitchen, service yard and bathrooms.
+2. Wall check: for every internal wall, say if it can be knocked down under HDB's rules. Structural and shelter walls stay. Bathroom walls can't be hacked for 3 years after the block is completed. Other partitions need HDB approval and an HDB-registered (DRC) contractor, plus a Professional Engineer if they're reinforced concrete. Flag any walls you're unsure about.
+3. Give me 4 layouts for how we live, including one with no hacking. If something is coming up, show the layout now and after. For each: walls down, what each room becomes, furniture with sizes in mm, pros and cons.
+4. Draw each layout to scale: must-stay walls in black, walls that can go in green, removed walls dashed, furniture as labelled boxes.
+
+End with what to confirm with HDB or my contractor before any hacking.</pre>
+    </div>
+  </details>
+
   <p class="note"><b>Before you hack anything:</b> AI can misread a photo. Check every wall against your official HDB floor plan, and get HDB’s approval and an HDB-registered (DRC) contractor before any work starts.</p>
 
   <footer>Made with Claude. Not affiliated with HDB.</footer>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('copy'),t=b.querySelector('span'),src=document.getElementById('prompt');
-  b.addEventListener('click',function(){
-    var text=src.innerText;
-    function done(ok){t.textContent=ok?'Copied':'Select and copy';setTimeout(function(){t.textContent='Copy prompt';},2200);}
-    try{navigator.clipboard.writeText(text).then(function(){done(true);},function(){fallback();});}catch(e){fallback();}
-    function fallback(){try{var r=document.createRange();r.selectNodeContents(src);var s=getSelection();s.removeAllRanges();s.addRange(r);done(document.execCommand('copy'));}catch(e){done(false);}}
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    var t=b.querySelector('span'),src=document.getElementById(b.getAttribute('data-copy'));
+    b.addEventListener('click',function(){
+      function done(ok){t.textContent=ok?'Copied':'Select and copy';setTimeout(function(){t.textContent='Copy';},2200);}
+      function fallback(){try{var r=document.createRange();r.selectNodeContents(src);var s=getSelection();s.removeAllRanges();s.addRange(r);done(document.execCommand('copy'));}catch(e){done(false);}}
+      try{navigator.clipboard.writeText(src.innerText).then(function(){done(true);},fallback);}catch(e){fallback();}
+    });
   });
 })();
 </script>
