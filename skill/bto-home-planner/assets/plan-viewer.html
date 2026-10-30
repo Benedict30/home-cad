@@ -76,6 +76,7 @@ layouts:  {id, title, summary, best: true|false, phase: "now"|"after"|"" ,
            furniture: [{name, kind, x, y, w, d, h, rot}]}
 furniture x,y is the centre; w runs along x and d along y before rotating; rot is degrees clockwise.
 optional: start: [x,y] and startYaw (degrees, 0 = facing +x) for the Walk view; it starts inside the main door if left out.
+optional: rooms[].label: [x,y] to move a room's name; furniture color: '#hex'; furniture z: mm off the floor (wall cabinets, shelves).
 kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other */
 const PLAN = /*PLAN-START*/{"title":"Example","subtitle":"","walls":[],"openings":[],"rooms":[],"layouts":[]}/*PLAN-END*/;
 

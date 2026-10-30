@@ -17,7 +17,7 @@ Never repeat block or unit numbers from the plan in your answer or drawings.
 
 ## 2. Read the plan
 
-- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. The inner chains run to wall centre-lines, so usable space is about 100–200 mm smaller. The overall chains usually run to the outside faces of the external walls, so they're a wall thickness bigger than the centre-line total.
+- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. Don't trust where the chain ticks land: some hit wall centre-lines and some hit wall faces. Instead, scale the photo from the overall chains, measuring x and y separately because photos are often skewed, and measure each wall's centre in pixels. If you can run code, draw your walls back onto the photo to check they line up. Usable space is about 100–200 mm smaller than centre-line sizes.
 - List each room with its rough size, windows and doors.
 - Find:
   - the household shelter (a thick box with a heavy door)
@@ -57,7 +57,7 @@ For each layout, give:
 - the key furniture, by name (its sizes in mm go on the drawings)
 - one line of pros and one line of cons
 
-Keep walkways at least 800 mm wide.
+Keep walkways at least 800 mm wide. Gaps beside a bed can be narrower, down to about 550 mm.
 
 If a life change is coming, show the layout **now** and **after** the change. If what's coming isn't a change to who lives there (more video calls, say), plan for it from day one and skip the now/after. A now/after pair counts as one layout. Give the best layout both versions. If the change affects every layout, give the others their "after" version only, and describe the "now" in one line. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
 
@@ -82,6 +82,10 @@ Use cases to draw on:
 - **Fitness:** rubber flooring and a mirror wall. No weight drops, because the flat below hears them.
 - **Pets:**
   - HDB allows 1 dog of an approved breed and up to 2 cats per flat, so never plan for more.
+  - **Cats:**
+    - Pet cats must be microchipped and licensed with AVS; keeping an unlicensed cat has been an offence since 1 September 2026.
+    - AVS expects owners to fit mesh, grilles or screens so cats can't roam or fall. So: mesh on every window that opens, including the yard and bathroom windows, plus a mesh screen on the main gate.
+    - Litter boxes go in the yard, with a cat flap or the door kept ajar.
   - The approved breeds are mostly small dogs, such as the Shih Tzu, Maltese, Pomeranian, toy poodle and miniature schnauzer. Corgis and Shiba Inus aren't on the list. Project ADORE also allows one local mixed-breed dog up to 55 cm tall. If their breed isn't on the list, say so kindly and plan for the dog anyway.
   - Scratch-resistant flooring, a pet wash tub in the yard, and gates at the kitchen.
   - Put aquariums on structural walls, and get an engineer for large tanks.
@@ -92,7 +96,10 @@ Use cases to draw on:
   - Acoustic panels stop echo, not noise, so add door seals as well.
   - Electronic drums, and instruments on internal walls.
 - **Collectors and fashion:** glass-door display cabinets, a dehumidifier for leather, and a walk-in wardrobe (often Bedroom 2 joined to the main bedroom).
-- **Gaming and cinema:** a projector wall, a gaming room for two, and cable runs planned before the carpentry.
+- **Gaming, streaming and cinema:**
+  - A projector wall, or a gaming room for two.
+  - Two streamers in one room: desks back to back with a shelf between them, and dynamic or cardioid mics.
+  - Gaming PCs make heat, so give that room its own aircon. Plan sockets, LAN cables and aircon trunking before the carpentry.
 - **Renting out a room:**
   - Needs HDB approval.
   - A 4-room or bigger flat can rent out up to 2 of its original bedrooms.
@@ -125,7 +132,7 @@ Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing 
   Put the best layout first and set `best` on it (on both entries if it has a now and an after). For a life change, add separate "now" and "after" entries. If several layouts share the same "now", add it once.
 - **Check the furniture fits:**
   - every piece stays inside its room, clear of walls and door swings
-  - walkways stay at least 800 mm wide
+  - walkways stay at least 800 mm wide (beside a bed, about 550 mm is fine)
   - beds have their headboard against a wall
 - Publish the result as an HTML artifact. It shows:
   - a 3D model people can turn, or walk through at eye height with a small floor plan showing where they are, with a button for each layout
