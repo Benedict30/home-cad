@@ -25,6 +25,10 @@ h2{font-size:20px;margin:28px 0 10px}
 .tools button{font:inherit;font-size:13px;border:1px solid #c9ced6;background:#fff;color:#1d1f23;border-radius:8px;padding:4px 10px;cursor:pointer}
 .tools button.on{background:#2b6be4;border-color:#2b6be4;color:#fff}
 .walking .cut{display:none}
+.mini{position:absolute;right:10px;bottom:10px;width:min(36%,230px);background:#fbf9f4;border:1px solid #d6d0c4;border-radius:8px;overflow:hidden;display:none;box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer}
+.walking .mini{display:block}
+.walking .hint{max-width:calc(100% - min(36%,230px) - 30px)}
+.mini svg{display:block;width:100%;height:auto}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink2);margin:8px 0 0}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{display:inline-block;width:26px;height:0;border-top:5px solid #1d1f23}
@@ -49,7 +53,7 @@ h2{font-size:20px;margin:28px 0 10px}
   <p class="sub" id="subtitle"></p>
   <section class="card" id="viewer3d">
     <div class="chips" id="chips"></div>
-    <div id="stage"><canvas id="c3" aria-label="3D view of the selected layout"></canvas><div class="tools"><button id="walk" type="button">Walk</button><button class="cut" id="cut" type="button">Full-height walls</button></div><div class="hint" id="hint">Drag to turn · scroll or pinch to zoom</div></div>
+    <div id="stage"><canvas id="c3" aria-label="3D view of the selected layout"></canvas><div class="tools"><button id="walk" type="button">Walk</button><button class="cut" id="cut" type="button">Full-height walls</button></div><div class="hint" id="hint">Drag to turn · scroll or pinch to zoom</div><div class="mini" id="mini" title="Tap the plan to walk there"></div></div>
   </section>
   <h2>Wall key</h2>
   <div class="card">
@@ -151,7 +155,7 @@ function svgPlan(L, showTags) {
 /* ---------- 3D (three.js) ---------- */
 let R3 = null;
 function build3D(L, cut) {
-  const T = THREE, g = new T.Group(), H = 2600, CUT = cut ? 1250 : H, removed = new Set((L && L.removed) || []);
+  const T = THREE, g = new T.Group(), H = 2600, CUT = typeof cut === 'number' ? cut : cut ? 1250 : H, removed = new Set((L && L.removed) || []);
   const mat = (c, o) => new T.MeshStandardMaterial(Object.assign({color: c, roughness: .85}, o || {}));
   const box = (w, h, d, x, y, z, m) => { const o = new T.Mesh(new T.BoxGeometry(w / 1000, h / 1000, d / 1000), m); o.position.set(x / 1000, (y + h / 2) / 1000, z / 1000); o.castShadow = o.receiveShadow = true; g.add(o); return o; };
   const cyl = (r, h, x, y, z, m) => { const o = new T.Mesh(new T.CylinderGeometry(r / 1000, r / 1000, h / 1000, 20), m); o.position.set(x / 1000, (y + h / 2) / 1000, z / 1000); o.castShadow = true; g.add(o); return o; };
@@ -231,16 +235,24 @@ function init3D() {
   const sc = sun.shadow.camera; sc.left = sc.bottom = -span; sc.right = sc.top = span; sc.near = .5; sc.far = span * 4; sun.position.set(cx - span * .6, span * 1.2, cz + span * .9); sun.target.position.set(cx, 0, cz); sc.updateProjectionMatrix();
   const cam = new T.PerspectiveCamera(40, 1, .1, 200), orb = {az: -2.2, el: .98, dist: span * 1.42};
   const EYE = 1.6; let mode = 'orbit', wk = {x: 0, y: 0, yaw: 0, pitch: -.1}, obs = [], goal = null, raf = 0, last = 0; const keys = new Set();
-  const place = () => { if (mode === 'walk') { const x = wk.x / 1000, z = wk.y / 1000; cam.position.set(x, EYE, z); cam.lookAt(x + Math.cos(wk.yaw) * Math.cos(wk.pitch), EYE + Math.sin(wk.pitch), z + Math.sin(wk.yaw) * Math.cos(wk.pitch)); return; }
-    cam.position.set(cx + orb.dist * Math.cos(orb.el) * Math.cos(orb.az), orb.dist * Math.sin(orb.el), cz - orb.dist * Math.cos(orb.el) * Math.sin(orb.az)); cam.lookAt(cx, 0, cz); };
+  const pose = () => { if (mode === 'walk') { const x = wk.x / 1000, z = wk.y / 1000; return {p: [x, EYE, z], t: [x + Math.cos(wk.yaw) * Math.cos(wk.pitch), EYE + Math.sin(wk.pitch), z + Math.sin(wk.yaw) * Math.cos(wk.pitch)], fov: 72}; }
+    return {p: [cx + orb.dist * Math.cos(orb.el) * Math.cos(orb.az), orb.dist * Math.sin(orb.el), cz - orb.dist * Math.cos(orb.el) * Math.sin(orb.az)], t: [cx, 0, cz], fov: 40}; };
+  let fly = null, lastQ = null;   // a short camera move between the overview and eye level, so it's clear they're the same model
+  const mix = (a, b, k) => a.map((v, j) => v + (b[j] - v) * k);
+  const place = () => { let q = pose();
+    if (fly) { let k = Math.min(1, (performance.now() - fly.t0) / 1100); k = k * k * (3 - 2 * k); q = {p: mix(fly.a.p, q.p, k), t: mix(fly.a.t, q.t, k), fov: fly.a.fov + (q.fov - fly.a.fov) * k}; if (k >= 1) fly = null; }
+    lastQ = q; cam.position.set(...q.p); cam.lookAt(...q.t); if (cam.fov !== q.fov) { cam.fov = q.fov; cam.updateProjectionMatrix(); }
+    const me = mode === 'walk' && document.getElementById('me'); if (me) me.setAttribute('transform', `translate(${wk.x.toFixed(0)} ${wk.y.toFixed(0)}) rotate(${(wk.yaw * 180 / Math.PI).toFixed(1)})`); };
   let group = null, cur = 0, cut = true;
   const show = i => { if (group) { scene.remove(group); group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); } cur = i; group = build3D(PLAN.layouts[i], mode === 'walk' ? false : cut); scene.add(group);
-    if (mode === 'walk') { obs = obstacles(PLAN.layouts[i]); if (blocked(obs, wk.x, wk.y)) { const s = walkStart(PLAN.layouts[i]); Object.assign(wk, {x: s.x, y: s.y, yaw: s.yaw}); } }
+    if (mode === 'walk') { obs = obstacles(PLAN.layouts[i]); if (blocked(obs, wk.x, wk.y)) { const s = walkStart(PLAN.layouts[i]); Object.assign(wk, {x: s.x, y: s.y, yaw: s.yaw}); }
+      document.getElementById('mini').innerHTML = svgPlan(PLAN.layouts[i], false).replace(/<\/svg>$/, '<g id="me"><path d="M0 0 L1500 -850 A1720 1720 0 0 1 1500 850 Z" fill="#2b6be4" fill-opacity=".25"/><circle r="240" fill="#2b6be4" stroke="#fff" stroke-width="80"/></g></svg>'); }
     draw(); document.querySelectorAll('#chips button').forEach((b, j) => b.classList.toggle('on', j === i)); };
   const setMode = m => { mode = m; const wb = document.getElementById('walk'); wb.classList.toggle('on', m === 'walk'); wb.textContent = m === 'walk' ? 'Overview' : 'Walk'; document.getElementById('stage').classList.toggle('walking', m === 'walk');
-    document.getElementById('hint').textContent = m === 'walk' ? 'Drag to look · tap the floor to walk there · arrow keys or WASD' : 'Drag to turn · scroll or pinch to zoom';
-    hemi.intensity = m === 'walk' ? 1 : .62; sun.intensity = m === 'walk' ? .3 : .62; cam.fov = m === 'walk' ? 72 : 40; cam.near = m === 'walk' ? .05 : .1; goal = null;
-    if (m === 'walk') { const s = walkStart(PLAN.layouts[cur]); wk = {x: s.x, y: s.y, yaw: s.yaw, pitch: -.1}; } show(cur); };
+    document.getElementById('hint').textContent = m === 'walk' ? 'Drag to look · tap the floor or the plan to walk there · arrow keys or WASD' : 'Drag to turn · scroll or pinch to zoom';
+    hemi.intensity = m === 'walk' ? 1 : .62; sun.intensity = m === 'walk' ? .3 : .62; cam.near = m === 'walk' ? .05 : .1; goal = null;
+    if (m === 'walk') { const s = walkStart(PLAN.layouts[cur]); wk = {x: s.x, y: s.y, yaw: s.yaw, pitch: -.1}; }
+    fly = lastQ ? {t0: performance.now(), a: lastQ} : null; show(cur); kick(); };
   const tryMove = (dx, dy) => { const nx = wk.x + dx, ny = wk.y + dy; if (!blocked(obs, nx, ny)) { wk.x = nx; wk.y = ny; return true; } if (!blocked(obs, nx, wk.y)) { wk.x = nx; return true; } if (!blocked(obs, wk.x, ny)) { wk.y = ny; return true; } return false; };
   const steer = dt => {   // turn towards the goal, then walk to it
     const dx = goal.x - wk.x, dy = goal.y - wk.y, d = Math.hypot(dx, dy); if (d < 120) { goal = null; return; }
@@ -249,13 +261,14 @@ function init3D() {
   const tick = t => { raf = 0; const dt = Math.min(.05, last ? (t - last) / 1000 : .016); last = t;
     if (mode === 'walk') { const f = (keys.has('f') ? 1 : 0) - (keys.has('b') ? 1 : 0), turn = (keys.has('r') ? 1 : 0) - (keys.has('l') ? 1 : 0);
       if (turn || f) goal = null; wk.yaw += turn * 1.8 * dt; if (f) tryMove(Math.cos(wk.yaw) * f * 1300 * dt, Math.sin(wk.yaw) * f * 1300 * dt); if (goal) steer(dt); }
-    draw(); if (mode === 'walk' && (keys.size || goal)) raf = requestAnimationFrame(tick); else last = 0; };
+    draw(); if (fly || (mode === 'walk' && (keys.size || goal))) raf = requestAnimationFrame(tick); else last = 0; };
   const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
   const draw = () => { const st = document.getElementById('stage'), w = st.clientWidth, h = st.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); place(); renderer.render(scene, cam); };
-  R3 = {snapshot(i, w = 1200, h = 900) { const was = cur, m = mode; if (m === 'walk') setMode('orbit'); show(i); renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); place(); renderer.render(scene, cam); const url = canvas.toDataURL('image/jpeg', .9); show(was); if (m === 'walk') setMode('walk'); return url; }, show, draw};
+  R3 = {snapshot(i, w = 1200, h = 900) { const was = cur, m = mode; if (m === 'walk') setMode('orbit'); fly = null; show(i); renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); place(); renderer.render(scene, cam); const url = canvas.toDataURL('image/jpeg', .9); show(was); if (m === 'walk') { setMode('walk'); fly = null; draw(); } return url; }, show, draw};
   document.getElementById('chips').innerHTML = PLAN.layouts.map(L => `<button type="button">${esc(L.title)}${L.phase ? ' · ' + esc(L.phase) : ''}</button>`).join('');
   document.querySelectorAll('#chips button').forEach((b, i) => b.onclick = () => show(i));
   document.getElementById('walk').onclick = () => setMode(mode === 'walk' ? 'orbit' : 'walk');
+  document.getElementById('mini').addEventListener('click', e => { const sv = e.currentTarget.querySelector('svg'); if (!sv || mode !== 'walk') return; const pt = sv.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(sv.getScreenCTM().inverse()); goal = {x: q.x, y: q.y, stuck: 0}; kick(); });
   const KEYMAP = {ArrowUp: 'f', KeyW: 'f', ArrowDown: 'b', KeyS: 'b', ArrowLeft: 'l', KeyA: 'l', ArrowRight: 'r', KeyD: 'r'};
   addEventListener('keydown', e => { if (mode !== 'walk' || !KEYMAP[e.code] || e.altKey || e.ctrlKey || e.metaKey) return; e.preventDefault(); keys.add(KEYMAP[e.code]); kick(); });
   addEventListener('keyup', e => { if (KEYMAP[e.code]) keys.delete(KEYMAP[e.code]); });

@@ -128,7 +128,7 @@ Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing 
   - walkways stay at least 800 mm wide
   - beds have their headboard against a wall
 - Publish the result as an HTML artifact. It shows:
-  - a 3D model people can turn or walk through at eye height, with a button for each layout
+  - a 3D model people can turn, or walk through at eye height with a small floor plan showing where they are, with a button for each layout
   - a wall key
   - each layout's floor plan next to a 3D snapshot
   The wall colours and the legend are built in.
