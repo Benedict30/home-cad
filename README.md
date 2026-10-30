@@ -12,20 +12,20 @@ Plan your HDB flat with AI. This repo has a free Claude skill for any HDB floor 
 
 ```
 Plan my HDB flat. Floor plan attached.
-We are: couple, both work from home
-Coming up: baby next year, my mum may move in
-Must-haves: a proper home office
+We are: couple, no kids, 1 Shih Tzu
+Coming up: more work from home
+Must-haves: a dog wash spot
 ```
 
 You get:
 - a wall-by-wall knock-down check under HDB's rules
 - 4 layouts for how you live, with "now" and "after" plans if a change is coming
-- every layout drawn to scale
+- every layout drawn to scale, with a 3D model you can turn
 - a short list of things to confirm with HDB and your contractor before any hacking
 
-It works for a baby on the way, parents moving in, big families, a live-in helper, working from home, pets, a home gym, hosting and cooking, creators and musicians, collectors, renting out a room, and kids moving out.
+It works for dog owners, hardcore collectors, couples who both work from home, gamers, a baby on the way, parents moving in, big families, a live-in helper, a home gym, hosting and cooking, creators and musicians, renting out a room, and kids moving out.
 
-The skill is plain text. Read [SKILL.md](skill/hdb-home-planner/SKILL.md) before adding it.
+The skill is plain text plus one drawing template. Read [SKILL.md](skill/hdb-home-planner/SKILL.md) and [plan-viewer.html](skill/hdb-home-planner/assets/plan-viewer.html) before adding it.
 
 <details>
 <summary>Not using Claude skills? Paste this prompt with your floor plan instead.</summary>

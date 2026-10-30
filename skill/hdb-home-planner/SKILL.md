@@ -1,6 +1,6 @@
 ---
 name: hdb-home-planner
-description: Use when someone shares an HDB or BTO floor plan and wants to know which walls they can knock down, or how to lay out the flat for their household or a life change such as a baby, parents moving in, working from home, pets or renting out a room. Gives a wall check under HDB rules, layouts for their use cases and to-scale floor plans.
+description: Use when someone shares an HDB or BTO floor plan and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view.
 ---
 
 # HDB home planner
@@ -17,7 +17,7 @@ Never repeat block or unit numbers from the plan in your answer or drawings.
 
 ## 2. Read the plan
 
-- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. HDB dimensions run to wall centre-lines, so usable space is about 100–200 mm smaller.
+- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. The inner chains run to wall centre-lines, so usable space is about 100–200 mm smaller. The overall chains usually run to the outside faces of the external walls, so they're a wall thickness bigger than the centre-line total.
 - List each room with its rough size, windows and doors.
 - Find:
   - the household shelter (a thick box with a heavy door)
@@ -29,7 +29,7 @@ Never repeat block or unit numbers from the plan in your answer or drawings.
 
 ## 3. Wall check
 
-Tag every wall so the tags match the drawings: S for structural, H for the shelter, B for bathroom walls, E for external walls, W for walls that can go, and K for open edges with no wall. Number them (S1, W1, W2…). Give one table: wall | can it go? | why.
+Tag every wall so the tags match the drawings: S for structural, H for the shelter, B for bathroom walls, E for external walls (even when they're shaded black), W for walls that can go, and K for open edges with no wall. Number them (S1, W1, W2…). Give one table: wall | can it go? | why. Group walls that share a type and a reason into one row (S1–S6, B1–B4) so the table stays short.
 
 | Wall | Rule |
 |---|---|
@@ -59,7 +59,7 @@ For each layout, give:
 
 Keep walkways at least 800 mm wide.
 
-If a life change is coming, show the layout **now** and **after** the change. A now/after pair counts as one layout, and only layouts that the change affects need both versions. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
+If a life change is coming, show the layout **now** and **after** the change. If what's coming isn't a change to who lives there (more video calls, say), plan for it from day one and skip the now/after. A now/after pair counts as one layout. Give the best layout both versions. If the change affects every layout, give the others their "after" version only, and describe the "now" in one line. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
 
 Use cases to draw on:
 - **Couple, kids later:** a study or guest room now that becomes the nursery. Wardrobes that suit both uses.
@@ -82,6 +82,7 @@ Use cases to draw on:
 - **Fitness:** rubber flooring and a mirror wall. No weight drops, because the flat below hears them.
 - **Pets:**
   - HDB allows 1 dog of an approved breed and up to 2 cats per flat, so never plan for more.
+  - The approved breeds are mostly small dogs, such as the Shih Tzu, Maltese, Pomeranian, toy poodle and miniature schnauzer. Corgis and Shiba Inus aren't on the list. Project ADORE also allows one local mixed-breed dog up to 55 cm tall. If their breed isn't on the list, say so kindly and plan for the dog anyway.
   - Scratch-resistant flooring, a pet wash tub in the yard, and gates at the kitchen.
   - Put aquariums on structural walls, and get an engineer for large tanks.
 - **Hosting and cooking:**
@@ -106,24 +107,35 @@ Everyday Singapore must-haves for any layout:
 - aircon trunking
 - glass doors if they cook with a wok
 
-## 5. Draw the plans
+## 5. Draw the plans in 2D and 3D
 
-Make one HTML artifact with inline SVG and no external libraries:
-- Use a viewBox in mm, so the drawings are to scale. Add a scale bar and the overall dimensions.
-- Draw a wall key first, then one plan per layout, each with a title. For a life change, give separate "now" and "after" plans. If several layouts share the same "now", draw it once.
-- Show every plan at once, stacked. Don't hide plans behind tabs or toggles.
-- Draw on a light paper background, so the wall colours still read when the viewer is in dark mode.
-- Colour the walls:
-  - black for must-stay walls (structural, shelter, bathroom and external)
-  - green for walls that can go
-  - dashed green for removed walls
-  - a thin grey dotted line for open edges where the plan has no wall, such as an open kitchen
-- Show furniture as labelled boxes with their sizes, label every room, and add a legend.
+Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing code.
+
+- Copy the file exactly and replace only the JSON between `/*PLAN-START*/` and `/*PLAN-END*/`. The comment above it explains every field.
+- **Describe the flat once:**
+  - every wall, tagged as in the wall check, with its ends in mm, its thickness and its type
+  - the doors and windows on each wall; give doors `hinge` and `flip` so they swing as on the plan
+  - each room's outline
+  Use the plan's dimension chains, so everything is to scale. Put walls on their centre-lines; the viewer's overall dimension is the centre-line total, so it reads a little less than the plan's outside-face figure.
+- **Add one entry per layout:**
+  - the walls removed, and any new walls
+  - the room names for that layout
+  - the furniture: centre point, width, depth, height, rotation and kind
+  Put the best layout first and set `best` on it (on both entries if it has a now and an after). For a life change, add separate "now" and "after" entries. If several layouts share the same "now", add it once.
+- **Check the furniture fits:**
+  - every piece stays inside its room, clear of walls and door swings
+  - walkways stay at least 800 mm wide
+  - beds have their headboard against a wall
+- Publish the result as an HTML artifact. It shows:
+  - a 3D model people can turn, with a button for each layout
+  - a wall key
+  - each layout's floor plan next to a 3D snapshot
+  The wall colours and the legend are built in.
 
 ## 6. Reply
 
 - Keep the chat reply short and easy to scan: tables and brief bullets.
-- Give each layout 3–4 lines in chat. Put furniture sizes and positions in the drawings, not the reply.
+- Give each layout 3–4 lines in chat. Put furniture sizes and positions in the drawings, not the reply. The room list from step 2 can stay out of the reply too.
 - Put a 2–3 line summary first: the best layout for them and why.
 - End with what to confirm with HDB or the contractor before any hacking:
   - permit and Professional Engineer needs

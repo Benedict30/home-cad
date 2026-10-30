@@ -39,6 +39,7 @@ h1{font:700 clamp(34px,7vw,54px)/1.04 var(--f-display);letter-spacing:-.01em;mar
 .plans.one{grid-template-columns:1fr}
 figure{margin:0}
 figure img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff}
+figure.duo{grid-column:1/-1}.duo .imgs{display:grid;grid-template-columns:1.25fr 1fr;gap:10px;align-items:center}.duo .imgs img{border-radius:10px}
 figcaption{font-size:14.5px;color:var(--ink-2);margin-top:6px;font-weight:500}
 .links{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:10px}
 .back{margin:8px 0 0}
@@ -51,7 +52,7 @@ h2.sub{font:700 26px/1.15 var(--f-display);margin:34px 0 12px}
 .answer th{background:var(--bg);font-weight:600}
 .answer li{margin:2px 0}
 footer{margin-top:44px;color:var(--ink-3);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
-@media (max-width:700px){.facts{grid-template-columns:1fr}.plans{grid-template-columns:1fr}.ex{padding:16px}.ex h2{font-size:24px}.answer{padding:4px 14px 10px}}
+@media (max-width:700px){.duo .imgs{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.plans{grid-template-columns:1fr}.ex{padding:16px}.ex h2{font-size:24px}.answer{padding:4px 14px 10px}}
 </style>
 </head>
 <body>
