@@ -148,6 +148,7 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .hub span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .hub em{font-style:normal;font-size:12px;color:var(--ink-3);line-height:1.4}
 .hub-all{margin-top:12px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.hub-h{margin:16px 0 0;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3)}
 .hub-all a.tb{text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
 @media (max-width:560px){.hub{grid-template-columns:1fr}}
 .explore{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'nav end' 'moves moves';align-items:center;gap:6px 12px;padding-block:8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgb(0 0 0 / .07)}
@@ -518,7 +519,10 @@ optional: start: [x,y] and startYaw (degrees, 0 = facing +x) for the Walk view; 
 furniture x,y is the centre; w runs along x and d along y before rotating; rot is degrees clockwise; the front (a sofa's seat, a bed's foot) faces +y before rotating.
 kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other. The name also picks the 3D model (e.g. "Queen bed", "Cot", "Cat tree", "Fridge").
 The app opens on the layouts with arrows to step through them, in 2D, 3D and Walk; "Knock down" colours and tags the walls. */
-const PLANDATA=/*PLAN-START*/null/*PLAN-END*/;
+const PLANS=/*PLANS-START*/{}/*PLANS-END*/;   // other households' flats on the website, opened as #name
+const PLANSLUG=(()=>{const h=(location.hash||'').slice(1).split(/[\/?]/)[0];return Object.prototype.hasOwnProperty.call(PLANS,h)?h:'';})();
+const PLANDATA=/*PLAN-START*/null/*PLAN-END*/||(PLANSLUG?PLANS[PLANSLUG].plan:null);
+const setHash=x=>{try{history.replaceState(null,'','#'+(PLANSLUG||x));}catch(e){}};
 const strHash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return(h>>>0).toString(36);};
 const PLANKEY=PLANDATA?'p'+strHash(JSON.stringify(PLANDATA.walls||[])):'';   // keeps each plan's saves apart
 const lsKey=k=>PLANKEY?k.replace(/^hcad\./,'hcad.'+PLANKEY+'.'):k;
@@ -2015,10 +2019,10 @@ function setView(v,fromHash){
     $('#st-hint').textContent=v==='walk'?'Walking at 1.6 m eye height · W A S D or arrows · drag to look':'Drag to orbit · right-drag or two fingers to pan · scroll to zoom · click furniture to select, drag to move it';}
   else{if(prev==='walk')exitWalk();setTool(tool);resizePlan();}
   renderSelbar();updHackLeg();
-  if(!fromHash&&!explore){try{history.replaceState(null,'','#'+v);}catch(e){}}
+  if(!fromHash&&!explore)setHash(v);
 }
 $$('.views button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-addEventListener('hashchange',()=>{const h=location.hash.slice(1);const c=parseCombo(h);if(c!==null){if(!explore||model.meta.combo!==c)enterExplore(c);return;}if(h&&h!==viewMode)setView(h,true);});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1),sl=h.split(/[\/?]/)[0];if((PLANS[sl]&&sl!==PLANSLUG)||(PLANSLUG&&!h)){location.reload();return;}const c=parseCombo(h);if(c!==null){if(!explore||model.meta.combo!==c)enterExplore(c);return;}if(h&&h!==viewMode)setView(h,true);});
 
 // ============================================================ library
 const thumbs={};
@@ -2302,7 +2306,7 @@ async function loadIdea(k){
 $('#b-knock').onclick=openKnock;
 const HUB={plan:'The layouts Claude drew for your household, best fit first.',ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
 function openLayouts(){
-  openModal('Ready-made layouts',`<p class="note">${ALL_LAYOUTS.length} furnished layouts of your flat${Object.keys(SETS).length>1?' in '+Object.keys(SETS).length+' sets':''}. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div><div class="hub-all"><button class="tb" data-hub="all">See all ${ALL_LAYOUTS.length} in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
+  openModal('Ready-made layouts',`<p class="note">${ALL_LAYOUTS.length} furnished layouts of your flat${Object.keys(SETS).length>1?' in '+Object.keys(SETS).length+' sets':''}. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div>${Object.keys(PLANS).length?`<h4 class="hub-h">Other flats planned with the skill</h4><div class="hub-all">${Object.entries(PLANS).filter(([k])=>k!==PLANSLUG).map(([k,v])=>`<a class="tb" href="#${k}">${esc(v.label)}</a>`).join('')}${PLANSLUG?'<a class="tb" href="#">The 4-Room demo flat</a>':''}</div>`:''}<div class="hub-all"><button class="tb" data-hub="all">See all ${ALL_LAYOUTS.length} in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
   $('#m-body').onclick=e=>{const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
 }
 $('#b-layouts').onclick=openLayouts;
@@ -2321,7 +2325,7 @@ function enterExplore(f,setName){
 function goCombo(i){
   if(!explore)return;const list=setList();i=((i%list.length)+list.length)%list.length;explore.i=i;const f=list[i].k;
   model=normalize(buildCombo(f));sel=null;commit();pristine=true;updExplore();
-  try{history.replaceState(null,'','#combo-'+f);}catch(e){}
+  setHash('combo-'+f);
 }
 function switchSet(s){if(!explore||!SETS[s]||explore.set===s)return;explore.set=s;goCombo(0);}
 function updExplore(){
@@ -2336,7 +2340,7 @@ function exitExplore(restore,quiet){
   $('#explore').hidden=true;$('#app').classList.remove('exploring');exploreHeight();
   if(restore&&snap){model=snap;sel=null;commit();pristine=false;if(!quiet)toast('Back to your layout');}
   else{Store.schedule();if(!quiet)toast('Kept “'+model.meta.name+'” as your layout');}
-  try{history.replaceState(null,'','#'+viewMode);}catch(e){}
+  setHash(viewMode);
 }
 function showAllCombos(){
   const sec=s=>`<h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin:4px 0 0">${SET_NAMES[s]}</h4><div class="ideas">${SETS[s].map((l,i)=>`<button data-ck="${l.k}" class="${explore&&explore.set===s&&explore.i===i?'on':''}"><b>${i+1}. ${esc(l.title)}</b><span>${esc(l.sub)}</span><span>${esc(l.for)}</span></button>`).join('')}</div>`;
@@ -2984,7 +2988,7 @@ new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,
 // ============================================================ boot
 function topHeight(){const h=$('#topbar').getBoundingClientRect().height,s=$('#status').getBoundingClientRect().height;document.documentElement.style.setProperty('--top-h',(h+(parseFloat(getComputedStyle(document.documentElement).paddingTop)||0))+'px');document.documentElement.style.setProperty('--status-h',s+'px');}
 function boot(){
-  readPal();if(PLANDATA){const bs=document.getElementById('brand-sub');if(bs)bs.textContent='Your HDB flat';document.title='Home CAD · your flat';}
+  readPal();if(PLANDATA){const bs=document.getElementById('brand-sub'),lb=PLANSLUG?PLANS[PLANSLUG].label:'Your HDB flat';if(bs)bs.textContent=lb;document.title='Home CAD · '+lb;}
   const local=readLocal();model=normalize(local?copy(local.model):defaultModel());histReset();pristine=!local;updHackLeg();
   renderLibrary();updChips();setTool('select');setTab('inspect');updateSun();
   topHeight();resizePlan();fitView();
