@@ -1,17 +1,17 @@
 # Home CAD
 
-Plan your HDB flat with AI. This repo has a free Claude skill for any HDB floor plan, and a 3D planner built for one 4-Room Type 3 flat.
+Plan your BTO with AI. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
 
 **See real results:** https://benedict30.github.io/home-cad/examples/
 
 ## Plan your own flat with the free skill
 
-1. **Download the skill:** [hdb-home-planner.zip](https://github.com/Benedict30/home-cad/raw/main/skill/hdb-home-planner.zip)
+1. **Download the skill:** [bto-home-planner.zip](https://github.com/Benedict30/home-cad/raw/main/skill/bto-home-planner.zip)
 2. **Add it to Claude:** go to **Customize › Skills**, click **+**, then **Create skill › Upload a skill**. Choose the ZIP and switch it on. Skills need code execution, so turn on **Code execution and file creation** in **Settings › Capabilities**.
 3. **Send your floor plan** with a clear photo of your HDB plan attached, and a few lines about your home (must-haves are optional):
 
 ```
-Plan my HDB flat. Floor plan attached.
+Plan my BTO. Floor plan attached.
 We are: couple, no kids, 1 Shih Tzu
 Coming up: more work from home
 Must-haves: a dog wash spot
@@ -20,18 +20,18 @@ Must-haves: a dog wash spot
 You get:
 - a wall-by-wall knock-down check under HDB's rules
 - 4 layouts for how you live, with "now" and "after" plans if a change is coming
-- every layout drawn to scale, with a 3D model you can turn
+- every layout drawn to scale, with a 3D model you can turn or walk through
 - a short list of things to confirm with HDB and your contractor before any hacking
 
 It works for dog owners, hardcore collectors, couples who both work from home, gamers, a baby on the way, parents moving in, big families, a live-in helper, a home gym, hosting and cooking, creators and musicians, renting out a room, and kids moving out.
 
-The skill is plain text plus one drawing template. Read [SKILL.md](skill/hdb-home-planner/SKILL.md) and [plan-viewer.html](skill/hdb-home-planner/assets/plan-viewer.html) before adding it.
+The skill is plain text plus one drawing template. Read [SKILL.md](skill/bto-home-planner/SKILL.md) and [plan-viewer.html](skill/bto-home-planner/assets/plan-viewer.html) before adding it.
 
 <details>
 <summary>Not using Claude skills? Paste this prompt with your floor plan instead.</summary>
 
 ```
-I've attached the floor plan of my HDB flat. Help me plan how we'll live in it.
+I've attached the floor plan of my BTO flat. Help me plan how we'll live in it.
 We are: [e.g. couple, both work from home, 1 cat]
 Coming up: [e.g. baby next year, my mum may move in]
 Must-haves: [e.g. a proper home office]

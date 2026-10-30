@@ -1,11 +1,11 @@
 ---
-name: hdb-home-planner
-description: Use when someone shares an HDB or BTO floor plan and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view.
+name: bto-home-planner
+description: Use when someone shares a BTO or other HDB floor plan and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and floor plans with a 3D view they can walk through.
 ---
 
-# HDB home planner
+# BTO home planner
 
-Help someone plan an HDB flat (Singapore public housing) from its floor plan. Focus on how they will live in it: who lives there, what changes are coming, and which walls can actually move. Don't suggest decor styles unless asked.
+Help someone plan an HDB flat (Singapore public housing), whether a new BTO or a resale flat, from its floor plan. Focus on how they will live in it: who lives there, what changes are coming, and which walls can actually move. Don't suggest decor styles unless asked.
 
 ## 1. Get the inputs
 
@@ -116,6 +116,7 @@ Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing 
   - every wall, tagged as in the wall check, with its ends in mm, its thickness and its type
   - the doors and windows on each wall; give doors `hinge` and `flip` so they swing as on the plan
   - each room's outline
+  - optionally `start`, a point just inside the main door, if the Walk view starts in the wrong place
   Use the plan's dimension chains, so everything is to scale. Put walls on their centre-lines; the viewer's overall dimension is the centre-line total, so it reads a little less than the plan's outside-face figure.
 - **Add one entry per layout:**
   - the walls removed, and any new walls
@@ -127,7 +128,7 @@ Use the bundled viewer, `assets/plan-viewer.html`. Don't write your own drawing 
   - walkways stay at least 800 mm wide
   - beds have their headboard against a wall
 - Publish the result as an HTML artifact. It shows:
-  - a 3D model people can turn, with a button for each layout
+  - a 3D model people can turn or walk through at eye height, with a button for each layout
   - a wall key
   - each layout's floor plan next to a 3D snapshot
   The wall colours and the legend are built in.
