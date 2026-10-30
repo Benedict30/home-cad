@@ -1,10 +1,60 @@
 # Home CAD
 
+Plan your HDB flat with AI. This repo has a free Claude skill for any HDB floor plan, and a 3D planner built for one 4-Room Type 3 flat.
+
+**See real results:** https://benedict30.github.io/home-cad/examples/
+
+## Plan your own flat with the free skill
+
+1. **Download the skill:** [hdb-home-planner.zip](https://github.com/Benedict30/home-cad/raw/main/skill/hdb-home-planner.zip)
+2. **Add it to Claude:** go to **Customize › Skills**, click **+**, then **Create skill › Upload a skill**. Choose the ZIP and switch it on. Skills need code execution, so turn on **Code execution and file creation** in **Settings › Capabilities**.
+3. **Send your floor plan** with a clear photo of your HDB plan attached, and a few lines about your home (must-haves are optional):
+
+```
+Plan my HDB flat. Floor plan attached.
+We are: couple, both work from home
+Coming up: baby next year, my mum may move in
+Must-haves: a proper home office
+```
+
+You get:
+- a wall-by-wall knock-down check under HDB's rules
+- 4 layouts for how you live, with "now" and "after" plans if a change is coming
+- every layout drawn to scale
+- a short list of things to confirm with HDB and your contractor before any hacking
+
+It works for a baby on the way, parents moving in, big families, a live-in helper, working from home, pets, a home gym, hosting and cooking, creators and musicians, collectors, renting out a room, and kids moving out.
+
+The skill is plain text. Read [SKILL.md](skill/hdb-home-planner/SKILL.md) before adding it.
+
+<details>
+<summary>Not using Claude skills? Paste this prompt with your floor plan instead.</summary>
+
+```
+I've attached the floor plan of my HDB flat. Help me plan how we'll live in it.
+We are: [e.g. couple, both work from home, 1 cat]
+Coming up: [e.g. baby next year, my mum may move in]
+Must-haves: [e.g. a proper home office]
+
+1. Read the plan: rooms with rough sizes, windows, the household shelter, kitchen, service yard and bathrooms.
+2. Wall check: for every internal wall, say if it can be knocked down under HDB's rules. Structural and shelter walls stay. Bathroom walls can't be hacked for 3 years after the block is completed. Other partitions need HDB approval and an HDB-registered (DRC) contractor, plus a Professional Engineer if they're reinforced concrete. Flag any walls you're unsure about.
+3. Give me 4 layouts for how we live, including one with no hacking. If something is coming up, show the layout now and after. For each: walls down, what each room becomes, furniture with sizes in mm, pros and cons.
+4. Draw each layout to scale: must-stay walls in black, walls that can go in green, removed walls in dashed green, furniture as labelled boxes.
+
+End with what to confirm with HDB or my contractor before any hacking.
+```
+
+</details>
+
+**Before you hack anything:** AI can misread a photo. Check every wall against your official HDB floor plan, and get HDB's approval and an HDB-registered (DRC) contractor before any work starts.
+
+## The 3D planner
+
 A browser-based home planner for a 4-Room Type 3 HDB flat, traced from the HDB floor plan at millimetre scale.
 
 **Open it:** https://benedict30.github.io/home-cad/
 
-## What it does
+### What it does
 
 - **Plan view** – CAD-style drawing with the plan's dimension chains, room areas, door swings and floor finishes. Structural walls are shaded black, as on the HDB plan.
 - **Editing** – draw new partitions, add doors and windows, mark partitions for removal, dimension anything, and drag, rotate or resize furniture with wall snapping and clash highlighting.
@@ -21,10 +71,6 @@ A browser-based home planner for a 4-Room Type 3 HDB flat, traced from the HDB f
 All 8 out-of-the-box layouts as CAD drawings on one sheet: [out-of-the-box-cad-plans.png](https://benedict30.github.io/home-cad/out-of-the-box-cad-plans.png)
 
 Edits are saved in your own browser. Use Export → Project file to keep a copy or move it to another device.
-
-## Plan your own flat
-
-Got a different HDB flat? Get the free Claude skill at **https://benedict30.github.io/home-cad/prompt/**, add it in Claude under Customize › Skills, then attach your floor plan and say who lives with you. You get a wall-by-wall knock-down check under HDB's rules and 4 layouts for how you live, with "now" and "after" plans if a baby is coming or parents may move in, all drawn to scale.
 
 ## Notes
 

@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Flat Layouts</title>
+<style>
+:root {
+  --bg: #f3f1ec; --card: #ffffff; --text: #1f1f1f; --muted: #5d5a54; --line: #dedad2;
+  --accent: #b5452b; --badge: #ebe7de; --rec: #1f8a4c; --rec-text: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1918; --card: #24221f; --text: #ece9e3; --muted: #aaa59b; --line: #3a3732;
+    --accent: #e98a6e; --badge: #34312c; --rec: #3fb172; --rec-text: #0f1a13;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1918; --card: #24221f; --text: #ece9e3; --muted: #aaa59b; --line: #3a3732;
+  --accent: #e98a6e; --badge: #34312c; --rec: #3fb172; --rec-text: #0f1a13;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body { font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 24px 16px 48px; }
+main { max-width: 1080px; margin: 0 auto; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+.intro { color: var(--muted); margin: 0 0 20px; max-width: 70ch; }
+.legend { list-style: none; padding: 12px 14px; margin: 0 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px 16px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px; font-size: 0.88rem; }
+.legend li { display: flex; align-items: center; gap: 10px; }
+.legend svg { flex: none; border-radius: 3px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 14px; margin: 0 0 22px; }
+.card header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.card h2 { font-size: 1.2rem; margin: 0; }
+.sub { margin: 0; color: var(--accent); font-weight: 600; }
+.badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; background: var(--badge); color: var(--muted); padding: 2px 8px; border-radius: 999px; }
+.badge.rec { background: var(--rec); color: var(--rec-text); }
+.lede { margin: 8px 0 12px; color: var(--muted); }
+.plan { overflow-x: auto; border-radius: 8px; border: 1px solid var(--line); -webkit-overflow-scrolling: touch; }
+.plan svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.pc { margin: 12px 0 0; padding-left: 20px; }
+.pc li { margin: 2px 0; }
+table.walls { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.92rem; }
+.walls th, .walls td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.walls thead th { color: var(--muted); font-weight: 600; }
+.foot { color: var(--muted); font-size: 0.92rem; }
+.foot ul { padding-left: 20px; }
+.foot h2 { color: var(--text); }
+.hint { font-size: 0.82rem; color: var(--muted); margin: 6px 0 0; }
+@media (min-width: 760px) { .hint { display: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Family Flat Layouts</h1>
+  <p class="intro">4-room flat, about 90&nbsp;m² inside. Household: two adults, kids aged 2, 6 and 9, and a live-in helper who gets her own room. Every plan is drawn to scale in millimetres from the photo of the HDB plan; centre-line dimensions, so usable space is 100–200&nbsp;mm smaller.</p>
+  <ul class="legend"><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><rect x="2" y="6" width="56" height="8" fill="#1b1b1b"/></svg><span>Must stay: structural, shelter, bathroom, external</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><rect x="2" y="7" width="56" height="6" fill="#1f8a4c"/></svg><span>Could go with HDB approval (all kept here)</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><rect x="3" y="7" width="54" height="6" fill="none" stroke="#1f8a4c" stroke-width="2" stroke-dasharray="6 4"/></svg><span>Removed wall (none in these layouts)</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><line x1="2" y1="10" x2="58" y2="10" stroke="#8a8a8a" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round"/></svg><span>Open edge, no wall (open kitchen)</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><rect x="2" y="6" width="56" height="8" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="1.5"/><line x1="2" y1="10" x2="58" y2="10" stroke="#1b1b1b" stroke-width="1"/></svg><span>Window (must stay)</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><rect x="4" y="3" width="52" height="14" fill="#efe6d4" stroke="#8a6d3b" stroke-width="1.5"/></svg><span>Furniture, size in mm (W×D)</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><line x1="8" y1="18" x2="52" y2="18" stroke="#1b1b1b" stroke-width="2"/><path d="M26,18 A16,16 0 0 0 10,2" fill="none" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="3 2"/><line x1="10" y1="18" x2="10" y2="2" stroke="#2b2b2b" stroke-width="2"/></svg><span>Door and its swing</span></li><li><svg viewBox="0 0 60 20" width="48" height="16" aria-hidden="true"><rect width="60" height="20" fill="#fbf8f1"/><line x1="2" y1="10" x2="58" y2="10" stroke="#c46a1a" stroke-width="2.5" stroke-dasharray="2 5" stroke-linecap="round"/></svg><span>Aircon trunking route</span></li></ul>
+  <p class="hint">On a phone, swipe sideways inside a plan to see all of it.</p>
+  
+<section class="card" id="key">
+  <header><span class="badge">Key</span><h2>Wall key</h2></header>
+  <p class="lede">Every internal wall, tagged to match the chat. Black stays, green could go with HDB approval through a DRC contractor. None of the four layouts removes a wall.</p>
+  <div class="plan"><svg viewBox="-1250 -1350 14450 12150" role="img" aria-labelledby="t-key" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<title id="t-key">Wall key: every internal wall tagged and coloured by whether it can go</title>
+<defs><pattern id="hatch" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="120" stroke="#c9c2b2" stroke-width="22"/></pattern></defs>
+<rect x="-1250" y="-1350" width="14450" height="12150" fill="#fbf8f1"/>
+<rect x="8650" y="6850" width="2530" height="950" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="9915" y="7330" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Aircon ledge</text>
+<rect x="8130" y="6880" width="470" height="2070" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="8365" y="7900" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" transform="rotate(-90 8365 7900)">Drying rack</text>
+<rect x="-125" y="2410" width="250" height="3020" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="0.0" y1="2410" x2="0.0" y2="5430" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="125" y="625" width="3275" height="150" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="125" y1="700.0" x2="3400" y2="700.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="3700" y="-125" width="2100" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="3700" y1="0.0" x2="5800" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7600" y="-125" width="4875" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="7600" y1="0.0" x2="12475" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="12475" y="1900" width="250" height="3100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="12600.0" y1="1900" x2="12600.0" y2="5000" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="8200" y="6700" width="560" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8200" y1="6750.0" x2="8760" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="9570" y="6700" width="760" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="9570" y1="6750.0" x2="10330" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7990" y="6800" width="120" height="2200" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8050.0" y1="6800" x2="8050.0" y2="9000" stroke="#1b1b1b" stroke-width="12"/>
+<polyline points="3050,7150 3050,6750 4230,6750" fill="none" stroke="#8a8a8a" stroke-width="22" stroke-dasharray="25 55" stroke-linecap="round"/>
+<rect x="-125" y="575" width="250" height="1835" fill="#1b1b1b"/>
+<rect x="-125" y="5430" width="250" height="2145" fill="#1b1b1b"/>
+<rect x="3400" y="-125" width="300" height="2615" fill="#1b1b1b"/>
+<rect x="5800" y="-125" width="1800" height="250" fill="#1b1b1b"/>
+<rect x="12475" y="-125" width="250" height="2025" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="1545" height="300" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="370" height="1850" fill="#1b1b1b"/>
+<rect x="125" y="7425" width="425" height="150" fill="#1b1b1b"/>
+<rect x="1650" y="7425" width="1050" height="150" fill="#1b1b1b"/>
+<rect x="2700" y="7150" width="350" height="2200" fill="#1b1b1b"/>
+<rect x="2700" y="9000" width="5370" height="350" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="550" height="300" fill="#1b1b1b"/>
+<rect x="5550" y="4850" width="1350" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="6450" width="2670" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6600" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6900" y="5000" width="150" height="100" fill="#1b1b1b"/>
+<rect x="7800" y="5000" width="1040" height="100" fill="#1b1b1b"/>
+<rect x="8840" y="5000" width="580" height="100" fill="#1b1b1b"/>
+<rect x="10260" y="5000" width="920" height="100" fill="#1b1b1b"/>
+<rect x="8790" y="5000" width="100" height="1750" fill="#1b1b1b"/>
+<rect x="6900" y="6700" width="1300" height="100" fill="#1b1b1b"/>
+<rect x="8760" y="6700" width="810" height="100" fill="#1b1b1b"/>
+<rect x="10330" y="6700" width="850" height="100" fill="#1b1b1b"/>
+<rect x="3490" y="2490" width="120" height="1210" fill="#1f8a4c"/>
+<rect x="3490" y="3640" width="2180" height="120" fill="#1f8a4c"/>
+<rect x="6560" y="3640" width="200" height="120" fill="#1f8a4c"/>
+<rect x="6640" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="6640" y="3640" width="220" height="120" fill="#1f8a4c"/>
+<rect x="7750" y="3640" width="1885" height="120" fill="#1f8a4c"/>
+<rect x="9515" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="8240" y="3700" width="120" height="200" fill="#1f8a4c"/>
+<rect x="8240" y="4880" width="120" height="120" fill="#1f8a4c"/>
+<rect x="6500" y="6750" width="100" height="750" fill="#1f8a4c"/>
+<rect x="6500" y="8350" width="100" height="650" fill="#1f8a4c"/>
+<path d="M1550,7500 A1000,1000 0 0 0 550,6500" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="550" y1="7500" x2="550" y2="6500" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M5670,3700 A890,890 0 0 1 6560,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6560" y1="3700" x2="6560" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M7750,3700 A890,890 0 0 0 6860,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6860" y1="3700" x2="6860" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M8300,3900 A980,980 0 0 1 9280,4880" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="8300" y1="4880" x2="9280" y2="4880" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M4780,4850 A770,770 0 0 1 5550,4080" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="5550" y1="4850" x2="5550" y2="4080" stroke="#2b2b2b" stroke-width="30"/>
+<text x="1750" y="3300" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">LIVING / DINING</text>
+<text x="1750" y="3530" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 6.7 m</text>
+<text x="5200" y="1800" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 3</text>
+<text x="5200" y="2030" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.0 × 3.5 m</text>
+<text x="8100" y="1800" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 2</text>
+<text x="8100" y="2030" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.75 × 3.5 m</text>
+<text x="11050" y="2200" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">MAIN</text>
+<text x="11050" y="2430" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.9 × 4.9 m</text>
+<text x="11050" y="2700" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">+ entry &amp; Bath 1</text>
+<text x="6750" y="4300" font-size="135" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">CORRIDOR ≈ 1.0 m wide</text>
+<text x="5560" y="5600" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">SHELTER</text>
+<text x="5560" y="5850" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">must stay</text>
+<text x="7400" y="5800" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 2</text>
+<text x="10000" y="5800" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 1</text>
+<text x="4900" y="7900" font-size="170" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">KITCHEN</text>
+<text x="4900" y="8150" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">open to dining (dotted edge)</text>
+<text x="7050" y="8000" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557" transform="rotate(-90 7050 8000)">YARD</text>
+<text x="1100" y="7800" font-size="140" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">Main door</text>
+<circle cx="3550" cy="1450" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="3550" y="1458" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">S1</text>
+<circle cx="6250" cy="5000" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="6250" y="5008" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">H1</text>
+<circle cx="7950" cy="5050" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="7950" y="5058" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B1</text>
+<circle cx="10720" cy="5050" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="10720" y="5058" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B2</text>
+<circle cx="8840" cy="6250" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="8840" y="6258" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B3</text>
+<circle cx="7500" cy="6750" r="190" fill="#fff" stroke="#1b1b1b" stroke-width="30"/>
+<text x="7500" y="6758" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B4</text>
+<circle cx="3550" cy="3080" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="3550" y="3088" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W1</text>
+<circle cx="4500" cy="3700" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="4500" y="3708" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W2</text>
+<circle cx="6700" cy="1700" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="6700" y="1708" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W3</text>
+<circle cx="8700" cy="3700" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="8700" y="3708" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W4</text>
+<circle cx="9575" cy="1700" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="9575" y="1708" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W5</text>
+<circle cx="8300" cy="4300" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="8300" y="4308" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W6</text>
+<circle cx="6550" cy="7150" r="190" fill="#fff" stroke="#1f8a4c" stroke-width="30"/>
+<text x="6550" y="7158" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W7</text>
+<circle cx="3050" cy="6950" r="190" fill="#fff" stroke="#8a8a8a" stroke-width="30"/>
+<text x="3050" y="6958" font-size="165" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#8a8a8a">K</text>
+<line x1="0" y1="-1000" x2="12600" y2="-1000" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-940" x2="60" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-940" x2="12660" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<text x="6300.0" y="-1130" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">12 600 overall</text>
+<line x1="-900" y1="0" x2="-900" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="60" x2="-840" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="9410" x2="-840" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-1030" y="4675.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -1030 4675.0)">9 350 overall</text>
+<line x1="0" y1="-560" x2="3550" y2="-560" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-500" x2="60" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="3490" y1="-500" x2="3610" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<text x="1775.0" y="-690" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3 550</text>
+<line x1="3550" y1="-560" x2="6700" y2="-560" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="3490" y1="-500" x2="3610" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="6640" y1="-500" x2="6760" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<text x="5125.0" y="-690" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3 150</text>
+<line x1="6700" y1="-560" x2="9575" y2="-560" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="6640" y1="-500" x2="6760" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="9515" y1="-500" x2="9635" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8137.5" y="-690" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2 875</text>
+<line x1="9575" y1="-560" x2="12600" y2="-560" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="9515" y1="-500" x2="9635" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-500" x2="12660" y2="-620" stroke="#2b2b2b" stroke-width="14"/>
+<text x="11087.5" y="-690" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3 025</text>
+<line x1="0" y1="9950" x2="2700" y2="9950" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="10010" x2="60" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="2640" y1="10010" x2="2760" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<text x="1350.0" y="9820" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2 700</text>
+<line x1="2700" y1="9950" x2="8070" y2="9950" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="2640" y1="10010" x2="2760" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="8010" y1="10010" x2="8130" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<text x="5385.0" y="9820" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">5 370</text>
+<line x1="8070" y1="9950" x2="11550" y2="9950" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="8010" y1="10010" x2="8130" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="11490" y1="10010" x2="11610" y2="9890" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9810.0" y="9820" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3 480</text>
+<line x1="-500" y1="0" x2="-500" y2="700" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="60" x2="-440" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="760" x2="-440" y2="640" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-630" y="350.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -630 350.0)">700</text>
+<line x1="-500" y1="700" x2="-500" y2="7500" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="760" x2="-440" y2="640" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="7560" x2="-440" y2="7440" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-630" y="4100.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -630 4100.0)">6 800</text>
+<line x1="-500" y1="7500" x2="-500" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="7560" x2="-440" y2="7440" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-560" y1="9410" x2="-440" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-630" y="8425.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -630 8425.0)">1 850</text>
+<line x1="13150" y1="0" x2="13150" y2="5150" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="60" x2="13210" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="5210" x2="13210" y2="5090" stroke="#2b2b2b" stroke-width="14"/>
+<text x="13020" y="2575.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 13020 2575.0)">5 150</text>
+<line x1="13150" y1="5150" x2="13150" y2="6750" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="5210" x2="13210" y2="5090" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="6810" x2="13210" y2="6690" stroke="#2b2b2b" stroke-width="14"/>
+<text x="13020" y="5950.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 13020 5950.0)">1 600</text>
+<line x1="13150" y1="6750" x2="13150" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="6810" x2="13210" y2="6690" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="13090" y1="9410" x2="13210" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="13020" y="8050.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 13020 8050.0)">2 600</text>
+<rect x="7400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="7400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">0</text>
+<rect x="8400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">1</text>
+<rect x="9400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2</text>
+<rect x="10400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="10400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3</text>
+<text x="11400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">4 m</text>
+<text x="9400" y="10150" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Scale (to scale, dimensions in mm)</text>
+</svg></div>
+  <table class="walls"><thead><tr><th scope="col">Wall</th><th scope="col">Can it go?</th><th scope="col">Why</th></tr></thead><tbody><tr><th scope="row">S1</th><td>No</td><td>Structural column (shaded black on the plan).</td></tr><tr><th scope="row">H1</th><td>No</td><td>Household shelter: walls, door, floor and ceiling stay.</td></tr><tr><th scope="row">B1–B4</th><td>No</td><td>Bathroom walls: no hacking for 3 years after completion, then limited and by permit.</td></tr><tr><th scope="row">W1</th><td>With approval</td><td>Thin partition, but it sits right under S1; check for a beam or RC.</td></tr><tr><th scope="row">W2–W5</th><td>With approval</td><td>Bedroom partitions. Kept: you need all three bedrooms.</td></tr><tr><th scope="row">W6</th><td>With approval</td><td>Door nibs to the main bedroom. Kept.</td></tr><tr><th scope="row">W7</th><td>With approval</td><td>Kitchen/yard wall; likely pipes. Kept to contain laundry.</td></tr><tr><th scope="row">K</th><td>Already open</td><td>Dotted edge: there is no wall there now.</td></tr></tbody></table>
+</section>
+<section class="card" id="layout-a">
+  <header><span class="badge rec">Recommended</span><h2>Layout A · now</h2><p class="sub">Bunk room in Bedroom 3, toddler with you</p></header>
+  <p class="lede">Bedroom 3: older two (bunk + desk for two). Bedroom 2: helper. Main: you + toddler&#x27;s cot. No walls removed.</p>
+  <div class="plan"><svg viewBox="-1250 -1350 14450 12150" role="img" aria-labelledby="t-A" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<title id="t-A">Layout A · now: Bunk room in Bedroom 3, toddler with you</title>
+<defs><pattern id="hatch" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="120" stroke="#c9c2b2" stroke-width="22"/></pattern></defs>
+<rect x="-1250" y="-1350" width="14450" height="12150" fill="#fbf8f1"/>
+<rect x="8650" y="6850" width="2530" height="950" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="9915" y="7330" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Aircon ledge</text>
+<rect x="8130" y="6880" width="470" height="2070" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="8365" y="7900" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" transform="rotate(-90 8365 7900)">Drying rack</text>
+<rect x="-125" y="2410" width="250" height="3020" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="0.0" y1="2410" x2="0.0" y2="5430" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="125" y="625" width="3275" height="150" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="125" y1="700.0" x2="3400" y2="700.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="3700" y="-125" width="2100" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="3700" y1="0.0" x2="5800" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7600" y="-125" width="4875" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="7600" y1="0.0" x2="12475" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="12475" y="1900" width="250" height="3100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="12600.0" y1="1900" x2="12600.0" y2="5000" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="8200" y="6700" width="560" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8200" y1="6750.0" x2="8760" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="9570" y="6700" width="760" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="9570" y1="6750.0" x2="10330" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7990" y="6800" width="120" height="2200" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8050.0" y1="6800" x2="8050.0" y2="9000" stroke="#1b1b1b" stroke-width="12"/>
+<polyline points="3050,7150 3050,6750 4230,6750" fill="none" stroke="#8a8a8a" stroke-width="22" stroke-dasharray="25 55" stroke-linecap="round"/>
+<rect x="-125" y="575" width="250" height="1835" fill="#1b1b1b"/>
+<rect x="-125" y="5430" width="250" height="2145" fill="#1b1b1b"/>
+<rect x="3400" y="-125" width="300" height="2615" fill="#1b1b1b"/>
+<rect x="5800" y="-125" width="1800" height="250" fill="#1b1b1b"/>
+<rect x="12475" y="-125" width="250" height="2025" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="1545" height="300" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="370" height="1850" fill="#1b1b1b"/>
+<rect x="125" y="7425" width="425" height="150" fill="#1b1b1b"/>
+<rect x="1650" y="7425" width="1050" height="150" fill="#1b1b1b"/>
+<rect x="2700" y="7150" width="350" height="2200" fill="#1b1b1b"/>
+<rect x="2700" y="9000" width="5370" height="350" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="550" height="300" fill="#1b1b1b"/>
+<rect x="5550" y="4850" width="1350" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="6450" width="2670" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6600" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6900" y="5000" width="150" height="100" fill="#1b1b1b"/>
+<rect x="7800" y="5000" width="1040" height="100" fill="#1b1b1b"/>
+<rect x="8840" y="5000" width="580" height="100" fill="#1b1b1b"/>
+<rect x="10260" y="5000" width="920" height="100" fill="#1b1b1b"/>
+<rect x="8790" y="5000" width="100" height="1750" fill="#1b1b1b"/>
+<rect x="6900" y="6700" width="1300" height="100" fill="#1b1b1b"/>
+<rect x="8760" y="6700" width="810" height="100" fill="#1b1b1b"/>
+<rect x="10330" y="6700" width="850" height="100" fill="#1b1b1b"/>
+<rect x="3490" y="2490" width="120" height="1210" fill="#1f8a4c"/>
+<rect x="3490" y="3640" width="2180" height="120" fill="#1f8a4c"/>
+<rect x="6560" y="3640" width="200" height="120" fill="#1f8a4c"/>
+<rect x="6640" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="6640" y="3640" width="220" height="120" fill="#1f8a4c"/>
+<rect x="7750" y="3640" width="1885" height="120" fill="#1f8a4c"/>
+<rect x="9515" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="8240" y="3700" width="120" height="200" fill="#1f8a4c"/>
+<rect x="8240" y="4880" width="120" height="120" fill="#1f8a4c"/>
+<rect x="6500" y="6750" width="100" height="750" fill="#1f8a4c"/>
+<rect x="6500" y="8350" width="100" height="650" fill="#1f8a4c"/>
+<path d="M1550,7500 A1000,1000 0 0 0 550,6500" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="550" y1="7500" x2="550" y2="6500" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M5670,3700 A890,890 0 0 1 6560,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6560" y1="3700" x2="6560" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M7750,3700 A890,890 0 0 0 6860,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6860" y1="3700" x2="6860" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M8300,3900 A980,980 0 0 1 9280,4880" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="8300" y1="4880" x2="9280" y2="4880" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M4780,4850 A770,770 0 0 1 5550,4080" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="5550" y1="4850" x2="5550" y2="4080" stroke="#2b2b2b" stroke-width="30"/>
+<rect x="150" y="900" width="900" height="2100" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="525.25" y="1950.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 525.25 1950.0)">Sofa</text>
+<text x="674.75" y="1950.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 674.75 1950.0)">2100×900</text>
+<rect x="3000" y="950" width="400" height="1800" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3133.875" y="1850.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3133.875 1850.0)">TV console</text>
+<text x="3266.125" y="1850.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3266.125 1850.0)">1800×400</text>
+<rect x="1350" y="1250" width="1400" height="1400" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2050.0" y="1875.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Play mat</text>
+<text x="2050.0" y="2024.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1400×1400</text>
+<text x="2050" y="2860" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b5a3a" font-style="italic">(instead of a coffee table)</text>
+<circle cx="1750" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="1750" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="1450" y="5250" width="1800" height="900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="2350.0" y="5625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">6-seat table</text>
+<text x="2350.0" y="5774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1800×900</text>
+<rect x="150" y="5500" width="400" height="1850" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="283.875" y="6425.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 283.875 6425.0)">Shoe cabinet + seat</text>
+<text x="416.125" y="6425.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 416.125 6425.0)">1850×400</text>
+<rect x="1800" y="6880" width="800" height="520" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2200.0" y="7076.75" font-size="110" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Stroller</text>
+<text x="2200.0" y="7203.25" font-size="95" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">800×520</text>
+<text x="1100" y="7800" font-size="140" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">Main door</text>
+<rect x="3100" y="8350" width="3400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4800.0" y="8575.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter · sink · hob</text>
+<text x="4800.0" y="8724.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">3400×600</text>
+<rect x="4560" y="6780" width="1940" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5530.0" y="7005.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter</text>
+<text x="5530.0" y="7154.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1940×600</text>
+<rect x="3100" y="7650" width="700" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3450.0" y="7933.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Fridge</text>
+<text x="3450.0" y="8066.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">700×700</text>
+<text x="5250" y="7880" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">KITCHEN</text>
+<text x="5250" y="8110" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 2.2 m</text>
+<text x="3950" y="6960" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">↑ glass slider here</text>
+<text x="3950" y="7100" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">if you wok-fry</text>
+<rect x="7400" y="6880" width="580" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7629.625" y="7480.0" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7629.625 7480.0)">Utility cabinet</text>
+<text x="7750.375" y="7480.0" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7750.375 7480.0)">1200×580</text>
+<rect x="7380" y="8320" width="600" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7680.0" y="8559.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">W+D</text>
+<text x="7680.0" y="8680.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">600×600</text>
+<text x="7050" y="8000" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557" transform="rotate(-90 7050 8000)">YARD</text>
+<rect x="4570" y="5990" width="1990" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5565.0" y="6139.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Free-standing racks</text>
+<text x="5565.0" y="6260.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1990×420</text>
+<text x="5560" y="5450" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">SHELTER</text>
+<text x="5560" y="5650" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">storeroom (not a bedroom)</text>
+<text x="7400" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 2</text>
+<text x="10000" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 1</text>
+<line x1="3800" y1="3900" x2="8150" y2="3900" stroke="#c46a1a" stroke-width="26" stroke-dasharray="20 50" stroke-linecap="round"/>
+<text x="5750" y="4130" font-size="105" font-weight="400" text-anchor="start" dominant-baseline="middle" fill="#c46a1a">aircon trunking (ceiling)</text>
+<rect x="8625" y="1500" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9000.25" y="2450.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9000.25 2450.0)">Single bed</text>
+<text x="9149.75" y="2450.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9149.75 2450.0)">900×1900</text>
+<rect x="6750" y="150" width="600" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6983.875" y="750.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6983.875 750.0)">Wardrobe</text>
+<text x="7116.125" y="750.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7116.125 750.0)">1200×600</text>
+<rect x="7700" y="150" width="1000" height="500" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="8200.0" y="333.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Table</text>
+<text x="8200.0" y="466.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×500</text>
+<text x="7700" y="1600" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 2</text>
+<text x="7700" y="1840" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Helper</text>
+<text x="7700" y="2060" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.75 × 3.5 m</text>
+<rect x="9625" y="1000" width="1900" height="1830" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10575.0" y="1840.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">King bed</text>
+<text x="10575.0" y="1989.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1830×1900</text>
+<rect x="9750" y="250" width="1300" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10400.0" y="533.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Cot</text>
+<text x="10400.0" y="666.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1300×700 · age 2</text>
+<rect x="9625" y="2860" width="400" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9825.0" y="3070.0" font-size="100" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Side</text>
+<rect x="10300" y="4400" width="2150" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11375.0" y="4625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="11375.0" y="4774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2150×600</text>
+<text x="11000" y="3450" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">MAIN BEDROOM</text>
+<text x="11000" y="3690" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Parents + toddler</text>
+<text x="11000" y="3910" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.9 × 4.9 m + entry</text>
+<rect x="3750" y="150" width="2400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4950.0" y="375.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Desk for two</text>
+<text x="4950.0" y="524.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2400×600 · shelves above</text>
+<circle cx="4350" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="5550" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="3700" y="1550" width="1000" height="2000" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4200.0" y="2475.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Bunk bed</text>
+<text x="4200.0" y="2624.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×2000</text>
+<rect x="6050" y="900" width="600" height="1600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6283.875" y="1700.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6283.875 1700.0)">Wardrobe</text>
+<text x="6416.125" y="1700.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6416.125 1700.0)">1600×600</text>
+<text x="5380" y="1800" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 3</text>
+<text x="5380" y="2040" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Kids 6 &amp; 9</text>
+<text x="5380" y="2260" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.0 × 3.5 m</text>
+<text x="1750" y="3550" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">LIVING / DINING</text>
+<text x="1750" y="3780" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 6.7 m</text>
+<circle cx="3550" cy="1450" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="3550" y="1458" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">S1</text>
+<circle cx="6250" cy="5000" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="6250" y="5008" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">H1</text>
+<circle cx="7950" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7950" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B1</text>
+<circle cx="10720" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="10720" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B2</text>
+<circle cx="8840" cy="6250" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="8840" y="6258" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B3</text>
+<circle cx="7500" cy="6750" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7500" y="6758" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B4</text>
+<circle cx="3550" cy="3080" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="3550" y="3088" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W1</text>
+<circle cx="4500" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="4500" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W2</text>
+<circle cx="6700" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6700" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W3</text>
+<circle cx="8700" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8700" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W4</text>
+<circle cx="9575" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="9575" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W5</text>
+<circle cx="8300" cy="4300" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8300" y="4308" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W6</text>
+<circle cx="6550" cy="7150" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6550" y="7158" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W7</text>
+<circle cx="3050" cy="6950" r="150" fill="#fff" stroke="#8a8a8a" stroke-width="24"/>
+<text x="3050" y="6958" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#8a8a8a">K</text>
+<line x1="0" y1="-1000" x2="12600" y2="-1000" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-940" x2="60" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-940" x2="12660" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<text x="6300.0" y="-1130" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">12 600 overall</text>
+<line x1="-900" y1="0" x2="-900" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="60" x2="-840" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="9410" x2="-840" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-1030" y="4675.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -1030 4675.0)">9 350 overall</text>
+<rect x="7400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="7400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">0</text>
+<rect x="8400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">1</text>
+<rect x="9400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2</text>
+<rect x="10400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="10400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3</text>
+<text x="11400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">4 m</text>
+<text x="9400" y="10150" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Scale (to scale, dimensions in mm)</text>
+</svg></div>
+  <ul class="pc"><li><b>Pros:</b> no hacking, every kid has a desk spot today, helper&#x27;s room is a proper room with a window.</li><li><b>Cons:</b> Bedroom 3 is full; once the toddler moves in, there&#x27;s no floor left for a third bed and both desks.</li></ul>
+</section>
+<section class="card" id="layout-b">
+  <header><span class="badge rec">Recommended</span><h2>Layout B · after (toddler ready to share, ~3–4)</h2><p class="sub">Kids take the main bedroom</p></header>
+  <p class="lede">Main bedroom: all three kids, desk for two, their own bathroom. Bedroom 3: you (queen). Bedroom 2: helper. No walls removed.</p>
+  <div class="plan"><svg viewBox="-1250 -1350 14450 12150" role="img" aria-labelledby="t-B" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<title id="t-B">Layout B · after (toddler ready to share, ~3–4): Kids take the main bedroom</title>
+<defs><pattern id="hatch" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="120" stroke="#c9c2b2" stroke-width="22"/></pattern></defs>
+<rect x="-1250" y="-1350" width="14450" height="12150" fill="#fbf8f1"/>
+<rect x="8650" y="6850" width="2530" height="950" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="9915" y="7330" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Aircon ledge</text>
+<rect x="8130" y="6880" width="470" height="2070" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="8365" y="7900" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" transform="rotate(-90 8365 7900)">Drying rack</text>
+<rect x="-125" y="2410" width="250" height="3020" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="0.0" y1="2410" x2="0.0" y2="5430" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="125" y="625" width="3275" height="150" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="125" y1="700.0" x2="3400" y2="700.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="3700" y="-125" width="2100" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="3700" y1="0.0" x2="5800" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7600" y="-125" width="4875" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="7600" y1="0.0" x2="12475" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="12475" y="1900" width="250" height="3100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="12600.0" y1="1900" x2="12600.0" y2="5000" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="8200" y="6700" width="560" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8200" y1="6750.0" x2="8760" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="9570" y="6700" width="760" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="9570" y1="6750.0" x2="10330" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7990" y="6800" width="120" height="2200" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8050.0" y1="6800" x2="8050.0" y2="9000" stroke="#1b1b1b" stroke-width="12"/>
+<polyline points="3050,7150 3050,6750 4230,6750" fill="none" stroke="#8a8a8a" stroke-width="22" stroke-dasharray="25 55" stroke-linecap="round"/>
+<rect x="-125" y="575" width="250" height="1835" fill="#1b1b1b"/>
+<rect x="-125" y="5430" width="250" height="2145" fill="#1b1b1b"/>
+<rect x="3400" y="-125" width="300" height="2615" fill="#1b1b1b"/>
+<rect x="5800" y="-125" width="1800" height="250" fill="#1b1b1b"/>
+<rect x="12475" y="-125" width="250" height="2025" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="1545" height="300" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="370" height="1850" fill="#1b1b1b"/>
+<rect x="125" y="7425" width="425" height="150" fill="#1b1b1b"/>
+<rect x="1650" y="7425" width="1050" height="150" fill="#1b1b1b"/>
+<rect x="2700" y="7150" width="350" height="2200" fill="#1b1b1b"/>
+<rect x="2700" y="9000" width="5370" height="350" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="550" height="300" fill="#1b1b1b"/>
+<rect x="5550" y="4850" width="1350" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="6450" width="2670" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6600" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6900" y="5000" width="150" height="100" fill="#1b1b1b"/>
+<rect x="7800" y="5000" width="1040" height="100" fill="#1b1b1b"/>
+<rect x="8840" y="5000" width="580" height="100" fill="#1b1b1b"/>
+<rect x="10260" y="5000" width="920" height="100" fill="#1b1b1b"/>
+<rect x="8790" y="5000" width="100" height="1750" fill="#1b1b1b"/>
+<rect x="6900" y="6700" width="1300" height="100" fill="#1b1b1b"/>
+<rect x="8760" y="6700" width="810" height="100" fill="#1b1b1b"/>
+<rect x="10330" y="6700" width="850" height="100" fill="#1b1b1b"/>
+<rect x="3490" y="2490" width="120" height="1210" fill="#1f8a4c"/>
+<rect x="3490" y="3640" width="2180" height="120" fill="#1f8a4c"/>
+<rect x="6560" y="3640" width="200" height="120" fill="#1f8a4c"/>
+<rect x="6640" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="6640" y="3640" width="220" height="120" fill="#1f8a4c"/>
+<rect x="7750" y="3640" width="1885" height="120" fill="#1f8a4c"/>
+<rect x="9515" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="8240" y="3700" width="120" height="200" fill="#1f8a4c"/>
+<rect x="8240" y="4880" width="120" height="120" fill="#1f8a4c"/>
+<rect x="6500" y="6750" width="100" height="750" fill="#1f8a4c"/>
+<rect x="6500" y="8350" width="100" height="650" fill="#1f8a4c"/>
+<path d="M1550,7500 A1000,1000 0 0 0 550,6500" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="550" y1="7500" x2="550" y2="6500" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M5670,3700 A890,890 0 0 1 6560,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6560" y1="3700" x2="6560" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M7750,3700 A890,890 0 0 0 6860,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6860" y1="3700" x2="6860" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M8300,3900 A980,980 0 0 1 9280,4880" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="8300" y1="4880" x2="9280" y2="4880" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M4780,4850 A770,770 0 0 1 5550,4080" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="5550" y1="4850" x2="5550" y2="4080" stroke="#2b2b2b" stroke-width="30"/>
+<rect x="150" y="900" width="900" height="2100" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="525.25" y="1950.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 525.25 1950.0)">Sofa</text>
+<text x="674.75" y="1950.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 674.75 1950.0)">2100×900</text>
+<rect x="3000" y="950" width="400" height="1800" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3133.875" y="1850.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3133.875 1850.0)">TV console</text>
+<text x="3266.125" y="1850.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3266.125 1850.0)">1800×400</text>
+<rect x="1350" y="1250" width="1400" height="1400" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2050.0" y="1875.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Play mat</text>
+<text x="2050.0" y="2024.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1400×1400</text>
+<text x="2050" y="2860" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b5a3a" font-style="italic">(instead of a coffee table)</text>
+<circle cx="1750" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="1750" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="1450" y="5250" width="1800" height="900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="2350.0" y="5625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">6-seat table</text>
+<text x="2350.0" y="5774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1800×900</text>
+<rect x="150" y="5500" width="400" height="1850" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="283.875" y="6425.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 283.875 6425.0)">Shoe cabinet + seat</text>
+<text x="416.125" y="6425.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 416.125 6425.0)">1850×400</text>
+<rect x="1800" y="6880" width="800" height="520" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2200.0" y="7076.75" font-size="110" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Stroller</text>
+<text x="2200.0" y="7203.25" font-size="95" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">800×520</text>
+<text x="1100" y="7800" font-size="140" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">Main door</text>
+<rect x="3100" y="8350" width="3400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4800.0" y="8575.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter · sink · hob</text>
+<text x="4800.0" y="8724.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">3400×600</text>
+<rect x="4560" y="6780" width="1940" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5530.0" y="7005.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter</text>
+<text x="5530.0" y="7154.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1940×600</text>
+<rect x="3100" y="7650" width="700" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3450.0" y="7933.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Fridge</text>
+<text x="3450.0" y="8066.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">700×700</text>
+<text x="5250" y="7880" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">KITCHEN</text>
+<text x="5250" y="8110" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 2.2 m</text>
+<text x="3950" y="6960" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">↑ glass slider here</text>
+<text x="3950" y="7100" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">if you wok-fry</text>
+<rect x="7400" y="6880" width="580" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7629.625" y="7480.0" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7629.625 7480.0)">Utility cabinet</text>
+<text x="7750.375" y="7480.0" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7750.375 7480.0)">1200×580</text>
+<rect x="7380" y="8320" width="600" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7680.0" y="8559.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">W+D</text>
+<text x="7680.0" y="8680.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">600×600</text>
+<text x="7050" y="8000" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557" transform="rotate(-90 7050 8000)">YARD</text>
+<rect x="4570" y="5990" width="1990" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5565.0" y="6139.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Free-standing racks</text>
+<text x="5565.0" y="6260.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1990×420</text>
+<text x="5560" y="5450" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">SHELTER</text>
+<text x="5560" y="5650" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">storeroom (not a bedroom)</text>
+<text x="7400" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 2</text>
+<text x="10000" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 1</text>
+<line x1="3800" y1="3900" x2="8150" y2="3900" stroke="#c46a1a" stroke-width="26" stroke-dasharray="20 50" stroke-linecap="round"/>
+<text x="5750" y="4130" font-size="105" font-weight="400" text-anchor="start" dominant-baseline="middle" fill="#c46a1a">aircon trunking (ceiling)</text>
+<rect x="8625" y="1500" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9000.25" y="2450.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9000.25 2450.0)">Single bed</text>
+<text x="9149.75" y="2450.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9149.75 2450.0)">900×1900</text>
+<rect x="6750" y="150" width="600" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6983.875" y="750.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6983.875 750.0)">Wardrobe</text>
+<text x="7116.125" y="750.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7116.125 750.0)">1200×600</text>
+<rect x="7700" y="150" width="1000" height="500" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="8200.0" y="333.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Table</text>
+<text x="8200.0" y="466.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×500</text>
+<text x="7700" y="1600" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 2</text>
+<text x="7700" y="1840" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Helper</text>
+<text x="7700" y="2060" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.75 × 3.5 m</text>
+<rect x="3700" y="750" width="1900" height="1520" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4650.0" y="1435.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Queen bed</text>
+<text x="4650.0" y="1584.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1520×1900</text>
+<rect x="3700" y="310" width="420" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3910.0" y="520.0" font-size="100" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Side</text>
+<rect x="3700" y="3100" width="1900" height="550" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4650.0" y="3300.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="4650.0" y="3449.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1900×550</text>
+<text x="4650" y="2480" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 3</text>
+<text x="4650" y="2720" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Parents</text>
+<text x="4650" y="2940" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.0 × 3.5 m</text>
+<rect x="9800" y="150" width="2400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11000.0" y="375.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Desk for two</text>
+<text x="11000.0" y="524.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2400×600 · shelves above</text>
+<circle cx="10400" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="11600" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="9625" y="1450" width="1000" height="2000" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10125.0" y="2375.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Bunk bed</text>
+<text x="10125.0" y="2524.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×2000</text>
+<rect x="11550" y="1450" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11925.25" y="2400.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 11925.25 2400.0)">Toddler → single</text>
+<text x="12074.75" y="2400.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 12074.75 2400.0)">900×1900</text>
+<rect x="10350" y="4400" width="2100" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11400.0" y="4625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="11400.0" y="4774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2100×600</text>
+<text x="11050" y="3700" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">MAIN BEDROOM</text>
+<text x="11050" y="3940" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">All 3 kids + Bath 1</text>
+<text x="11050" y="4170" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.9 × 4.9 m + entry</text>
+<text x="1750" y="3550" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">LIVING / DINING</text>
+<text x="1750" y="3780" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 6.7 m</text>
+<circle cx="3550" cy="1450" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="3550" y="1458" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">S1</text>
+<circle cx="6250" cy="5000" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="6250" y="5008" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">H1</text>
+<circle cx="7950" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7950" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B1</text>
+<circle cx="10720" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="10720" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B2</text>
+<circle cx="8840" cy="6250" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="8840" y="6258" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B3</text>
+<circle cx="7500" cy="6750" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7500" y="6758" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B4</text>
+<circle cx="3550" cy="3080" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="3550" y="3088" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W1</text>
+<circle cx="4500" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="4500" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W2</text>
+<circle cx="6700" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6700" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W3</text>
+<circle cx="8700" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8700" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W4</text>
+<circle cx="9575" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="9575" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W5</text>
+<circle cx="8300" cy="4300" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8300" y="4308" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W6</text>
+<circle cx="6550" cy="7150" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6550" y="7158" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W7</text>
+<circle cx="3050" cy="6950" r="150" fill="#fff" stroke="#8a8a8a" stroke-width="24"/>
+<text x="3050" y="6958" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#8a8a8a">K</text>
+<line x1="0" y1="-1000" x2="12600" y2="-1000" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-940" x2="60" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-940" x2="12660" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<text x="6300.0" y="-1130" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">12 600 overall</text>
+<line x1="-900" y1="0" x2="-900" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="60" x2="-840" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="9410" x2="-840" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-1030" y="4675.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -1030 4675.0)">9 350 overall</text>
+<rect x="7400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="7400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">0</text>
+<rect x="8400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">1</text>
+<rect x="9400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2</text>
+<rect x="10400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="10400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3</text>
+<text x="11400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">4 m</text>
+<text x="9400" y="10150" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Scale (to scale, dimensions in mm)</text>
+</svg></div>
+  <ul class="pc"><li><b>Pros:</b> biggest room for the most people, desks stay put, room to add a bookshelf divider when they&#x27;re older.</li><li><b>Cons:</b> you lose the ensuite and share Bath 2 with the helper; queen instead of king.</li></ul>
+</section>
+<section class="card" id="layout-c">
+  <header><span class="badge">C</span><h2>Layout C</h2><p class="sub">Sleep room + homework wall in the living room</p></header>
+  <p class="lede">Bedroom 3: all three kids sleep (bunk + toddler bed). Desk for two on the living-room window wall. You keep the main bedroom. No walls removed.</p>
+  <div class="plan"><svg viewBox="-1250 -1350 14450 12150" role="img" aria-labelledby="t-C" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<title id="t-C">Layout C: Sleep room + homework wall in the living room</title>
+<defs><pattern id="hatch" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="120" stroke="#c9c2b2" stroke-width="22"/></pattern></defs>
+<rect x="-1250" y="-1350" width="14450" height="12150" fill="#fbf8f1"/>
+<rect x="8650" y="6850" width="2530" height="950" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="9915" y="7330" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Aircon ledge</text>
+<rect x="8130" y="6880" width="470" height="2070" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="8365" y="7900" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" transform="rotate(-90 8365 7900)">Drying rack</text>
+<rect x="-125" y="2410" width="250" height="3020" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="0.0" y1="2410" x2="0.0" y2="5430" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="125" y="625" width="3275" height="150" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="125" y1="700.0" x2="3400" y2="700.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="3700" y="-125" width="2100" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="3700" y1="0.0" x2="5800" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7600" y="-125" width="4875" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="7600" y1="0.0" x2="12475" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="12475" y="1900" width="250" height="3100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="12600.0" y1="1900" x2="12600.0" y2="5000" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="8200" y="6700" width="560" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8200" y1="6750.0" x2="8760" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="9570" y="6700" width="760" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="9570" y1="6750.0" x2="10330" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7990" y="6800" width="120" height="2200" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8050.0" y1="6800" x2="8050.0" y2="9000" stroke="#1b1b1b" stroke-width="12"/>
+<polyline points="3050,7150 3050,6750 4230,6750" fill="none" stroke="#8a8a8a" stroke-width="22" stroke-dasharray="25 55" stroke-linecap="round"/>
+<rect x="-125" y="575" width="250" height="1835" fill="#1b1b1b"/>
+<rect x="-125" y="5430" width="250" height="2145" fill="#1b1b1b"/>
+<rect x="3400" y="-125" width="300" height="2615" fill="#1b1b1b"/>
+<rect x="5800" y="-125" width="1800" height="250" fill="#1b1b1b"/>
+<rect x="12475" y="-125" width="250" height="2025" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="1545" height="300" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="370" height="1850" fill="#1b1b1b"/>
+<rect x="125" y="7425" width="425" height="150" fill="#1b1b1b"/>
+<rect x="1650" y="7425" width="1050" height="150" fill="#1b1b1b"/>
+<rect x="2700" y="7150" width="350" height="2200" fill="#1b1b1b"/>
+<rect x="2700" y="9000" width="5370" height="350" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="550" height="300" fill="#1b1b1b"/>
+<rect x="5550" y="4850" width="1350" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="6450" width="2670" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6600" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6900" y="5000" width="150" height="100" fill="#1b1b1b"/>
+<rect x="7800" y="5000" width="1040" height="100" fill="#1b1b1b"/>
+<rect x="8840" y="5000" width="580" height="100" fill="#1b1b1b"/>
+<rect x="10260" y="5000" width="920" height="100" fill="#1b1b1b"/>
+<rect x="8790" y="5000" width="100" height="1750" fill="#1b1b1b"/>
+<rect x="6900" y="6700" width="1300" height="100" fill="#1b1b1b"/>
+<rect x="8760" y="6700" width="810" height="100" fill="#1b1b1b"/>
+<rect x="10330" y="6700" width="850" height="100" fill="#1b1b1b"/>
+<rect x="3490" y="2490" width="120" height="1210" fill="#1f8a4c"/>
+<rect x="3490" y="3640" width="2180" height="120" fill="#1f8a4c"/>
+<rect x="6560" y="3640" width="200" height="120" fill="#1f8a4c"/>
+<rect x="6640" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="6640" y="3640" width="220" height="120" fill="#1f8a4c"/>
+<rect x="7750" y="3640" width="1885" height="120" fill="#1f8a4c"/>
+<rect x="9515" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="8240" y="3700" width="120" height="200" fill="#1f8a4c"/>
+<rect x="8240" y="4880" width="120" height="120" fill="#1f8a4c"/>
+<rect x="6500" y="6750" width="100" height="750" fill="#1f8a4c"/>
+<rect x="6500" y="8350" width="100" height="650" fill="#1f8a4c"/>
+<path d="M1550,7500 A1000,1000 0 0 0 550,6500" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="550" y1="7500" x2="550" y2="6500" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M5670,3700 A890,890 0 0 1 6560,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6560" y1="3700" x2="6560" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M7750,3700 A890,890 0 0 0 6860,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6860" y1="3700" x2="6860" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M8300,3900 A980,980 0 0 1 9280,4880" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="8300" y1="4880" x2="9280" y2="4880" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M4780,4850 A770,770 0 0 1 5550,4080" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="5550" y1="4850" x2="5550" y2="4080" stroke="#2b2b2b" stroke-width="30"/>
+<rect x="150" y="850" width="900" height="2100" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="525.25" y="1900.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 525.25 1900.0)">Sofa</text>
+<text x="674.75" y="1900.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 674.75 1900.0)">2100×900</text>
+<rect x="3000" y="950" width="400" height="1800" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3133.875" y="1850.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3133.875 1850.0)">TV console</text>
+<text x="3266.125" y="1850.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3266.125 1850.0)">1800×400</text>
+<rect x="1350" y="1250" width="1400" height="1400" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2050.0" y="1875.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Play mat</text>
+<text x="2050.0" y="2024.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1400×1400</text>
+<rect x="150" y="3150" width="600" height="2200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="375.25" y="4250.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 375.25 4250.0)">Study desk for two</text>
+<text x="524.75" y="4250.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 524.75 4250.0)">2200×600 · by window</text>
+<circle cx="980" cy="3700" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="980" cy="4800" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="1750" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="1750" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="1450" y="5250" width="1800" height="900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="2350.0" y="5625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">6-seat table</text>
+<text x="2350.0" y="5774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1800×900</text>
+<rect x="150" y="5500" width="400" height="1850" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="283.875" y="6425.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 283.875 6425.0)">Shoe cabinet + seat</text>
+<text x="416.125" y="6425.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 416.125 6425.0)">1850×400</text>
+<rect x="1800" y="6880" width="800" height="520" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2200.0" y="7076.75" font-size="110" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Stroller</text>
+<text x="2200.0" y="7203.25" font-size="95" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">800×520</text>
+<text x="1100" y="7800" font-size="140" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">Main door</text>
+<rect x="3100" y="8350" width="3400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4800.0" y="8575.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter · sink · hob</text>
+<text x="4800.0" y="8724.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">3400×600</text>
+<rect x="4560" y="6780" width="1940" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5530.0" y="7005.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter</text>
+<text x="5530.0" y="7154.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1940×600</text>
+<rect x="3100" y="7650" width="700" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3450.0" y="7933.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Fridge</text>
+<text x="3450.0" y="8066.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">700×700</text>
+<text x="5250" y="7880" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">KITCHEN</text>
+<text x="5250" y="8110" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 2.2 m</text>
+<text x="3950" y="6960" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">↑ glass slider here</text>
+<text x="3950" y="7100" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">if you wok-fry</text>
+<rect x="7400" y="6880" width="580" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7629.625" y="7480.0" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7629.625 7480.0)">Utility cabinet</text>
+<text x="7750.375" y="7480.0" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7750.375 7480.0)">1200×580</text>
+<rect x="7380" y="8320" width="600" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7680.0" y="8559.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">W+D</text>
+<text x="7680.0" y="8680.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">600×600</text>
+<text x="7050" y="8000" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557" transform="rotate(-90 7050 8000)">YARD</text>
+<rect x="4570" y="5990" width="1990" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5565.0" y="6139.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Free-standing racks</text>
+<text x="5565.0" y="6260.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1990×420</text>
+<text x="5560" y="5450" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">SHELTER</text>
+<text x="5560" y="5650" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">storeroom (not a bedroom)</text>
+<text x="7400" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 2</text>
+<text x="10000" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 1</text>
+<line x1="3800" y1="3900" x2="8150" y2="3900" stroke="#c46a1a" stroke-width="26" stroke-dasharray="20 50" stroke-linecap="round"/>
+<text x="5750" y="4130" font-size="105" font-weight="400" text-anchor="start" dominant-baseline="middle" fill="#c46a1a">aircon trunking (ceiling)</text>
+<rect x="8625" y="1500" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9000.25" y="2450.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9000.25 2450.0)">Single bed</text>
+<text x="9149.75" y="2450.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 9149.75 2450.0)">900×1900</text>
+<rect x="6750" y="150" width="600" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6983.875" y="750.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6983.875 750.0)">Wardrobe</text>
+<text x="7116.125" y="750.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7116.125 750.0)">1200×600</text>
+<rect x="7700" y="150" width="1000" height="500" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="8200.0" y="333.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Table</text>
+<text x="8200.0" y="466.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×500</text>
+<text x="7700" y="1600" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 2</text>
+<text x="7700" y="1840" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Helper</text>
+<text x="7700" y="2060" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.75 × 3.5 m</text>
+<rect x="9625" y="1000" width="1900" height="1830" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10575.0" y="1840.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">King bed</text>
+<text x="10575.0" y="1989.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1830×1900</text>
+<rect x="9625" y="550" width="400" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9825.0" y="760.0" font-size="100" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Side</text>
+<rect x="9625" y="2860" width="400" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9825.0" y="3070.0" font-size="100" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Side</text>
+<rect x="10300" y="4400" width="2150" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11375.0" y="4625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="11375.0" y="4774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2150×600</text>
+<text x="11000" y="3450" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">MAIN BEDROOM</text>
+<text x="11000" y="3690" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Parents</text>
+<text x="11000" y="3910" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.9 × 4.9 m + entry</text>
+<rect x="3700" y="150" width="1000" height="2000" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4200.0" y="1075.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Bunk bed</text>
+<text x="4200.0" y="1224.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×2000</text>
+<rect x="5750" y="150" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6133.875" y="1100.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6133.875 1100.0)">Toddler → single</text>
+<text x="6266.125" y="1100.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6266.125 1100.0)">900×1900</text>
+<rect x="3700" y="3100" width="1900" height="550" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4650.0" y="3300.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="4650.0" y="3449.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1900×550</text>
+<text x="5200" y="2550" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 3</text>
+<text x="5200" y="2790" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">All 3 kids (sleep)</text>
+<text x="2250" y="3780" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">LIVING / DINING</text>
+<text x="2250" y="4020" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Homework wall</text>
+<circle cx="3550" cy="1450" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="3550" y="1458" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">S1</text>
+<circle cx="6250" cy="5000" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="6250" y="5008" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">H1</text>
+<circle cx="7950" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7950" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B1</text>
+<circle cx="10720" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="10720" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B2</text>
+<circle cx="8840" cy="6250" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="8840" y="6258" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B3</text>
+<circle cx="7500" cy="6750" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7500" y="6758" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B4</text>
+<circle cx="3550" cy="3080" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="3550" y="3088" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W1</text>
+<circle cx="4500" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="4500" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W2</text>
+<circle cx="6700" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6700" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W3</text>
+<circle cx="8700" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8700" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W4</text>
+<circle cx="9575" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="9575" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W5</text>
+<circle cx="8300" cy="4300" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8300" y="4308" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W6</text>
+<circle cx="6550" cy="7150" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6550" y="7158" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W7</text>
+<circle cx="3050" cy="6950" r="150" fill="#fff" stroke="#8a8a8a" stroke-width="24"/>
+<text x="3050" y="6958" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#8a8a8a">K</text>
+<line x1="0" y1="-1000" x2="12600" y2="-1000" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-940" x2="60" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-940" x2="12660" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<text x="6300.0" y="-1130" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">12 600 overall</text>
+<line x1="-900" y1="0" x2="-900" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="60" x2="-840" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="9410" x2="-840" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-1030" y="4675.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -1030 4675.0)">9 350 overall</text>
+<rect x="7400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="7400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">0</text>
+<rect x="8400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">1</text>
+<rect x="9400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2</text>
+<rect x="10400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="10400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3</text>
+<text x="11400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">4 m</text>
+<text x="9400" y="10150" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Scale (to scale, dimensions in mm)</text>
+</svg></div>
+  <ul class="pc"><li><b>Pros:</b> toddler naps aren&#x27;t disturbed by homework; you can supervise from the kitchen; you keep the ensuite.</li><li><b>Cons:</b> TV and dining noise at homework time; the living room loses a wall to desks.</li></ul>
+</section>
+<section class="card" id="layout-d">
+  <header><span class="badge">D</span><h2>Layout D</h2><p class="sub">Kids next to you, helper by the living room</p></header>
+  <p class="lede">Bedroom 2: older two (bunk + desk for two). Bedroom 3: helper. Main: you + toddler&#x27;s cot. No walls removed.</p>
+  <div class="plan"><svg viewBox="-1250 -1350 14450 12150" role="img" aria-labelledby="t-D" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<title id="t-D">Layout D: Kids next to you, helper by the living room</title>
+<defs><pattern id="hatch" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="120" stroke="#c9c2b2" stroke-width="22"/></pattern></defs>
+<rect x="-1250" y="-1350" width="14450" height="12150" fill="#fbf8f1"/>
+<rect x="8650" y="6850" width="2530" height="950" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="9915" y="7330" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Aircon ledge</text>
+<rect x="8130" y="6880" width="470" height="2070" fill="url(#hatch)" stroke="#8a8a8a" stroke-width="20"/>
+<text x="8365" y="7900" font-size="120" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" transform="rotate(-90 8365 7900)">Drying rack</text>
+<rect x="-125" y="2410" width="250" height="3020" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="0.0" y1="2410" x2="0.0" y2="5430" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="125" y="625" width="3275" height="150" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="125" y1="700.0" x2="3400" y2="700.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="3700" y="-125" width="2100" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="3700" y1="0.0" x2="5800" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7600" y="-125" width="4875" height="250" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="7600" y1="0.0" x2="12475" y2="0.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="12475" y="1900" width="250" height="3100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="12600.0" y1="1900" x2="12600.0" y2="5000" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="8200" y="6700" width="560" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8200" y1="6750.0" x2="8760" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="9570" y="6700" width="760" height="100" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="9570" y1="6750.0" x2="10330" y2="6750.0" stroke="#1b1b1b" stroke-width="12"/>
+<rect x="7990" y="6800" width="120" height="2200" fill="#dfeaf2" stroke="#1b1b1b" stroke-width="22"/>
+<line x1="8050.0" y1="6800" x2="8050.0" y2="9000" stroke="#1b1b1b" stroke-width="12"/>
+<polyline points="3050,7150 3050,6750 4230,6750" fill="none" stroke="#8a8a8a" stroke-width="22" stroke-dasharray="25 55" stroke-linecap="round"/>
+<rect x="-125" y="575" width="250" height="1835" fill="#1b1b1b"/>
+<rect x="-125" y="5430" width="250" height="2145" fill="#1b1b1b"/>
+<rect x="3400" y="-125" width="300" height="2615" fill="#1b1b1b"/>
+<rect x="5800" y="-125" width="1800" height="250" fill="#1b1b1b"/>
+<rect x="12475" y="-125" width="250" height="2025" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="1545" height="300" fill="#1b1b1b"/>
+<rect x="11180" y="5000" width="370" height="1850" fill="#1b1b1b"/>
+<rect x="125" y="7425" width="425" height="150" fill="#1b1b1b"/>
+<rect x="1650" y="7425" width="1050" height="150" fill="#1b1b1b"/>
+<rect x="2700" y="7150" width="350" height="2200" fill="#1b1b1b"/>
+<rect x="2700" y="9000" width="5370" height="350" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="550" height="300" fill="#1b1b1b"/>
+<rect x="5550" y="4850" width="1350" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="6450" width="2670" height="300" fill="#1b1b1b"/>
+<rect x="4230" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6600" y="4850" width="300" height="1900" fill="#1b1b1b"/>
+<rect x="6900" y="5000" width="150" height="100" fill="#1b1b1b"/>
+<rect x="7800" y="5000" width="1040" height="100" fill="#1b1b1b"/>
+<rect x="8840" y="5000" width="580" height="100" fill="#1b1b1b"/>
+<rect x="10260" y="5000" width="920" height="100" fill="#1b1b1b"/>
+<rect x="8790" y="5000" width="100" height="1750" fill="#1b1b1b"/>
+<rect x="6900" y="6700" width="1300" height="100" fill="#1b1b1b"/>
+<rect x="8760" y="6700" width="810" height="100" fill="#1b1b1b"/>
+<rect x="10330" y="6700" width="850" height="100" fill="#1b1b1b"/>
+<rect x="3490" y="2490" width="120" height="1210" fill="#1f8a4c"/>
+<rect x="3490" y="3640" width="2180" height="120" fill="#1f8a4c"/>
+<rect x="6560" y="3640" width="200" height="120" fill="#1f8a4c"/>
+<rect x="6640" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="6640" y="3640" width="220" height="120" fill="#1f8a4c"/>
+<rect x="7750" y="3640" width="1885" height="120" fill="#1f8a4c"/>
+<rect x="9515" y="125" width="120" height="3575" fill="#1f8a4c"/>
+<rect x="8240" y="3700" width="120" height="200" fill="#1f8a4c"/>
+<rect x="8240" y="4880" width="120" height="120" fill="#1f8a4c"/>
+<rect x="6500" y="6750" width="100" height="750" fill="#1f8a4c"/>
+<rect x="6500" y="8350" width="100" height="650" fill="#1f8a4c"/>
+<path d="M1550,7500 A1000,1000 0 0 0 550,6500" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="550" y1="7500" x2="550" y2="6500" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M5670,3700 A890,890 0 0 1 6560,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6560" y1="3700" x2="6560" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M7750,3700 A890,890 0 0 0 6860,2810" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="6860" y1="3700" x2="6860" y2="2810" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M8300,3900 A980,980 0 0 1 9280,4880" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="8300" y1="4880" x2="9280" y2="4880" stroke="#2b2b2b" stroke-width="30"/>
+<path d="M4780,4850 A770,770 0 0 1 5550,4080" fill="none" stroke="#8a8a8a" stroke-width="18" stroke-dasharray="60 40"/><line x1="5550" y1="4850" x2="5550" y2="4080" stroke="#2b2b2b" stroke-width="30"/>
+<rect x="150" y="900" width="900" height="2100" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="525.25" y="1950.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 525.25 1950.0)">Sofa</text>
+<text x="674.75" y="1950.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 674.75 1950.0)">2100×900</text>
+<rect x="3000" y="950" width="400" height="1800" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3133.875" y="1850.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3133.875 1850.0)">TV console</text>
+<text x="3266.125" y="1850.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 3266.125 1850.0)">1800×400</text>
+<rect x="1350" y="1250" width="1400" height="1400" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2050.0" y="1875.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Play mat</text>
+<text x="2050.0" y="2024.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1400×1400</text>
+<text x="2050" y="2860" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b5a3a" font-style="italic">(instead of a coffee table)</text>
+<circle cx="1750" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="1750" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2350" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="5020" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="2950" cy="6380" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="1450" y="5250" width="1800" height="900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="2350.0" y="5625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">6-seat table</text>
+<text x="2350.0" y="5774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1800×900</text>
+<rect x="150" y="5500" width="400" height="1850" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="283.875" y="6425.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 283.875 6425.0)">Shoe cabinet + seat</text>
+<text x="416.125" y="6425.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 416.125 6425.0)">1850×400</text>
+<rect x="1800" y="6880" width="800" height="520" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18" stroke-dasharray="60 40"/>
+<text x="2200.0" y="7076.75" font-size="110" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Stroller</text>
+<text x="2200.0" y="7203.25" font-size="95" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">800×520</text>
+<text x="1100" y="7800" font-size="140" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#555">Main door</text>
+<rect x="3100" y="8350" width="3400" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4800.0" y="8575.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter · sink · hob</text>
+<text x="4800.0" y="8724.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">3400×600</text>
+<rect x="4560" y="6780" width="1940" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5530.0" y="7005.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Counter</text>
+<text x="5530.0" y="7154.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1940×600</text>
+<rect x="3100" y="7650" width="700" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="3450.0" y="7933.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Fridge</text>
+<text x="3450.0" y="8066.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">700×700</text>
+<text x="5250" y="7880" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">KITCHEN</text>
+<text x="5250" y="8110" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 2.2 m</text>
+<text x="3950" y="6960" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">↑ glass slider here</text>
+<text x="3950" y="7100" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#6b6b6b" font-style="italic">if you wok-fry</text>
+<rect x="7400" y="6880" width="580" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7629.625" y="7480.0" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7629.625 7480.0)">Utility cabinet</text>
+<text x="7750.375" y="7480.0" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7750.375 7480.0)">1200×580</text>
+<rect x="7380" y="8320" width="600" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="7680.0" y="8559.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">W+D</text>
+<text x="7680.0" y="8680.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">600×600</text>
+<text x="7050" y="8000" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557" transform="rotate(-90 7050 8000)">YARD</text>
+<rect x="4570" y="5990" width="1990" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5565.0" y="6139.625" font-size="105" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Free-standing racks</text>
+<text x="5565.0" y="6260.375" font-size="90" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1990×420</text>
+<text x="5560" y="5450" font-size="150" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">SHELTER</text>
+<text x="5560" y="5650" font-size="105" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555" font-style="italic">storeroom (not a bedroom)</text>
+<text x="7400" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 2</text>
+<text x="10000" y="5900" font-size="140" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BATH 1</text>
+<line x1="3800" y1="3900" x2="8150" y2="3900" stroke="#c46a1a" stroke-width="26" stroke-dasharray="20 50" stroke-linecap="round"/>
+<text x="5750" y="4130" font-size="105" font-weight="400" text-anchor="start" dominant-baseline="middle" fill="#c46a1a">aircon trunking (ceiling)</text>
+<rect x="9625" y="1000" width="1900" height="1830" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10575.0" y="1840.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">King bed</text>
+<text x="10575.0" y="1989.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1830×1900</text>
+<rect x="9750" y="250" width="1300" height="700" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="10400.0" y="533.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Cot</text>
+<text x="10400.0" y="666.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1300×700 · age 2</text>
+<rect x="9625" y="2860" width="400" height="420" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9825.0" y="3070.0" font-size="100" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Side</text>
+<rect x="10300" y="4400" width="2150" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="11375.0" y="4625.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Wardrobe</text>
+<text x="11375.0" y="4774.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2150×600</text>
+<text x="11000" y="3450" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">MAIN BEDROOM</text>
+<text x="11000" y="3690" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Parents + toddler</text>
+<text x="11000" y="3910" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.9 × 4.9 m + entry</text>
+<rect x="3700" y="1500" width="900" height="1900" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="4075.25" y="2450.0" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 4075.25 2450.0)">Single bed</text>
+<text x="4224.75" y="2450.0" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 4224.75 2450.0)">900×1900</text>
+<rect x="6050" y="300" width="600" height="1200" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6283.875" y="900.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6283.875 900.0)">Wardrobe</text>
+<text x="6416.125" y="900.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6416.125 900.0)">1200×600</text>
+<rect x="4700" y="150" width="1000" height="500" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="5200.0" y="333.875" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Table</text>
+<text x="5200.0" y="466.125" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×500</text>
+<text x="5300" y="2000" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BEDROOM 3</text>
+<text x="5300" y="2240" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Helper</text>
+<text x="5300" y="2460" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.0 × 3.5 m</text>
+<rect x="7525" y="150" width="2000" height="600" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="8525.0" y="375.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Desk for two</text>
+<text x="8525.0" y="524.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">2000×600</text>
+<circle cx="8000" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<circle cx="9050" cy="1000" r="200" fill="#fff" stroke="#8a6d3b" stroke-width="16"/>
+<rect x="8525" y="1550" width="1000" height="2000" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="9025.0" y="2475.25" font-size="130" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">Bunk bed</text>
+<text x="9025.0" y="2624.75" font-size="115" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c">1000×2000</text>
+<rect x="6750" y="150" width="600" height="1500" fill="#efe6d4" stroke="#8a6d3b" stroke-width="18"/>
+<text x="6983.875" y="900.0" font-size="115" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 6983.875 900.0)">Wardrobe</text>
+<text x="7116.125" y="900.0" font-size="100" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#4a3a1c" transform="rotate(-90 7116.125 900.0)">1500×600</text>
+<text x="7700" y="2300" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">BED 2</text>
+<text x="7700" y="2540" font-size="170" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#b5452b">Kids 6 &amp; 9</text>
+<text x="7700" y="2770" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 2.75 × 3.5 m</text>
+<text x="1750" y="3550" font-size="210" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1d3557">LIVING / DINING</text>
+<text x="1750" y="3780" font-size="135" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">≈ 3.4 × 6.7 m</text>
+<circle cx="3550" cy="1450" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="3550" y="1458" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">S1</text>
+<circle cx="6250" cy="5000" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="6250" y="5008" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">H1</text>
+<circle cx="7950" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7950" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B1</text>
+<circle cx="10720" cy="5050" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="10720" y="5058" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B2</text>
+<circle cx="8840" cy="6250" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="8840" y="6258" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B3</text>
+<circle cx="7500" cy="6750" r="150" fill="#fff" stroke="#1b1b1b" stroke-width="24"/>
+<text x="7500" y="6758" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1b1b1b">B4</text>
+<circle cx="3550" cy="3080" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="3550" y="3088" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W1</text>
+<circle cx="4500" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="4500" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W2</text>
+<circle cx="6700" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6700" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W3</text>
+<circle cx="8700" cy="3700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8700" y="3708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W4</text>
+<circle cx="9575" cy="1700" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="9575" y="1708" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W5</text>
+<circle cx="8300" cy="4300" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="8300" y="4308" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W6</text>
+<circle cx="6550" cy="7150" r="150" fill="#fff" stroke="#1f8a4c" stroke-width="24"/>
+<text x="6550" y="7158" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1f8a4c">W7</text>
+<circle cx="3050" cy="6950" r="150" fill="#fff" stroke="#8a8a8a" stroke-width="24"/>
+<text x="3050" y="6958" font-size="130" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#8a8a8a">K</text>
+<line x1="0" y1="-1000" x2="12600" y2="-1000" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-60" y1="-940" x2="60" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="12540" y1="-940" x2="12660" y2="-1060" stroke="#2b2b2b" stroke-width="14"/>
+<text x="6300.0" y="-1130" font-size="160" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">12 600 overall</text>
+<line x1="-900" y1="0" x2="-900" y2="9350" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="60" x2="-840" y2="-60" stroke="#2b2b2b" stroke-width="14"/>
+<line x1="-960" y1="9410" x2="-840" y2="9290" stroke="#2b2b2b" stroke-width="14"/>
+<text x="-1030" y="4675.0" font-size="160" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b" transform="rotate(-90 -1030 4675.0)">9 350 overall</text>
+<rect x="7400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="7400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">0</text>
+<rect x="8400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="8400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">1</text>
+<rect x="9400" y="10320" width="1000" height="120" fill="#2b2b2b" stroke="#2b2b2b" stroke-width="14"/>
+<text x="9400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">2</text>
+<rect x="10400" y="10320" width="1000" height="120" fill="#fff" stroke="#2b2b2b" stroke-width="14"/>
+<text x="10400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">3</text>
+<text x="11400" y="10610" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#2b2b2b">4 m</text>
+<text x="9400" y="10150" font-size="140" font-weight="400" text-anchor="middle" dominant-baseline="middle" fill="#555">Scale (to scale, dimensions in mm)</text>
+</svg></div>
+  <ul class="pc"><li><b>Pros:</b> kids share a wall with your room; helper&#x27;s room is on the living/kitchen side, giving everyone more privacy.</li><li><b>Cons:</b> kids get the smaller room (2.0 m desk instead of 2.4 m) and the helper gets the bigger one.</li></ul>
+</section>
+  <section class="card foot">
+    <h2>Before any work starts</h2>
+    <ul>
+      <li>None of these layouts hacks a wall. If you later change your mind, your DRC contractor applies for the HDB permit, and a Professional Engineer is needed for any reinforced-concrete wall.</li>
+      <li>Find out the block's completion date: bathroom walls and floors can't be touched for the first 3 years.</li>
+      <li>Check walls for switches, pipes and trunking, and the ceiling for beams, before planning built-ins.</li>
+      <li>Measure on site before ordering furniture, especially the bunk, the desks and the wardrobes.</li>
+      <li>These plans are read from a photo of the plan. Check every size against the official HDB floor plan.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
