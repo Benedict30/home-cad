@@ -1,6 +1,6 @@
 # Home CAD
 
-Plan your BTO with AI. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
+Plan your BTO with Claude. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
 
 **See real results:** https://benedict30.github.io/home-cad/examples/
 
