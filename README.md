@@ -2,6 +2,8 @@
 
 Plan your BTO with Claude. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
 
+**Try it:** https://benedict30.github.io/home-cad/ opens the CAD app on four households planned with the skill. Press the arrows to step through their layouts in 2D, 3D or walking.
+
 **See real results:** https://benedict30.github.io/home-cad/examples/
 
 ## Plan your own flat with the free skill
@@ -49,6 +51,8 @@ End with what to confirm with HDB or my contractor before any hacking.
 **Before you hack anything:** AI can misread a photo. Check every wall against your official HDB floor plan, and get HDB's approval and an HDB-registered (DRC) contractor before any work starts.
 
 ## The 3D planner
+
+The 4-Room demo flat this all started from is at https://benedict30.github.io/home-cad/#demo.
 
 A browser-based home planner for a 4-Room Type 3 HDB flat, traced from the HDB floor plan at millimetre scale.
 

@@ -520,11 +520,15 @@ furniture x,y is the centre; w runs along x and d along y before rotating; rot i
 kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other. The name also picks the 3D model (e.g. "Queen bed", "Cot", "Cat tree", "Fridge").
 The app opens on the layouts with arrows to step through them, in 2D, 3D and Walk; "Knock down" colours and tags the walls. */
 const PLANS=/*PLANS-START*/{}/*PLANS-END*/;   // other households' flats on the website, opened as #name
-const PLANSLUG=(()=>{const h=(location.hash||'').slice(1).split(/[\/?]/)[0];return Object.prototype.hasOwnProperty.call(PLANS,h)?h:'';})();
-const PLANDATA=/*PLAN-START*/null/*PLAN-END*/||(PLANSLUG?PLANS[PLANSLUG].plan:null);
-const setHash=x=>{try{history.replaceState(null,'','#'+(PLANSLUG||x));}catch(e){}};
+const HOME_KEYS=Object.keys(PLANS),H0=(location.hash||'').slice(1).split(/[\/?]/)[0];
+const SINGLE=/*PLAN-START*/null/*PLAN-END*/;
+// plan: one plan the skill filled in · homes: the website's households, one arrow run · own: Ben's flat (#demo, #combo-…)
+const MODE=SINGLE?'plan':HOME_KEYS.length&&!/^(demo|combo-.*|model|walk|plan)$/.test(H0)?'homes':'own';
+let PLANSLUG=MODE==='homes'?(HOME_KEYS.includes(H0)?H0:HOME_KEYS[0]):'';
+let PLANDATA=SINGLE||(PLANSLUG?PLANS[PLANSLUG].plan:null);
+const setHash=x=>{if(MODE!=='own')return;try{history.replaceState(null,'','#'+x);}catch(e){}};   // the households link never changes
 const strHash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return(h>>>0).toString(36);};
-const PLANKEY=PLANDATA?'p'+strHash(JSON.stringify(PLANDATA.walls||[])):'';   // keeps each plan's saves apart
+const PLANKEY=MODE==='homes'?'homes':PLANDATA?'p'+strHash(JSON.stringify(PLANDATA.walls||[])):'';   // keeps each plan's saves apart
 const lsKey=k=>PLANKEY?k.replace(/^hcad\./,'hcad.'+PLANKEY+'.'):k;
 const LS={get(k){try{return localStorage.getItem(lsKey(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(lsKey(k),v);return true}catch(e){return false}}};
 
@@ -677,7 +681,7 @@ let DIMS=[ // exterior dimension chains, exactly as on the plan
   {ax:'y',line:13600,from:[[12600,0],[8070,9350]]},
 ];
 function defaultModel(){
-  if(PLANDATA)return planModel(PLANDATA.layouts.find(l=>l.best)||PLANDATA.layouts[0]||null);
+  if(PLANDATA){const m=planModel(PLANDATA.layouts.find(l=>l.best)||PLANDATA.layouts[0]||null);if(PLANSLUG)m.meta.home=PLANSLUG;return m;}
   const walls=[];
   const W=(id,a,b,t,kind,ops=[])=>walls.push({id,a,b,t,kind,openings:ops.map((o,i)=>Object.assign({id:id+'-o'+i,orig:true},o))});
   const win=(at,w,x)=>Object.assign({type:'window',at,w,sill:900,head:2400},x||{});
@@ -776,16 +780,22 @@ function planStart(m){   // just inside the main door, facing in
     for(const sg of[1,-1]){const x=c[0]+f.nx*sg*800,y=c[1]+f.ny*sg*800;if(m.rooms.some(r=>inPoly([x,y],r.poly)))return{x,y,yaw:Math.atan2(f.nx*sg,-f.ny*sg)};}}
   const r=m.rooms.reduce((a,b)=>polyArea(b.poly)>polyArea(a.poly)?b:a),c=planCentroid(r.poly);return{x:c[0],y:c[1],yaw:0};
 }
-const ORIG=PLANDATA?planModel(null):defaultModel();
+let ORIG=PLANDATA?planModel(null):defaultModel(),ORIG_WALL,ORIG_FLOOR;
 let OPEN_EDGES=[KITCHEN_EDGE],WALK0={x:1215,y:6600,yaw:0};
-if(PLANDATA){
+function flatFromPlan(){   // everything that depends on which flat is loaded
+  ORIG=planModel(null);ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));
   OUTLINE=null;LEDGE=null;RACK=null;OPEN_EDGES=PLANDATA.walls.filter(w=>w.type==='open').map(w=>[w.a,w.b]);WALK0=planStart(ORIG);
   if(Array.isArray(PLANDATA.start)){const a=(PLANDATA.startYaw||0)*Math.PI/180;WALK0={x:PLANDATA.start[0],y:PLANDATA.start[1],yaw:Math.atan2(Math.cos(a),-Math.sin(a))};}
   let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const w of PLANDATA.walls){if(w.type==='open')continue;const h=(w.t||120)/2;for(const p of[w.a,w.b]){x0=Math.min(x0,p[0]-h);y0=Math.min(y0,p[1]-h);x1=Math.max(x1,p[0]+h);y1=Math.max(y1,p[1]+h);}}
   DIMS=[{ax:'x',line:y0-450,from:[[x0,y0],[x1,y0]]},{ax:'y',line:x0-450,from:[[x0,y0],[x0,y1]]}];
 }
-const ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));
-const ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));
+if(PLANDATA)flatFromPlan();else{ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));}
+function homeLabel(){return PLANSLUG?PLANS[PLANSLUG].label:'Your HDB flat';}
+function switchPlan(slug){   // households mode: load another household's flat
+  if(!slug||slug===PLANSLUG||!PLANS[slug])return;PLANSLUG=slug;PLANDATA=PLANS[slug].plan;flatFromPlan();
+  if(typeof walk!=='undefined'){walk.x=WALK0.x;walk.y=WALK0.y;walk.yaw=WALK0.yaw;}if(typeof minimapDirty!=='undefined')minimapDirty=true;
+  const bs=document.getElementById('brand-sub');if(bs)bs.textContent=homeLabel();document.title='Home CAD · '+homeLabel();
+}
 
 // ============================================================ state
 let pristine=true, explore=null;
@@ -913,7 +923,7 @@ function comboTitle(f){return layoutOf(f).title;}
 function comboSub(f){return layoutOf(f).sub;}
 function comboWalls(f){return (f||'').split('-')[0];}
 function buildCombo(f){
-  if(PLANDATA){const P=PLANLIST.find(l=>l.k===f);return planModel(P?P.plan:null);}
+  if(PLANDATA){const P=PLANLIST.find(l=>l.k===f);if(P&&P.home)switchPlan(P.home);const m=planModel(P?P.plan:null);if(P){m.meta.combo=P.k;if(P.home)m.meta.home=P.home;}return m;}
   const DL=DESIGN.find(l=>l.k===f);if(DL)return buildIdea(DL);
   const HL=HOMES.find(l=>l.k===f);if(HL)return buildHome(HL);
   const BL=BOLD.find(l=>l.k===f);if(BL)return buildBold(BL);
@@ -1321,12 +1331,14 @@ function buildHome(L){
   m.items.forEach(it=>{if(it.col===undefined)it.col=TYPES[it.type].col;});
   m.meta.name=L.title;m.meta.combo=L.k;return m;
 }
+const SKILLSET=MODE==='homes'?'skill':'plan';
 DESIGN.forEach(l=>l.set='ideas');HOMES.forEach(l=>l.set='homes');LAYOUTS.forEach(l=>l.set='practical');BOLD.forEach(l=>l.set='bold');
-const PLANLIST=PLANDATA?PLANDATA.layouts.map((L,i)=>{const n=(L.removed||[]).length,g=(L.added||[]).length;
-  return{k:'L'+i,set:'plan',plan:L,title:L.title,sub:[L.phase?(L.phase[0].toUpperCase()+L.phase.slice(1)):'',n?n+(n>1?' walls':' wall')+' down':'No hacking',g?g+' new':''].filter(Boolean).join(' · '),for:L.summary||'',
-    tags:[L.best?'Best fit':'',...(L.removed||[]).map(id=>id+' comes down')].filter(Boolean)};}):[];
-const ALL_LAYOUTS=PLANDATA?PLANLIST:[...DESIGN,...HOMES,...LAYOUTS,...BOLD];
-const SETS=PLANDATA?{plan:PLANLIST}:{ideas:DESIGN,homes:HOMES,practical:LAYOUTS,bold:BOLD},SET_NAMES=PLANDATA?{plan:'Your layouts'}:{ideas:'Design ideas',homes:'Households',practical:'Layouts',bold:'Out of the box'};
+const planEntry=(L,k,set,home)=>{const n=(L.removed||[]).length,g=(L.added||[]).length;
+  return{k,set,home,plan:L,title:L.title,sub:[home?PLANS[home].label:'',L.phase?(L.phase[0].toUpperCase()+L.phase.slice(1)):'',n?n+(n>1?' walls':' wall')+' down':'No hacking',g?g+' new':''].filter(Boolean).join(' · '),for:L.summary||'',
+    tags:[L.best?'Best fit':'',...(L.removed||[]).map(id=>id+' comes down')].filter(Boolean)};};
+const PLANLIST=MODE==='homes'?HOME_KEYS.flatMap(h=>PLANS[h].plan.layouts.map(L=>planEntry(L,'',SKILLSET,h))).map((e,i)=>Object.assign(e,{k:'H'+i})):MODE==='plan'?PLANDATA.layouts.map((L,i)=>planEntry(L,'L'+i,SKILLSET,'')):[];
+const ALL_LAYOUTS=MODE!=='own'?PLANLIST:[...DESIGN,...HOMES,...LAYOUTS,...BOLD];
+const SETS=MODE!=='own'?{[SKILLSET]:PLANLIST}:{ideas:DESIGN,homes:HOMES,practical:LAYOUTS,bold:BOLD},SET_NAMES=MODE!=='own'?{[SKILLSET]:MODE==='homes'?'Households':'Your layouts'}:{ideas:'Design ideas',homes:'Households',practical:'Layouts',bold:'Out of the box'};
 const COMBOS=ALL_LAYOUTS.map(l=>l.k);
 const layoutOf=f=>ALL_LAYOUTS.find(l=>l.k===f)||{title:'',sub:'',for:'',set:''};
 const COMBO_FOR=Object.fromEntries(ALL_LAYOUTS.map(l=>[l.k,l.for]));
@@ -2022,7 +2034,9 @@ function setView(v,fromHash){
   if(!fromHash&&!explore)setHash(v);
 }
 $$('.views button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-addEventListener('hashchange',()=>{const h=location.hash.slice(1),sl=h.split(/[\/?]/)[0];if((PLANS[sl]&&sl!==PLANSLUG)||(PLANSLUG&&!h)){location.reload();return;}const c=parseCombo(h);if(c!==null){if(!explore||model.meta.combo!==c)enterExplore(c);return;}if(h&&h!==viewMode)setView(h,true);});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1),sl=h.split(/[\/?]/)[0];
+  if(MODE==='homes'){if(HOME_KEYS.includes(sl)){jumpHome(sl);return;}if(/^(demo|combo-.*|model|walk|plan)$/.test(h))location.reload();return;}
+  if(MODE==='own'&&(!h||HOME_KEYS.includes(sl))){location.reload();return;}const c=parseCombo(h);if(c!==null){if(!explore||model.meta.combo!==c)enterExplore(c);return;}if(h&&h!==viewMode)setView(h,true);});
 
 // ============================================================ library
 const thumbs={};
@@ -2304,10 +2318,11 @@ async function loadIdea(k){
   toast('Loaded “'+I.name+'”. Undo goes back.');
 }
 $('#b-knock').onclick=openKnock;
-const HUB={plan:'The layouts Claude drew for your household, best fit first.',ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
+const HUB={skill:'Four households planned with the free skill, all on the same 4-Room floor plan: dog owners, collectors, working from home, and streamers with cats.',plan:'The layouts Claude drew for your household, best fit first.',ideas:'Popular BTO styles kept practical for everyday living: Scandinavian, Japandi, semi-open kitchen, three generations and more.',homes:'Homes planned around how 14 kinds of Singapore households live: big families, pets, collectors, home chefs, creators, elder care and more.',practical:'Ways to use the walls HDB lets you knock down: open study, master suite, twin kids’ room, office for two and more.',bold:'Bolder ideas with glass walls and raised platforms: home cinema, tatami room, studio loft, wellness suite and more.'};
+function jumpHome(sl){const i=PLANLIST.findIndex(l=>l.home===sl);if(i<0)return;if(!explore)enterExplore(PLANLIST[i].k);else goCombo(i);closeModal();}
 function openLayouts(){
-  openModal('Ready-made layouts',`<p class="note">${ALL_LAYOUTS.length} furnished layouts of your flat${Object.keys(SETS).length>1?' in '+Object.keys(SETS).length+' sets':''}. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div>${Object.keys(PLANS).length?`<h4 class="hub-h">Other flats planned with the skill</h4><div class="hub-all">${Object.entries(PLANS).filter(([k])=>k!==PLANSLUG).map(([k,v])=>`<a class="tb" href="#${k}">${esc(v.label)}</a>`).join('')}${PLANSLUG?'<a class="tb" href="#">The 4-Room demo flat</a>':''}</div>`:''}<div class="hub-all"><button class="tb" data-hub="all">See all ${ALL_LAYOUTS.length} in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
-  $('#m-body').onclick=e=>{const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
+  openModal('Ready-made layouts',`<p class="note">${ALL_LAYOUTS.length} furnished layouts of your flat${Object.keys(SETS).length>1?' in '+Object.keys(SETS).length+' sets':''}. Pick a set, then step through it with the arrows on the plan, in 3D or walking. Your own layout stays saved and comes back when you finish.</p><div class="hub">${Object.keys(SETS).map(s=>`<button data-hub="${s}"><b>${SET_NAMES[s]}<i>${SETS[s].length} layouts</i></b><span>${HUB[s]||''}</span><em>${SETS[s].slice(0,4).map(l=>esc(l.title)).join(' · ')} …</em></button>`).join('')}</div>${MODE==='homes'?`<h4 class="hub-h">Jump to a household</h4><div class="hub-all">${HOME_KEYS.map(k=>`<button class="tb" data-home="${k}">${esc(PLANS[k].label)}</button>`).join('')}<a class="tb" href="#demo">The 4-Room demo flat</a></div>`:MODE==='own'&&HOME_KEYS.length?`<h4 class="hub-h">Households planned with the skill</h4><div class="hub-all">${HOME_KEYS.map(k=>`<a class="tb" href="#${k}">${esc(PLANS[k].label)}</a>`).join('')}</div>`:''}<div class="hub-all"><button class="tb" data-hub="all">See all ${ALL_LAYOUTS.length} in one list</button><a class="tb" href="https://benedict30.github.io/home-cad/examples/" target="_blank" rel="noopener">Real results for other households</a></div>`);
+  $('#m-body').onclick=e=>{const hb=e.target.closest('[data-home]');if(hb){jumpHome(hb.dataset.home);return;}const b=e.target.closest('[data-hub]');if(!b)return;if(b.dataset.hub==='all')showAllCombos();else enterExplore(null,b.dataset.hub);};
 }
 $('#b-layouts').onclick=openLayouts;
 
@@ -2338,7 +2353,7 @@ function updExplore(){
 function exitExplore(restore,quiet){
   if(!explore)return;const snap=explore.snapshot;explore=null;
   $('#explore').hidden=true;$('#app').classList.remove('exploring');exploreHeight();
-  if(restore&&snap){model=snap;sel=null;commit();pristine=false;if(!quiet)toast('Back to your layout');}
+  if(restore&&snap){if(snap.meta&&snap.meta.home)switchPlan(snap.meta.home);model=snap;sel=null;commit();pristine=false;if(!quiet)toast('Back to your layout');}
   else{Store.schedule();if(!quiet)toast('Kept “'+model.meta.name+'” as your layout');}
   setHash(viewMode);
 }
@@ -2988,14 +3003,14 @@ new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,
 // ============================================================ boot
 function topHeight(){const h=$('#topbar').getBoundingClientRect().height,s=$('#status').getBoundingClientRect().height;document.documentElement.style.setProperty('--top-h',(h+(parseFloat(getComputedStyle(document.documentElement).paddingTop)||0))+'px');document.documentElement.style.setProperty('--status-h',s+'px');}
 function boot(){
-  readPal();if(PLANDATA){const bs=document.getElementById('brand-sub'),lb=PLANSLUG?PLANS[PLANSLUG].label:'Your HDB flat';if(bs)bs.textContent=lb;document.title='Home CAD · '+lb;}
-  const local=readLocal();model=normalize(local?copy(local.model):defaultModel());histReset();pristine=!local;updHackLeg();
+  readPal();if(PLANDATA){const bs=document.getElementById('brand-sub');if(bs)bs.textContent=homeLabel();document.title='Home CAD · '+homeLabel();}
+  const local=readLocal();if(local&&MODE==='homes'&&local.model.meta&&local.model.meta.home&&!HOME_KEYS.includes(H0))switchPlan(local.model.meta.home);model=normalize(local?copy(local.model):defaultModel());histReset();pristine=!local;updHackLeg();
   renderLibrary();updChips();setTool('select');setTab('inspect');updateSun();
   topHeight();resizePlan();fitView();
   const ro=new ResizeObserver(()=>{topHeight();const keep=toW(CW/2,CH/2);resizePlan();if(view._fitted){view.ox=CW/2-keep[0]*view.s;view.oy=CH/2-keep[1]*view.s;}resize3D();});ro.observe(stage);view._fitted=true;
   const h=location.hash.slice(1);if(h==='model'||h==='walk')setView(h,true);
   setSave(local?'ok':'ok',local?'Saved on this device':'Saved on this device');
-  const c0=parseCombo(h);if(c0!==null)enterExplore(c0);else if(PLANDATA&&!local)enterExplore(null,Object.keys(SETS)[0]);
+  const c0=parseCombo(h);if(c0!==null)enterExplore(c0);else if(MODE==='homes'){const i=Math.max(0,PLANLIST.findIndex(l=>l.home===(HOME_KEYS.includes(H0)?H0:HOME_KEYS[0])));enterExplore(PLANLIST[i].k);}else if(PLANDATA&&!local)enterExplore(null,Object.keys(SETS)[0]);
   Store.init();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{requestDraw();renderLibrary();});
 }
