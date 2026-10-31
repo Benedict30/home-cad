@@ -17,7 +17,7 @@ Never repeat block or unit numbers from the plan in your answer or drawings.
 
 ## 2. Read the plan
 
-- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. Don't trust where the chain ticks land: some hit wall centre-lines and some hit wall faces. Instead, scale the photo from the overall chains, measuring x and y separately because photos are often skewed, and measure each wall's centre in pixels. If you can run code, draw your walls back onto the photo to check they line up. Usable space is about 100–200 mm smaller than centre-line sizes.
+- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. Don't trust where the chain ticks land: some hit wall centre-lines and some hit wall faces. Instead, scale the photo from the overall chains, measuring x and y separately because photos are often skewed, and measure each wall's centre in pixels. Then draw your walls back onto the photo with `scripts/overlay.py` and fix any that drift. Usable space is about 100–200 mm smaller than centre-line sizes.
 - List each room with its rough size, windows and doors.
 - Find:
   - the household shelter (a thick box with a heavy door)
@@ -58,6 +58,20 @@ For each layout, give:
 - one line of pros and one line of cons
 
 Keep walkways at least 800 mm wide. Gaps beside a bed can be narrower, down to about 550 mm.
+
+Common sizes in Singapore, in mm (width × depth):
+
+| Item | Size |
+|---|---|
+| Single / super single / queen / king bed | 900 × 1900 / 1070 × 2000 / 1530 × 1990 / 1830 × 1990 |
+| Cot | 1300 × 700 |
+| Wardrobe | 600 deep, any width |
+| Desk | 1200–1600 × 600–700 |
+| 3-seat sofa | 2000 × 900 |
+| Dining table for 4 / 6 | 1400 × 800 / 1800 × 900 |
+| TV console | 1400–1800 × 400 |
+| Shoe cabinet with seat | 900 × 350 |
+| Washer-dryer, fridge | 600 × 650, 700 × 700 |
 
 If a life change is coming, show the layout **now** and **after** the change. If what's coming isn't a change to who lives there (more video calls, say), plan for it from day one and skip the now/after. A now/after pair counts as one layout. Give the best layout both versions. If the change affects every layout, give the others their "after" version only, and describe the "now" in one line. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
 
@@ -118,7 +132,8 @@ Everyday Singapore must-haves for any layout:
 
 Use the bundled app, `assets/home-cad.html`: a self-contained home CAD planner with a floor plan, a 3D model, a walk-through, furniture editing and export. Don't write your own drawing code.
 
-- Copy the file exactly and replace only `null` between `/*PLAN-START*/` and `/*PLAN-END*/` with the plan JSON. The comment above it explains every field.
+Write the plan as a JSON file (`plan.json`). The comment above `/*PLAN-START*/` in `assets/home-cad.html` explains every field.
+
 - **Describe the flat once:**
   - every wall, tagged as in the wall check, with its ends in mm, its thickness and its type
   - the doors and windows on each wall; give doors `hinge` and `flip` so they swing as on the plan
@@ -130,17 +145,16 @@ Use the bundled app, `assets/home-cad.html`: a self-contained home CAD planner w
   - the room names for that layout
   - the furniture: centre point, width, depth, height, rotation and kind, with a plain name ("Queen bed", "Cot", "Cat tree", "Fridge"), because the name picks the 3D model
   Put the best layout first and set `best` on it (on both entries if it has a now and an after). For a life change, add separate "now" and "after" entries. If several layouts share the same "now", add it once.
-- **Check the furniture fits:**
-  - every piece stays inside its room, clear of walls and door swings
-  - walkways stay at least 800 mm wide (beside a bed, about 550 mm is fine)
-  - beds have their headboard against a wall
-- Save the result with code as an HTML file named after their flat, and share that file. Don't retype it into an artifact: it's about 1 MB, with the 3D engine built in. Tell them to download it and open it in any browser, on a phone or a computer; it works offline. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. People can move furniture, try their own changes and export a plan drawing.
+- **Check it fits:** run `python3 scripts/check_plan.py plan.json`. It flags any piece outside its room, in a wall, in a door swing or on another piece. Fix everything it lists and run it again until it says OK. Also check by eye that walkways stay at least 800 mm wide and beds have their headboard against a wall.
+- **Build the app:** run `python3 scripts/build_app.py plan.json`. It checks the plan's format, puts it into the app and saves the file where you can share it (on claude.ai, `/mnt/user-data/outputs/`). Share that file. Don't retype the app into an artifact: it's about 1 MB, with the 3D engine built in.
+- Tell them to download the file and open it in any browser, on a phone or a computer; it works offline. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. They can move furniture, try their own changes and export a plan drawing.
 
 ## 6. Reply
 
 - Keep the chat reply short and easy to scan: tables and brief bullets.
 - Give each layout 3–4 lines in chat. Put furniture sizes and positions in the drawings, not the reply. The room list from step 2 can stay out of the reply too.
 - Put a 2–3 line summary first: the best layout for them and why.
+- Then one line about the CAD app file: download it and open it in a browser to step through the layouts in 2D, 3D and walking.
 - End with what to confirm with HDB or the contractor before any hacking:
   - permit and Professional Engineer needs
   - the block's completion date
