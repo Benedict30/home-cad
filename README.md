@@ -1,3 +1,5 @@
+<img src="logo.png" width="96" alt="Home CAD logo">
+
 # Home CAD
 
 Plan your BTO with Claude. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
