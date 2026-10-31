@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BTO Home Planner Skill</title>
+<meta name="description" content="A free Claude skill: send your HDB floor plan and 3 lines about your household, get a knock-down check, layouts and a CAD app of your flat.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJoY2ciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzYTVjZTYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxYjM0YTMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSJ1cmwoI2hjZykiLz48cGF0aCBkPSJNMTYuMDAgMTIuMjAgTDI3LjQzIDE4LjgwIEwxNi4wMCAyNS40MCBMNC41NyAxOC44MFoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjE4KSIvPjxwYXRoIGQ9Ik0xNC4yOSAxMy4xOSBMMjUuNzIgMTkuNzkgTDI1LjcyIDE0LjM5IEwxNC4yOSA3Ljc5WiIgZmlsbD0iI2QzZGJmZCIvPjxwYXRoIGQ9Ik0xNy43MSAxMy4xOSBMNi4yOCAxOS43OSBMNi4yOCAxNC4zOSBMMTcuNzEgNy43OVoiIGZpbGw9IiM4ZWEyZjEiLz48cGF0aCBkPSJNMjEuMzcgMTcuMjggTDE2LjY5IDE5Ljk5IEwxNi42OSAxNC41OSBMMjEuMzcgMTEuODhaIiBmaWxsPSIjOGVhMmYxIi8+PHBhdGggZD0iTTI3LjQzIDE4LjgwIEwyNS43MiAxOS43OSBMMjUuNzIgMTQuMzkgTDI3LjQzIDEzLjQwWiIgZmlsbD0iIzhlYTJmMSIvPjxwYXRoIGQ9Ik00LjU3IDE4LjgwIEw2LjI4IDE5Ljc5IEw2LjI4IDE0LjM5IEw0LjU3IDEzLjQwWiIgZmlsbD0iI2QzZGJmZCIvPjxwYXRoIGQ9Ik0xNC45NyAxOS4wMCBMMTYuNjkgMTkuOTkgTDE2LjY5IDE0LjU5IEwxNC45NyAxMy42MFoiIGZpbGw9IiNkM2RiZmQiLz48cGF0aCBkPSJNNC41NyAxOC44MCBMOC42OCAyMS4xOCBMOC42OCAxNS43OCBMNC41NyAxMy40MFoiIGZpbGw9IiNkM2RiZmQiLz48cGF0aCBkPSJNMTAuNDAgMjAuMTkgTDguNjggMjEuMTggTDguNjggMTUuNzggTDEwLjQwIDE0Ljc5WiIgZmlsbD0iIzhlYTJmMSIvPjxwYXRoIGQ9Ik0yNy40MyAxOC44MCBMMTYuMDAgMjUuNDAgTDE2LjAwIDIwLjAwIEwyNy40MyAxMy40MFoiIGZpbGw9IiM4ZWEyZjEiLz48cGF0aCBkPSJNMTIuMTEgMjMuMTYgTDE2LjAwIDI1LjQwIEwxNi4wMCAyMC4wMCBMMTIuMTEgMTcuNzZaIiBmaWxsPSIjZDNkYmZkIi8+PHBhdGggZD0iTTE0LjI5IDI0LjQxIEwxNi4wMCAyNS40MCBMMTYuMDAgMjAuMDAgTDE0LjI5IDE5LjAxWiIgZmlsbD0iI2QzZGJmZCIvPjxwYXRoIGQ9Ik0xNy43MSAyNC40MSBMMTYuMDAgMjUuNDAgTDE2LjAwIDIwLjAwIEwxNy43MSAxOS4wMVoiIGZpbGw9IiM4ZWEyZjEiLz48cGF0aCBkPSJNMTYuMDAgNi44MCBMMjcuNDMgMTMuNDAgTDI1LjcyIDE0LjM5IEwxNC4yOSA3Ljc5WiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0xNi4wMCA2LjgwIEwxNy43MSA3Ljc5IEw2LjI4IDE0LjM5IEw0LjU3IDEzLjQwWiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0xOS42NiAxMC44OSBMMjEuMzcgMTEuODggTDE2LjY5IDE0LjU5IEwxNC45NyAxMy42MFoiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBkPSJNNi4yOCAxMi40MSBMMTAuNDAgMTQuNzkgTDguNjggMTUuNzggTDQuNTcgMTMuNDBaIiBmaWxsPSIjZmZmZmZmIi8+PHBhdGggZD0iTTI1LjcyIDEyLjQxIEwyNy40MyAxMy40MCBMMTYuMDAgMjAuMDAgTDE0LjI5IDE5LjAxWiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0xMy44MyAxNi43NyBMMTcuNzEgMTkuMDEgTDE2LjAwIDIwLjAwIEwxMi4xMSAxNy43NloiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz4=">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--bg:#f4f5f7;--card:#ffffff;--ink:#16181d;--ink-2:#4b5361;--ink-3:#7a8390;--line:#e2e5ea;--accent:#2646c8;--accent-2:#e7ecfd;--on-accent:#ffffff;--code:#f1f3f7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1216;--card:#171b21;--ink:#eceef2;--ink-2:#aab2be;--ink-3:#7d8693;--line:#2a313b;--accent:#8ea5ff;--accent-2:#1c2547;--on-accent:#0c0f13;--code:#11151a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1216;--card:#171b21;--ink:#eceef2;--ink-2:#aab2be;--ink-3:#7d8693;--line:#2a313b;--accent:#8ea5ff;--accent-2:#1c2547;--on-accent:#0c0f13;--code:#11151a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Barlow,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:22px 16px 48px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--ink);text-decoration:none}
+.brand svg{width:30px;height:30px}
+h1{font-size:clamp(34px,9vw,46px);line-height:1.05;margin:28px 0 12px;letter-spacing:-.01em}
+.lede{color:var(--ink-2);margin:0 0 22px}
+.dl{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 20px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:20px;text-decoration:none;box-shadow:0 6px 18px rgba(38,70,200,.25)}
+.dl svg{width:22px;height:22px}
+.small{font-size:14px;color:var(--ink-3);text-align:center;margin:8px 0 0}
+h2{font-size:22px;margin:36px 0 12px}
+ol.steps{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:s}
+ol.steps>li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 56px;position:relative;counter-increment:s}
+ol.steps>li::before{content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--accent-2);color:var(--accent);font-weight:700;display:grid;place-items:center;font-size:15px}
+ol.steps b{color:var(--ink)}
+.msg{position:relative;margin-top:10px;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:14px/1.6 "JetBrains Mono",ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word}
+.copy{margin-top:8px;font:600 15px Barlow,system-ui,sans-serif;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+.homes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.homes a{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:600}
+.homes a span{display:block;font-weight:400;font-size:14px;color:var(--ink-3)}
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid #c2571a;border-radius:10px;padding:12px 14px;color:var(--ink-2);font-size:15px;margin-top:28px}
+footer{margin-top:36px;font-size:14px;color:var(--ink-3)}
+footer a,.lnk{color:var(--accent)}
+@media (max-width:420px){.homes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="brand" href="../"><svg aria-hidden="true" viewBox="0 0 32 32"><defs><linearGradient id="hcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a5ce6"/><stop offset="1" stop-color="#1b34a3"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#hcg)"/><path d="M16.00 12.20 L27.43 18.80 L16.00 25.40 L4.57 18.80Z" fill="rgba(255,255,255,.18)"/><path d="M14.29 13.19 L25.72 19.79 L25.72 14.39 L14.29 7.79Z" fill="#d3dbfd"/><path d="M17.71 13.19 L6.28 19.79 L6.28 14.39 L17.71 7.79Z" fill="#8ea2f1"/><path d="M21.37 17.28 L16.69 19.99 L16.69 14.59 L21.37 11.88Z" fill="#8ea2f1"/><path d="M27.43 18.80 L25.72 19.79 L25.72 14.39 L27.43 13.40Z" fill="#8ea2f1"/><path d="M4.57 18.80 L6.28 19.79 L6.28 14.39 L4.57 13.40Z" fill="#d3dbfd"/><path d="M14.97 19.00 L16.69 19.99 L16.69 14.59 L14.97 13.60Z" fill="#d3dbfd"/><path d="M4.57 18.80 L8.68 21.18 L8.68 15.78 L4.57 13.40Z" fill="#d3dbfd"/><path d="M10.40 20.19 L8.68 21.18 L8.68 15.78 L10.40 14.79Z" fill="#8ea2f1"/><path d="M27.43 18.80 L16.00 25.40 L16.00 20.00 L27.43 13.40Z" fill="#8ea2f1"/><path d="M12.11 23.16 L16.00 25.40 L16.00 20.00 L12.11 17.76Z" fill="#d3dbfd"/><path d="M14.29 24.41 L16.00 25.40 L16.00 20.00 L14.29 19.01Z" fill="#d3dbfd"/><path d="M17.71 24.41 L16.00 25.40 L16.00 20.00 L17.71 19.01Z" fill="#8ea2f1"/><path d="M16.00 6.80 L27.43 13.40 L25.72 14.39 L14.29 7.79Z" fill="#ffffff"/><path d="M16.00 6.80 L17.71 7.79 L6.28 14.39 L4.57 13.40Z" fill="#ffffff"/><path d="M19.66 10.89 L21.37 11.88 L16.69 14.59 L14.97 13.60Z" fill="#ffffff"/><path d="M6.28 12.41 L10.40 14.79 L8.68 15.78 L4.57 13.40Z" fill="#ffffff"/><path d="M25.72 12.41 L27.43 13.40 L16.00 20.00 L14.29 19.01Z" fill="#ffffff"/><path d="M13.83 16.77 L17.71 19.01 L16.00 20.00 L12.11 17.76Z" fill="#ffffff"/></svg>Home CAD</a>
+<h1>Plan your BTO with Claude</h1>
+<p class="lede">A free skill for Claude. Send a photo of your HDB floor plan and 3 lines about your household. You get a wall-by-wall check of what HDB lets you knock down, layouts for how you live, and a CAD app of your flat in 2D, 3D and walk-through.</p>
+<a class="dl" href="bto-home-planner.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>Download the skill</a>
+<p class="small">bto-home-planner.zip · works on Claude's Free plan too</p>
+
+<h2>How to use it</h2>
+<ol class="steps">
+<li><b>Download the ZIP</b> with the button above. It's easiest on a computer.</li>
+<li><b>Add it to Claude.</b> At claude.ai or in the desktop app, go to <b>Customize › Skills</b>, click <b>+</b>, then <b>Create skill › Upload a skill</b>. Choose the ZIP and switch it on. Skills need <b>Code execution and file creation</b> turned on in <b>Settings › Capabilities</b>.</li>
+<li><b>Send your floor plan.</b> Start a new chat, attach a clear photo of your HDB floor plan, and send 3 lines about your home. Change the example to fit you:
+<div class="msg" id="msg">Plan my home. Floor plan attached.
+We are: couple, no kids, 1 Shih Tzu
+Coming up: more work from home
+Must-haves: a dog wash spot</div>
+<button class="copy" id="copy" type="button">Copy the message</button></li>
+</ol>
+
+<h2>See what you get</h2>
+<p class="lede" style="margin-bottom:12px">Real results from the skill, opened in the CAD app. Use the arrows to step through each household's layouts in 2D, 3D or walking.</p>
+<div class="homes"><a href="../#shihtzu">Couple with a Shih Tzu<span>Open in the CAD app</span></a><a href="../#collectors">Hardcore collectors<span>Open in the CAD app</span></a><a href="../#wfh">Both work from home<span>Open in the CAD app</span></a><a href="../#streamers">Two streamers, two cats<span>Open in the CAD app</span></a></div>
+<p class="small" style="text-align:left;margin-top:12px"><a class="lnk" href="../examples/">Read Claude's full answers</a></p>
+
+<p class="note"><b>Before you hack anything:</b> AI can misread a photo. Check every wall against your official HDB floor plan, and get HDB's approval and an HDB-registered contractor before any work starts.</p>
+<footer>Made with Claude. Not affiliated with HDB. The skill is plain text plus the CAD app it fills in; you can read it on <a href="https://github.com/Benedict30/home-cad">GitHub</a>.</footer>
+</div>
+<script>
+document.getElementById('copy').onclick=async e=>{const t=document.getElementById('msg').textContent;let ok=false;
+  try{await navigator.clipboard.writeText(t);ok=true;}catch(_){try{const r=document.createRange();r.selectNodeContents(document.getElementById('msg'));const s=getSelection();s.removeAllRanges();s.addRange(r);ok=document.execCommand('copy');}catch(__){}}
+  e.target.textContent=ok?'Copied':'Select the text above to copy';setTimeout(()=>e.target.textContent='Copy the message',1800);};
+</script>
+</body>
+</html>
