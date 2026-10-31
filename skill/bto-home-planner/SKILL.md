@@ -116,7 +116,7 @@ Everyday Singapore must-haves for any layout:
 
 ## 5. Build their CAD app
 
-Use the bundled app, `assets/home-cad.html`: a home CAD planner with a floor plan, a 3D model, a walk-through, furniture editing and export. Don't write your own drawing code.
+Use the bundled app, `assets/home-cad.html`: a self-contained home CAD planner with a floor plan, a 3D model, a walk-through, furniture editing and export. Don't write your own drawing code.
 
 - Copy the file exactly and replace only `null` between `/*PLAN-START*/` and `/*PLAN-END*/` with the plan JSON. The comment above it explains every field.
 - **Describe the flat once:**
@@ -134,7 +134,7 @@ Use the bundled app, `assets/home-cad.html`: a home CAD planner with a floor pla
   - every piece stays inside its room, clear of walls and door swings
   - walkways stay at least 800 mm wide (beside a bed, about 550 mm is fine)
   - beds have their headboard against a wall
-- Publish the result as an HTML artifact. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. People can move furniture, try their own changes and export a plan drawing.
+- Save the result with code as an HTML file named after their flat, and share that file. Don't retype it into an artifact: it's about 1 MB, with the 3D engine built in. Tell them to download it and open it in any browser, on a phone or a computer; it works offline. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. People can move furniture, try their own changes and export a plan drawing.
 
 ## 6. Reply
 
