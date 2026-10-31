@@ -17,7 +17,7 @@ Never repeat block or unit numbers from the plan in your answer or drawings.
 
 ## 2. Read the plan
 
-- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. Don't trust where the chain ticks land: some hit wall centre-lines and some hit wall faces. Instead, scale the photo from the overall chains, measuring x and y separately because photos are often skewed, and measure each wall's centre in pixels. Then draw your walls back onto the photo with `scripts/overlay.py` and fix any that drift. Usable space is about 100–200 mm smaller than centre-line sizes.
+- Zoom in by cropping the image if you can run code, and read the dimension chains and the legend. Don't trust where the chain ticks land: some hit wall centre-lines and some hit wall faces. Instead, scale the photo from the overall chains, measuring x and y separately because photos are often skewed, and measure each wall's centre in pixels. If horizontal lines slope or vertical lines lean, measure the slope too. Then draw your walls back onto the photo with `scripts/overlay.py` (it takes the slope as KX KY) and fix any that drift. Read every number from their photo: the demo flat built into the app is a different flat. Usable space is about 100–200 mm smaller than centre-line sizes.
 - List each room with its rough size, windows and doors.
 - Find:
   - the household shelter (a thick box with a heavy door)
@@ -73,7 +73,7 @@ Common sizes in Singapore, in mm (width × depth):
 | Shoe cabinet with seat | 900 × 350 |
 | Washer-dryer, fridge | 600 × 650, 700 × 700 |
 
-If a life change is coming, show the layout **now** and **after** the change. If what's coming isn't a change to who lives there (more video calls, say), plan for it from day one and skip the now/after. A now/after pair counts as one layout. Give the best layout both versions. If the change affects every layout, give the others their "after" version only, and describe the "now" in one line. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
+If a life change is coming, show the layout **now** and **after** the change. If what's coming isn't a change to who lives there (more video calls, a child growing up), plan for it from day one with furniture that can change, and skip the now/after. A now/after pair counts as one layout. Give the best layout both versions. If the change affects every layout, give the others their "after" version only, and describe the "now" in one line. Prefer changes that are cheap to undo (furniture, sliding partitions) over hacking. Never knock down a wall the household will want back.
 
 Use cases to draw on:
 - **Couple, kids later:** a study or guest room now that becomes the nursery. Wardrobes that suit both uses.
@@ -137,7 +137,8 @@ Write the plan as a JSON file (`plan.json`). The comment above `/*PLAN-START*/` 
 - **Describe the flat once:**
   - every wall, tagged as in the wall check, with its ends in mm, its thickness and its type
   - the doors and windows on each wall; give doors `hinge` and `flip` so they swing as on the plan
-  - each room's outline
+  - each room's outline, along the wall centre-lines
+  - the fixed fittings in every layout: WC, basin, shower, kitchen counters, fridge and washer
   - optionally `start`, a point just inside the main door, if the Walk view starts in the wrong place
   Use the plan's dimension chains, so everything is to scale. Put walls on their centre-lines; the app's overall dimension is the centre-line total, so it reads a little less than the plan's outside-face figure.
 - **Add one entry per layout:**

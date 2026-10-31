@@ -1761,24 +1761,28 @@ const HAS3=typeof THREE!=='undefined' && !!THREE.OrbitControls;
 function hex2rgb(h){h=String(h).replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16)||0;return[(n>>16)&255,(n>>8)&255,n&255];}
 function mix(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);return'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')+')';}
 function shade(hex,f){return'#'+hex2rgb(hex).map(v=>clamp(Math.round(v*f),0,255).toString(16).padStart(2,'0')).join('');}
-/* ===== A plan drawn by the BTO home planner skill. null = the flat traced below.
+/* ===== A plan drawn by the BTO home planner skill. null = the demo flat built into this app, which is NOT the user's flat: read every number from their photo.
 To open any HDB floor plan in this app, replace only the JSON between the PLAN-START and PLAN-END markers. All sizes in mm; x to the right, y down, as the plan is drawn.
+title, subtitle: shown on the page and used for the file name.
 walls:    {id, a:[x,y], b:[x,y], t: thickness, type: structural|shelter|bathroom|external|partition|open}   (open = an edge with no wall, drawn dashed)
+          walls run along their centre-lines; split a wall where its type changes (say, partly bathroom, partly external).
 openings: {wall: wall id, type: door|window, at: mm from the wall's a end, w: width}
           doors only, optional: hinge: "a"|"b" (the end the hinge is at, default "a"), flip: true (swing to the other side of the wall)
-rooms:    {id, name, poly: [[x,y],...], label?: [x,y]}
+          by default a door swings toward (-dy, dx) of its wall: a wall drawn left to right swings toward +y (down the plan). Bi-fold and sliding doors are drawn as swing doors.
+rooms:    {id, name, poly: [[x,y],...], label?: [x,y]}   (outline along the wall centre-lines, so the floor runs under the walls)
 layouts:  {id, title, summary, best: true|false, phase: "now"|"after"|"",
-           removed: [wall ids], added: [{a, b, type: "partition"|"glass"}],
+           removed: [wall ids], added: [{a, b, type: "partition"|"glass"}]   (added walls have no doors: leave a gap instead),
            rooms: {room id: {name, color}},
            furniture: [{name, kind, x, y, w, d, h, rot, z?, color?}]}
 optional: start: [x,y] and startYaw (degrees, 0 = facing +x) for the Walk view; it starts just inside the main door if left out.
 furniture x,y is the centre; w runs along x and d along y before rotating; rot is degrees clockwise; the front (a sofa's seat, a bed's foot) faces +y before rotating.
 kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other. The name also picks the 3D model (e.g. "Queen bed", "Cot", "Cat tree", "Fridge").
+Include the fixed fittings too (WC, basin, shower, kitchen counters, fridge, washer) so every layout looks complete.
 The app opens on the layouts with arrows to step through them, in 2D, 3D and Walk; "Knock down" colours and tags the walls. */
 const PLANS=/*PLANS-START*/{}/*PLANS-END*/;   // other households' flats on the website, opened as #name
 const HOME_KEYS=Object.keys(PLANS),H0=(location.hash||'').slice(1).split(/[\/?]/)[0];
 const SINGLE=/*PLAN-START*/null/*PLAN-END*/;
-// plan: one plan the skill filled in · homes: the website's households, one arrow run · own: Ben's flat (#demo, #combo-…)
+// plan: one plan the skill filled in · homes: the website's households, one arrow run · own: the demo flat (#demo, #combo-…)
 const MODE=SINGLE?'plan':HOME_KEYS.length&&!/^(demo|combo-.*|model|walk|plan)$/.test(H0)?'homes':'own';
 let PLANSLUG=MODE==='homes'?(HOME_KEYS.includes(H0)?H0:HOME_KEYS[0]):'';
 let PLANDATA=SINGLE||(PLANSLUG?PLANS[PLANSLUG].plan:null);
@@ -3391,7 +3395,7 @@ function renderInspector(mode){
     if(ed)h+=`<div class="sec row"><button class="tb small danger" data-act="del">Close up opening</button></div>`;
     h+=`<div class="sec row"><button class="tb small" data-act="selWall">Select its wall</button></div>`;
   }else if(sel&&sel.kind==='room'){const r=getRoom(sel.id);if(!r){sel=null;return renderInspector();}const a=polyArea(r.poly);
-    h+=`<div class="ititle"><div><h3>${esc(r.name)}</h3><p>${m2(a)} m² clear floor · ${(polyPerim(r.poly)/1000).toFixed(1)} m perimeter</p></div></div>`;
+    h+=`<div class="ititle"><div><h3>${esc(r.name)}</h3><p>${m2(a)} m² ${PLANDATA?'floor, to wall centre-lines':'clear floor'} · ${(polyPerim(r.poly)/1000).toFixed(1)} m perimeter</p></div></div>`;
     h+=`<div class="sec">${txtF('Room name','rname',r.name)}</div>`;
     if(r.kind==='shelter')h+=`<p class="callout info">The household shelter's walls, door and ceiling are structural and must stay as built.</p>`;
     h+=`<div class="sec"><h4>Floor finish</h4>${floorPicker(r.floor)}</div>`;
@@ -3401,8 +3405,8 @@ function renderInspector(mode){
     h+=`<div class="ititle"><div><h3>Dimension</h3><p>${nf(Math.hypot(d.b[0]-d.a[0],d.b[1]-d.a[1]))} mm</p></div></div><div class="sec"><div class="grid3">${numF('Offset','doff',d.off||0,'mm',50)}</div></div><div class="sec row"><button class="tb small danger" data-act="del">Delete dimension</button></div>`;
   }else{
     const gross=model.rooms.reduce((a,r)=>a+polyArea(r.poly),0),ni=model.items.length,notes=renoNotes();
-    h+=`<div class="ititle"><div><h3>${esc(model.meta.name)}</h3><p>${PLANDATA?'From your floor plan · '+m2(model.rooms.reduce((a,r)=>a+polyArea(r.poly),0))+' m² of rooms, measured from a photo':'4-Room Type 3 · 93 m² floor area, including the A/C ledge'}</p></div></div>`;
-    h+=`<div class="stats"><div><b>${m2(gross)}</b><span>m² clear floor, all rooms</span></div><div><b>${model.rooms.length}</b><span>rooms & spaces</span></div><div><b>${ni}</b><span>furniture & fixtures</span></div><div><b>${notes.length}</b><span>renovation changes</span></div></div>`;
+    h+=`<div class="ititle"><div><h3>${esc(model.meta.name)}</h3><p>${PLANDATA?'From your floor plan · '+m2(model.rooms.reduce((a,r)=>a+polyArea(r.poly),0))+' m² of rooms to wall centre-lines, measured from a photo':'4-Room Type 3 · 93 m² floor area, including the A/C ledge'}</p></div></div>`;
+    h+=`<div class="stats"><div><b>${m2(gross)}</b><span>${PLANDATA?'m² floor, all rooms, to wall centre-lines':'m² clear floor, all rooms'}</span></div><div><b>${model.rooms.length}</b><span>rooms & spaces</span></div><div><b>${ni}</b><span>furniture & fixtures</span></div><div><b>${notes.length}</b><span>renovation changes</span></div></div>`;
     h+=`<div class="sec">${txtF('Project name','pname',model.meta.name)}</div>`;
     h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.</p></div>`;
     if(model.items.some(i=>i.sample))h+=`<p class="callout info"><b>The furniture is a sample layout</b> so you can see the tool working. Move it, resize it, or clear it and start from an empty flat.</p>`;

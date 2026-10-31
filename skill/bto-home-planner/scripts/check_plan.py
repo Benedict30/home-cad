@@ -45,9 +45,10 @@ def check(plan):
             if not all(ok_pt(p) for p in C + [((C[i][0] + C[(i + 1) % 4][0]) / 2, (C[i][1] + C[(i + 1) % 4][1]) / 2) for i in range(4)]):
                 problems.append(name + ' sticks out of the flat')
             if f.get('kind') == 'rug': continue
-            spans_gap = 'gate' in f['name'].lower()   # gates and screens sit across an opening, between walls
+            spans_gap = 'gate' in f['name'].lower() or (f.get('z') or 0) >= 1000   # gates sit across an opening; wall-mounted pieces sit above
+            C12 = corners(f, -12)   # the same test the app uses to outline clashes in red
             for w in ([] if spans_gap else walls):
-                if overlap(C, wall_quad(w['a'], w['b'], w.get('t') or 120)): problems.append(f"{name} runs into wall {w['id']}")
+                if overlap(C12, wall_quad(w['a'], w['b'], w.get('t') or 120), 0): problems.append(f"{name} runs into wall {w['id']}")
             for wid, sq in swings:
                 if overlap(C, sq, 20): problems.append(f"{name} blocks the door on {wid}")
             if f not in solid: continue
