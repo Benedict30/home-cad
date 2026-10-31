@@ -2,13 +2,13 @@
 
 # Home CAD
 
-Plan your BTO with Claude. This repo has a free Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
+Plan your BTO with Claude. This repo has a Claude skill for any BTO or resale HDB floor plan, and a 3D planner built for one 4-Room Type 3 BTO flat.
 
 **Try it:** https://benedict30.github.io/home-cad/ opens the CAD app on four households planned with the skill. Press the arrows to step through their layouts in 2D, 3D or walking.
 
 **See real results:** https://benedict30.github.io/home-cad/examples/
 
-## Plan your own flat with the free skill
+## Plan your own flat with the skill
 
 1. **Download the skill:** [bto-home-planner.zip](https://github.com/Benedict30/home-cad/raw/main/skill/bto-home-planner.zip), or from the simple page at https://benedict30.github.io/home-cad/skill/
 2. **Add it to Claude:** go to **Customize › Skills**, click **+**, then **Create skill › Upload a skill**. Choose the ZIP and switch it on. Skills need code execution, so turn on **Code execution and file creation** in **Settings › Capabilities**.
