@@ -18,7 +18,7 @@
   --accent:#2646c8; --accent-2:#e2e8fd; --on-accent:#ffffff;
   --warn:#9a5a06; --warn-bg:#fcf0dc; --danger:#b42c22; --danger-bg:#fbe6e4; --ok:#28704a; --ok-bg:#e2f2e8;
   --struct:#151920; --wallfill:#ffffff; --newfill:#dde5ff; --furn:#f0f2f5; --grid:#e9ecf0; --grid-major:#d4dae2;
-  --sky:#dfe5ec;
+  --sky:#eeebe5;
   --f-display:"Barlow Semi Condensed","Arial Narrow",sans-serif;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -259,7 +259,7 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 .sunp .sunrooms .pm b{color:var(--warn)}
 .sunp .sunrooms .read{font:inherit;color:var(--ink-3)}
 #app.exploring:not(.has-north) .sunp{display:none}
-.sunp.min .body{display:none}
+.sunp.min #sun-rose,.sunp.min .sunctl>:not(:first-child),.sunp.min .sunseg,.sunp.min .sunrooms{display:none}
 .westsun{font:600 11px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--warn);background:var(--warn-bg);border-radius:4px;padding:2px 7px}
 .walkhud{inset:auto 0 var(--exh) 0;pointer-events:none;justify-content:space-between;align-items:flex-end;padding:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
 .walkhud>*{pointer-events:auto}
@@ -2498,16 +2498,18 @@ function flatC(){return flatBox().c;}
 // ---------- sun
 const CMP_R0=8.4;
 function makeCompass(){
-  const g=new THREE.Group(),cv=document.createElement('canvas');cv.width=cv.height=1024;const x=cv.getContext('2d');x.translate(512,512);
-  x.strokeStyle='rgba(52,56,64,.5)';x.lineWidth=5;x.beginPath();x.arc(0,0,440,0,Math.PI*2);x.stroke();
-  for(let i=0;i<16;i++){const a=i*Math.PI/8,r0=i%4?418:396;x.lineWidth=i%4?4:7;x.beginPath();x.moveTo(Math.sin(a)*r0,-Math.cos(a)*r0);x.lineTo(Math.sin(a)*462,-Math.cos(a)*462);x.stroke();}
-  x.fillStyle='#c2412d';x.beginPath();x.moveTo(0,-505);x.lineTo(-26,-462);x.lineTo(26,-462);x.closePath();x.fill();
-  const tex=new THREE.CanvasTexture(cv);tex.encoding=THREE.sRGBEncoding;const S=CMP_R0*2*512/440;
+  const g=new THREE.Group(),cv=document.createElement('canvas');cv.width=cv.height=2048;const x=cv.getContext('2d');x.translate(1024,1024);
+  const R=880;x.strokeStyle='rgba(60,58,54,.32)';x.lineWidth=5;x.beginPath();x.arc(0,0,R,0,Math.PI*2);x.stroke();
+  for(let i=0;i<72;i++){const a=i*Math.PI/36,major=i%18===0,mid=i%9===0;if(!major&&!mid&&i%3)continue;const r0=R-(major?60:mid?36:16);
+    x.strokeStyle=major?'rgba(60,58,54,.55)':'rgba(60,58,54,.28)';x.lineWidth=major?7:4;x.beginPath();x.moveTo(Math.sin(a)*r0,-Math.cos(a)*r0);x.lineTo(Math.sin(a)*R,-Math.cos(a)*R);x.stroke();}
+  x.fillStyle='#d2462b';x.beginPath();x.moveTo(0,-R-70);x.lineTo(-30,-R-8);x.lineTo(30,-R-8);x.closePath();x.fill();
+  const tex=new THREE.CanvasTexture(cv);tex.encoding=THREE.sRGBEncoding;tex.anisotropy=Math.min(8,T3.r?T3.r.capabilities.getMaxAnisotropy():1);const S=CMP_R0*2*1024/R;
   const ring=new THREE.Mesh(new THREE.PlaneGeometry(S,S),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.19;ring.renderOrder=-1;ring.raycast=()=>{};
   const piv=new THREE.Group();piv.add(ring);g.add(piv);g.userData.piv=piv;g.userData.letters=[];
-  for(const[t,b]of[['N',0],['E',90],['S',180],['W',270]]){const c2=document.createElement('canvas');c2.width=c2.height=128;const y=c2.getContext('2d');
-    y.fillStyle=t==='N'?'#c2412d':'#2f333b';y.beginPath();y.arc(64,64,54,0,Math.PI*2);y.fill();y.fillStyle='#fff';y.font='700 74px system-ui,sans-serif';y.textAlign='center';y.textBaseline='middle';y.fillText(t,64,69);
-    const tx=new THREE.CanvasTexture(c2);tx.encoding=THREE.sRGBEncoding;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthWrite:false}));sp.scale.set(1.15,1.15,1);sp.userData.b=b;sp.raycast=()=>{};g.add(sp);g.userData.letters.push(sp);}
+  for(const[t,b]of[['N',0],['E',90],['S',180],['W',270]]){const c2=document.createElement('canvas');c2.width=c2.height=256;const y=c2.getContext('2d');
+    y.font='700 150px system-ui,-apple-system,"Segoe UI",sans-serif';y.textAlign='center';y.textBaseline='middle';y.lineJoin='round';
+    y.strokeStyle='rgba(255,255,255,.92)';y.lineWidth=26;y.strokeText(t,128,136);y.fillStyle=t==='N'?'#d2462b':'#5c5852';y.fillText(t,128,136);
+    const tx=new THREE.CanvasTexture(c2);tx.encoding=THREE.sRGBEncoding;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthWrite:false}));const k=t==='N'?1.25:1.0;sp.scale.set(k,k,1);sp.userData.b=b;sp.raycast=()=>{};g.add(sp);g.userData.letters.push(sp);}
   return g;}
 function drawRose(){
   const cv=$('#sun-rose');if(!cv||!cv.getContext)return;const x=cv.getContext('2d'),th=(model.meta.north||0)*D2R;let rot=th;
