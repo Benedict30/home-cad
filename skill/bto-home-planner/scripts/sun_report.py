@@ -57,6 +57,9 @@ def windows(plan):
 
 
 def report(plan):
+    L = next((l for l in plan.get('layouts', []) if l.get('best')), (plan.get('layouts') or [{}])[0])   # use the best layout's room names, as the app does
+    ren = {r['id']: ((L.get('rooms') or {}).get(r['id']) or {}).get('name') for r in plan['rooms']}
+    plan = dict(plan, rooms=[dict(r, name=ren.get(r['id']) or r['name']) for r in plan['rooms']])
     win = windows(plan); names = list(dict.fromkeys(n for n, _ in win)); rows = {n: [] for n in names}; summary = []
     for label, dec in SEASONS:
         am, pm = {}, {}

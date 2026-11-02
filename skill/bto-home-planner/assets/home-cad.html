@@ -1968,7 +1968,7 @@ function defaultModel(){
   const win=(at,w,x)=>Object.assign({type:'window',at,w,sill:900,head:2400},x||{});
   const door=(at,w,x)=>Object.assign({type:'door',at,w,head:2100,hinge:0,side:1,style:'single'},x||{});
   W('c1',[175,700],[175,2424],350,'structural');
-  W('f1',[175,2424],[175,5487],150,'facade',[win(80,2903)]);
+  W('f1',[175,2424],[175,5487],150,'facade',[]);   // solid: the wall shared with the next unit
   W('c2',[175,5487],[175,7500],350,'structural');
   W('f2',[350,975],[3550,975],150,'facade',[win(100,3000)]);
   W('c3',[3740,0],[3740,2500],380,'structural');
@@ -2071,7 +2071,7 @@ function flatFromPlan(){   // everything that depends on which flat is loaded
   DIMS=[{ax:'x',line:y0-450,from:[[x0,y0],[x1,y0]]},{ax:'y',line:x0-450,from:[[x0,y0],[x0,y1]]}];
 }
 if(PLANDATA)flatFromPlan();else{ORIG_WALL=Object.fromEntries(ORIG.walls.map(w=>[w.id,w]));ORIG_FLOOR=Object.fromEntries(ORIG.rooms.map(r=>[r.id,r.floor]));}
-function homeLabel(){return PLANSLUG?PLANS[PLANSLUG].label:'Your HDB flat';}
+function homeLabel(){return PLANSLUG?PLANS[PLANSLUG].label:(SINGLE&&SINGLE.title)||'Your HDB flat';}
 function switchPlan(slug){   // households mode: load another household's flat
   if(!slug||slug===PLANSLUG||!PLANS[slug])return;PLANSLUG=slug;PLANDATA=PLANS[slug].plan;flatFromPlan();
   if(typeof walk!=='undefined'){walk.x=WALK0.x;walk.y=WALK0.y;walk.yaw=WALK0.yaw;}if(typeof minimapDirty!=='undefined')minimapDirty=true;
@@ -3429,7 +3429,7 @@ function renderInspector(mode){
     h+=`<div class="ititle"><div><h3>${esc(model.meta.name)}</h3><p>${PLANDATA?'From your floor plan · '+m2(model.rooms.reduce((a,r)=>a+polyArea(r.poly),0))+' m² of rooms to wall centre-lines, measured from a photo':'4-Room Type 3 · 93 m² floor area, including the A/C ledge'}</p></div></div>`;
     h+=`<div class="stats"><div><b>${m2(gross)}</b><span>${PLANDATA?'m² floor, all rooms, to wall centre-lines':'m² clear floor, all rooms'}</span></div><div><b>${model.rooms.length}</b><span>rooms & spaces</span></div><div><b>${ni}</b><span>furniture & fixtures</span></div><div><b>${notes.length}</b><span>renovation changes</span></div></div>`;
     h+=`<div class="sec">${txtF('Project name','pname',model.meta.name)}</div>`;
-    h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.</p></div>`;
+    h+=`<div class="sec"><h4>Building</h4><div class="grid3">${numF('Ceiling height','ceil',model.meta.ceiling)}${numF('North (from up)','north',model.meta.north||0,'°',5)}</div><p class="note">${model.meta.northSet?'North is set from your site plan, so the 3D sun study shows which rooms get the afternoon sun.':'The HDB plan does not show north. Set it from your block plan so the 3D sun study shows where the afternoon west sun lands.'}</p></div>`;
     if(model.items.some(i=>i.sample))h+=`<p class="callout info"><b>The furniture is a sample layout</b> so you can see the tool working. Move it, resize it, or clear it and start from an empty flat.</p>`;
     h+=`<div class="sec"><h4>Start here</h4><p class="note">Click any room, wall, door or piece of furniture to edit it. Press <b>W</b> to draw a new partition, <b>M</b> to dimension, and switch to <b>3D</b> or <b>Walk</b> at the top.</p><div class="row"><button class="tb small primary" data-act="layouts">${PLANDATA?'Browse your '+ALL_LAYOUTS.length+' layouts':'Browse 32 ready-made layouts'}</button><button class="tb small" data-act="knock">What can I knock down?</button></div></div>`;
     if(mode==='confirmClear')h+=`<div class="callout warn"><b>Remove every piece of furniture?</b> HDB-provided toilets and basins stay. You can undo this.</div><div class="row"><button class="tb danger" data-act="doClear">Clear furniture</button><button class="tb" data-act="cancel">Cancel</button></div>`;

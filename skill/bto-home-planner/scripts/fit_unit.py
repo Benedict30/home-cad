@@ -8,7 +8,7 @@ Usage:
 --scale  site-plan pixels per metre, from its scale bar (ticks 0 and 100 m that are 400 px apart give 4)
 --arrow  direction the site plan's north arrow points, degrees clockwise from straight up (default 0)
 
-The first form prints the best fits and writes fit_1.png, fit_2.png, ... next to the site plan. Look at each one:
+The first form prints the best fits and writes fit_1.png, fit_2.png, ... in the current folder. Look at each one:
 the right fit has the outline sitting on the unit, the main door (red dot) at the corridor or lift lobby, and the
 windows (blue dots) facing outside, not into a neighbouring unit. The second form saves fit N into plan.json:
 it sets "north" and, if the unit is the mirror image of the brochure plan, mirrors the plan to match the real unit.
@@ -147,9 +147,9 @@ def main():
         print(f"Saved fit {a.pick} to {a.out or a.plan}: north = {q['north']} degrees clockwise from the plan's up"
               + (", plan mirrored to match the unit (it is the mirror image of the brochure plan)" if f['mirror'] else '') + '.')
         return
-    base = os.path.splitext(a.site)[0]; folder = os.path.dirname(os.path.abspath(a.site))
+    folder = os.getcwd()
     view = img.crop(box).resize(crop.size, Image.BICUBIC)
-    print(f"Unit colour sampled near ({at[0]}, {at[1]}). Best fits (score 1.0 = the outline sits fully on the unit's colour):")
+    print(f"Unit colour sampled near ({at[0]}, {at[1]}). Best fits (scores are only a rough ranking; decide by looking at the images):")
     for i, f in enumerate(fits, 1):
         im = view.copy().convert('RGB'); d = ImageDraw.Draw(im); loc = ((f['at'][0] - box[0]) * up, (f['at'][1] - box[1]) * up)
         for p in polys[:len(plan['rooms'])]:
