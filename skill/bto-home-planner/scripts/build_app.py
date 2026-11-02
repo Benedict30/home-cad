@@ -19,6 +19,7 @@ def validate(p):
     for r in p['rooms']:
         if len(r.get('poly') or []) < 3: err.append(f"room {r.get('id')}: poly needs 3+ points")
     if not p['layouts']: err.append('no layouts')
+    if p.get('north') is not None and not isinstance(p.get('north'), (int, float)): err.append('north must be a number of degrees (run scripts/fit_unit.py)')
     for L in p['layouts']:
         for k in ('id', 'title', 'furniture'):
             if k not in L: err.append(f"layout {L.get('id')}: missing {k}")

@@ -86,6 +86,7 @@ h2,h3,h4{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .savestate[data-s="off"]::before{background:var(--ink-3)}
 .only-narrow{display:none}
 .phone-only{display:none !important}
+.showbar{display:none;position:fixed;z-index:46;top:calc(env(safe-area-inset-top,0px) + 10px);left:max(10px,env(safe-area-inset-left,0px));width:38px;height:38px;background:var(--panel);box-shadow:0 2px 10px rgb(0 0 0 / .16)}
 .file-btn{display:none}
 #app.is-walk .sunp{bottom:auto;top:12px}
 
@@ -241,13 +242,23 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
 .ov3d{top:12px;right:max(12px,env(safe-area-inset-right,0px));flex-direction:column;align-items:flex-end;gap:8px}
 .ov3d .seg{background:color-mix(in srgb,var(--panel) 92%,transparent)}
 .ov3d .seg button{font-size:12.5px;padding:4px 9px}
-.sunp{left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + var(--exh));width:min(300px,calc(100% - 24px));padding:10px 12px;flex-direction:column;gap:8px}
+.sunp{left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + var(--exh));width:min(360px,calc(100% - 24px));padding:10px 12px;flex-direction:column;gap:8px}
 .sunp .hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sunp h4{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2)}
 .sunp .read{font:400 11.5px var(--f-mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
 .sunp .row2{display:flex;gap:8px;align-items:center}
 .sunp select{border:1px solid var(--line-2);background:var(--paper);border-radius:6px;padding:3px 6px;font-size:12.5px}
 .sunp .body{display:flex;flex-direction:column;gap:8px}
+.sunp .sunrow{display:flex;gap:10px;align-items:center}
+.sunp .sunctl{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+#sun-rose{width:66px;height:66px;flex:none}
+.sunp .sunseg{display:flex;width:100%}
+.sunp .sunseg button{flex:1 1 auto;font-size:12px;padding:5px 6px;letter-spacing:.01em;white-space:nowrap}
+.sunp .sunrooms{font-size:12px;line-height:1.45;color:var(--ink-2);display:flex;flex-direction:column;gap:3px}
+.sunp .sunrooms b{color:var(--ink);font-weight:600}
+.sunp .sunrooms .pm b{color:var(--warn)}
+.sunp .sunrooms .read{font:inherit;color:var(--ink-3)}
+#app.exploring:not(.has-north) .sunp{display:none}
 .sunp.min .body{display:none}
 .westsun{font:600 11px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--warn);background:var(--warn-bg);border-radius:4px;padding:2px 7px}
 .walkhud{inset:auto 0 var(--exh) 0;pointer-events:none;justify-content:space-between;align-items:flex-end;padding:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
@@ -348,6 +359,11 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
   .dpad{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,40px)}
   .walkhint{display:none}
   .sunp{bottom:auto;top:56px}
+  #app:not(.tools-open) .tools{display:none}
+  #app.bar-hidden .topbar{display:none}
+  #app.bar-hidden .showbar{display:inline-grid}
+  #app.bar-hidden .sunp{top:58px}
+  .status{display:none}
   .ov3d .seg+.seg{display:none}
   #app.is-walk .sunp{display:none}
 }
@@ -367,7 +383,6 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
   .ex-moves{flex-wrap:wrap}
   .ex-moves .tag{display:none}
   .ex-moves .why{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex-basis:100%}
-  #app.exploring .sunp{display:none}
   .ex-end .tb{flex:1}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
@@ -396,10 +411,13 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
       <button class="tb" id="b-export">Export</button>
       <button class="tb file-btn" id="b-file">File</button>
       <button class="ib" id="b-help" title="Keyboard shortcuts" aria-label="Keyboard shortcuts"></button>
+      <button class="ib phone-only" id="b-tools" title="Drawing tools" aria-label="Show drawing tools" aria-expanded="false"></button>
       <button class="ib only-narrow" id="b-lib" title="Furniture library" aria-label="Furniture library"></button>
       <button class="ib only-narrow" id="b-insp" title="Inspector" aria-label="Inspector"></button>
+      <button class="ib phone-only" id="b-hidebar" title="Hide toolbar" aria-label="Hide toolbar"></button>
     </div>
   </header>
+  <button class="ib showbar" id="b-showbar" title="Show toolbar" aria-label="Show toolbar"></button>
 
   <aside class="left panel" id="lib" aria-label="Furniture library">
     <div class="ph"><h2>Library</h2><input class="search" id="lib-q" type="search" placeholder="Search sofa, bed, fridge…" autocomplete="off"></div>
@@ -428,12 +446,14 @@ table.sched input{width:62px;border:1px solid var(--line-2);border-radius:5px;ba
     </div>
 
     <div class="ov ovbox sunp gl-only" id="sunp">
-      <div class="hd"><h4>Sun study</h4><span class="westsun" id="westsun" hidden>West sun</span><button class="ib" id="sun-min" title="Collapse" aria-label="Collapse sun study" style="width:26px;height:26px"></button></div>
-      <div class="body">
+      <div class="hd"><h4>Sun study</h4><span class="westsun" id="westsun" hidden>West sun</span><span style="display:flex;gap:4px;margin-left:auto"><button class="ib" id="sun-play" title="Play the day" aria-label="Play the day" style="width:26px;height:26px"></button><button class="ib" id="sun-min" title="Collapse" aria-label="Collapse sun study" style="width:26px;height:26px"></button></span></div>
+      <div class="body"><div class="sunrow"><canvas id="sun-rose" width="132" height="132" aria-hidden="true"></canvas><div class="sunctl">
         <div class="row2"><input type="range" id="sun-t" min="7" max="19.5" step="0.25" aria-label="Time of day"><span class="read" id="sun-tl" style="min-width:58px;text-align:right"></span></div>
-        <div class="row2"><select id="sun-m" aria-label="Month"></select><span class="read" id="sun-r"></span></div>
+        <div class="row2"><span class="read" id="sun-r"></span></div>
         <div class="row2"><label class="read" for="sun-n" style="white-space:nowrap">North ↑</label><input type="range" id="sun-n" min="0" max="359" step="1" aria-label="North direction"><span class="read" id="sun-nl" style="min-width:34px;text-align:right"></span></div>
-      </div>
+      </div></div>
+      <div class="seg sunseg" id="sun-s" role="radiogroup" aria-label="Time of year"></div>
+      <div class="sunrooms" id="sun-rooms" aria-live="polite"></div></div>
     </div>
 
     <div class="ov ovbox walkhint walk-only">W A S D or arrow keys to walk · drag to look · Shift to hurry</div>
@@ -520,6 +540,7 @@ layouts:  {id, title, summary, best: true|false, phase: "now"|"after"|"",
            rooms: {room id: {name, color}},
            furniture: [{name, kind, x, y, w, d, h, rot, z?, color?}]}
 optional: start: [x,y] and startYaw (degrees, 0 = facing +x) for the Walk view; it starts just inside the main door if left out.
+optional: north: degrees clockwise from the plan's up direction to true north, read from the site plan (scripts/fit_unit.py works it out). With it, the Sun study shows which rooms get morning and afternoon sun.
 furniture x,y is the centre; w runs along x and d along y before rotating; rot is degrees clockwise; the front (a sofa's seat, a bed's foot) faces +y before rotating.
 kind: bed, sofa, chair, table, desk, wardrobe, cabinet, shelf, display, tv, plant, rug, counter, appliance, bath, pet, other. The name also picks the 3D model (e.g. "Queen bed", "Cot", "Cat tree", "Fridge").
 Include the fixed fittings too (WC, basin, shower, kitchen counters, fridge, washer) so every layout looks complete.
@@ -777,7 +798,7 @@ function planModel(L){
     const W={id:w.id,a:w.a.slice(),b:w.b.slice(),t:w.t||120,kind:KIND[w.type]||'partition',ptype:w.type,openings:ops};if(rm.has(w.id))W.removed=true;walls.push(W);}
   ((L&&L.added)||[]).forEach((a,i)=>{const W={id:'new'+i,a:a.a.slice(),b:a.b.slice(),t:a.type==='glass'?80:100,kind:'new',openings:[]};if(a.type==='glass')W.glass=1;walls.push(W);});
   const items=((L&&L.furniture)||[]).map(f=>{const t=planType(f),T=TYPES[t];return{id:uid('it'),type:t,name:f.name||T.n,x:f.x,y:f.y,r:(((f.rot||0)%360)+360)%360,w:f.w||T.w,d:f.d||T.d,h:f.h||T.h,z:f.z||T.z||0,col:f.color||T.col};});
-  const m={v:1,meta:{name:L?L.title:'My flat',north:0,ceiling:2600,paint:'#f2f0eb'},walls,rooms,items,dims:[]};
+  const m={v:1,meta:{name:L?L.title:'My flat',north:P.north!=null?((+P.north%360)+360)%360:0,northSet:P.north!=null,ceiling:2600,paint:'#f2f0eb'},walls,rooms,items,dims:[]};
   if(L)m.meta.combo='L'+P.layouts.indexOf(L);return m;
 }
 function planStart(m){   // just inside the main door, facing in
@@ -806,7 +827,7 @@ function switchPlan(slug){   // households mode: load another household's flat
 let pristine=true, explore=null;
 let model=null, sel=null, hov=null, tool='select', viewMode='plan', tab='inspect';
 const view={s:.05,ox:0,oy:0};
-const UI_DEF={layers:{grid:1,dims:1,labels:1,patterns:1,furniture:1,fixtures:1,swings:1,demo:1,clash:1,hack:0},snap:50,ortho:1,wsnap:1,cut:'full',doorAngle:85,ceiling:0,structHi:0,shadows:1,sunT:16,sunM:new Date().getMonth(),sunMin:0,libCat:'Living'};
+const UI_DEF={layers:{grid:1,dims:1,labels:1,patterns:1,furniture:1,fixtures:1,swings:1,demo:1,clash:1,hack:0},snap:50,ortho:1,wsnap:1,cut:'full',doorAngle:85,ceiling:0,structHi:0,shadows:1,sunT:16,sunM:new Date().getMonth(),sunMin:(typeof innerWidth==='number'&&innerWidth<=760)?1:0,libCat:'Living'};
 const ui=(()=>{try{const s=JSON.parse(LS.get('hcad.ui')||'{}');return Object.assign(copy(UI_DEF),s,{layers:Object.assign({},UI_DEF.layers,s.layers||{})});}catch(e){return copy(UI_DEF);}})();
 function saveUI(){LS.set('hcad.ui',JSON.stringify(ui));}
 
@@ -2378,6 +2399,18 @@ function showShortcuts(){openModal('Keyboard shortcuts',`<div class="keys">
 <kbd>R</kbd><span>Rotate selection 90° (Shift+R the other way)</span><kbd>Arrows</kbd><span>Nudge 10 mm (Shift: 100 mm)</span><kbd>Ctrl+D</kbd><span>Duplicate</span><kbd>Delete</kbd><span>Delete, or mark a partition for removal</span>
 <kbd>Ctrl+Z</kbd><span>Undo (Ctrl+Shift+Z to redo)</span><kbd>Alt</kbd><span>Hold while dragging to skip snapping</span><kbd>G</kbd><span>Toggle grid snap</span><kbd>F</kbd><span>Fit drawing / reset 3D camera</span><kbd>1 2 3</kbd><span>Plan, 3D, Walk</span></div>`);}
 
+(function initToolsToggle(){const b=$('#b-tools');if(!b)return;
+  b.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>';
+  b.onclick=()=>{const o=$('#app').classList.toggle('tools-open');b.classList.toggle('on',o);b.setAttribute('aria-expanded',o?'true':'false');b.setAttribute('aria-label',o?'Hide drawing tools':'Show drawing tools');};
+})();
+
+(function initBarToggle(){const h=$('#b-hidebar'),s=$('#b-showbar');if(!h||!s)return;
+  h.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  h.onclick=()=>{$('#app').classList.add('bar-hidden');$('#app').classList.remove('show-lib','show-insp');};
+  s.onclick=()=>{$('#app').classList.remove('bar-hidden');};
+})();
+
 // ============================================================ floor textures (shared by 2D thumbnails and 3D)
 const fcCache={};
 function floorCanvas(k,S){
@@ -2433,19 +2466,20 @@ function init3D(){
   r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;el.appendChild(r.domElement);
   const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,.05,250);
   cam.position.set(-1.6,13.2,17.2);
-  const ctr=new THREE.OrbitControls(cam,r.domElement);ctr.target.set(6.3,0,4.7);ctr.enableDamping=true;ctr.dampingFactor=.09;ctr.screenSpacePanning=true;ctr.maxPolarAngle=Math.PI*.495;ctr.minDistance=1.2;ctr.maxDistance=48;ctr.update();
-  ctr.addEventListener('change',()=>{T3.need=true;});
+  const ctr=new THREE.OrbitControls(cam,r.domElement);ctr.target.set(flatC()[0],0,flatC()[1]);ctr.enableDamping=true;ctr.dampingFactor=.09;ctr.screenSpacePanning=true;ctr.maxPolarAngle=Math.PI*.495;ctr.minDistance=1.2;ctr.maxDistance=80;ctr.update();
+  ctr.addEventListener('change',()=>{T3.need=true;});ctr.addEventListener('start',()=>{T3.userMoved=true;});
   const hemi=new THREE.HemisphereLight(0xeef3ff,0x9c907f,.6);scene.add(hemi);
   const amb=new THREE.AmbientLight(0xffffff,.08);scene.add(amb);
   const sun=new THREE.DirectionalLight(0xfff0d8,2.1);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
-  Object.assign(sun.shadow.camera,{left:-11,right:11,top:11,bottom:-11,near:.5,far:70});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.0004;sun.shadow.normalBias=.025;sun.target.position.set(6.3,0,4.7);scene.add(sun,sun.target);
-  const ground=new THREE.Mesh(new THREE.PlaneGeometry(90,90),new THREE.ShadowMaterial({opacity:.16}));ground.rotation.x=-Math.PI/2;ground.position.set(6.3,-.21,4.7);ground.receiveShadow=true;scene.add(ground);
+  Object.assign(sun.shadow.camera,{left:-11,right:11,top:11,bottom:-11,near:.5,far:70});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.0004;sun.shadow.normalBias=.025;sun.target.position.set(flatC()[0],0,flatC()[1]);scene.add(sun,sun.target);
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(90,90),new THREE.ShadowMaterial({opacity:.16}));ground.rotation.x=-Math.PI/2;ground.position.set(flatC()[0],-.21,flatC()[1]);ground.receiveShadow=true;scene.add(ground);
   const staticG=new THREE.Group(),itemsG=new THREE.Group();scene.add(staticG,itemsG);
   const selBox=new THREE.BoxHelper(undefined,new THREE.Color(PAL.accent));selBox.visible=false;selBox.material.depthTest=false;selBox.renderOrder=10;scene.add(selBox);
-  Object.assign(T3,{r,scene,cam,controls:ctr,hemi,amb,sun,ground,staticG,itemsG,selBox,ray:new THREE.Raycaster(),floorPlane:new THREE.Plane(new THREE.Vector3(0,1,0),0)});
+  const compass=makeCompass();scene.add(compass);
+  Object.assign(T3,{r,scene,cam,controls:ctr,hemi,amb,sun,ground,compass,staticG,itemsG,selBox,ray:new THREE.Raycaster(),floorPlane:new THREE.Plane(new THREE.Vector3(0,1,0),0)});
   setupPicking();setupWalk();applyTheme3D();resize3D();requestAnimationFrame(loop3D);
 }
-function resize3D(){if(!T3.inited||T3.failed)return;const r=stage.getBoundingClientRect();if(r.width<2||r.height<2)return;T3.r.setSize(r.width,r.height,false);T3.cam.aspect=r.width/r.height;T3.cam.updateProjectionMatrix();if(!T3.camSet&&!T3.walkMode){T3.camSet=true;T3.cam.position.copy(camPos('iso'));T3.controls.update();}T3.need=true;}
+function resize3D(){if(!T3.inited||T3.failed)return;const r=stage.getBoundingClientRect();if(r.width<2||r.height<2)return;T3.r.setSize(r.width,r.height,false);T3.cam.aspect=r.width/r.height;{const sp=$('#sunp'),sr=sp&&sp.offsetParent&&!T3.walkMode&&r.height>r.width*1.2?sp.getBoundingClientRect():null,off=sr?Math.max(0,(sr.bottom-r.top)/2-24):0;if(off>0)T3.cam.setViewOffset(r.width,r.height,0,-off,r.width,r.height);else T3.cam.clearViewOffset();}T3.cam.updateProjectionMatrix();if(!T3.walkMode&&!T3.tween&&(!T3.camSet||!T3.userMoved)){T3.camSet=true;T3.cam.position.copy(camPos(T3.camKey||'iso'));T3.controls.target.set(flatC()[0],0,flatC()[1]);T3.controls.update();}T3.need=true;}
 function applyTheme3D(){if(!T3.inited||T3.failed)return;T3.scene.background=new THREE.Color(PAL.sky||'#dfe5ec');T3.selBox.material.color.set(PAL.accent);T3.ground.material.opacity=PAL.dark?.32:.16;T3.need=true;}
 function loop3D(now){
   requestAnimationFrame(loop3D);
@@ -2453,39 +2487,98 @@ function loop3D(now){
   const dt=Math.min(.05,(now-(T3.last||now))/1000);T3.last=now;let moving=false;
   if(T3.walkMode)moving=walkStep(dt);
   else{if(T3.tween)moving=stepTween(now);if(T3.controls.update())T3.need=true;}
-  if(T3.need||moving){T3.r.render(T3.scene,T3.cam);T3.need=false;if(T3.walkMode)drawMinimap();}
+  if(T3.compass){const sp=$('#sunp'),cv=T3.forceCompass??(!T3.walkMode&&!ui.sunMin&&!!sp&&sp.offsetParent!==null);if(T3.compass.visible!==cv){T3.compass.visible=cv;T3.need=true;}}
+  if(T3.need||moving){T3.r.render(T3.scene,T3.cam);drawRose();T3.need=false;if(T3.walkMode)drawMinimap();}
 }
 
+// ---------- flat centre and size (metres), from whichever flat is loaded
+function flatBox(){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const r of ORIG.rooms)for(const p of r.poly){x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1]);}
+  if(x0>x1)return{c:[6.3,4.7],r:7.85};return{c:[(x0+x1)/2000,(y0+y1)/2000],r:Math.hypot(x1-x0,y1-y0)/2000};}
+function flatC(){return flatBox().c;}
 // ---------- sun
+const CMP_R0=8.4;
+function makeCompass(){
+  const g=new THREE.Group(),cv=document.createElement('canvas');cv.width=cv.height=1024;const x=cv.getContext('2d');x.translate(512,512);
+  x.strokeStyle='rgba(52,56,64,.5)';x.lineWidth=5;x.beginPath();x.arc(0,0,440,0,Math.PI*2);x.stroke();
+  for(let i=0;i<16;i++){const a=i*Math.PI/8,r0=i%4?418:396;x.lineWidth=i%4?4:7;x.beginPath();x.moveTo(Math.sin(a)*r0,-Math.cos(a)*r0);x.lineTo(Math.sin(a)*462,-Math.cos(a)*462);x.stroke();}
+  x.fillStyle='#c2412d';x.beginPath();x.moveTo(0,-505);x.lineTo(-26,-462);x.lineTo(26,-462);x.closePath();x.fill();
+  const tex=new THREE.CanvasTexture(cv);tex.encoding=THREE.sRGBEncoding;const S=CMP_R0*2*512/440;
+  const ring=new THREE.Mesh(new THREE.PlaneGeometry(S,S),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.19;ring.renderOrder=-1;ring.raycast=()=>{};
+  const piv=new THREE.Group();piv.add(ring);g.add(piv);g.userData.piv=piv;g.userData.letters=[];
+  for(const[t,b]of[['N',0],['E',90],['S',180],['W',270]]){const c2=document.createElement('canvas');c2.width=c2.height=128;const y=c2.getContext('2d');
+    y.fillStyle=t==='N'?'#c2412d':'#2f333b';y.beginPath();y.arc(64,64,54,0,Math.PI*2);y.fill();y.fillStyle='#fff';y.font='700 74px system-ui,sans-serif';y.textAlign='center';y.textBaseline='middle';y.fillText(t,64,69);
+    const tx=new THREE.CanvasTexture(c2);tx.encoding=THREE.sRGBEncoding;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthWrite:false}));sp.scale.set(1.15,1.15,1);sp.userData.b=b;sp.raycast=()=>{};g.add(sp);g.userData.letters.push(sp);}
+  return g;}
+function drawRose(){
+  const cv=$('#sun-rose');if(!cv||!cv.getContext)return;const x=cv.getContext('2d'),th=(model.meta.north||0)*D2R;let rot=th;
+  if(T3.inited&&!T3.failed&&viewMode!=='plan'){const e=T3.cam.matrixWorld.elements,X=[e[0],e[2]],H=[e[4]-e[8],e[6]-e[10]],xl=Math.hypot(X[0],X[1])||1,hl=Math.hypot(H[0],H[1])||1,d=[Math.sin(th),-Math.cos(th)];
+    rot=Math.atan2((d[0]*X[0]+d[1]*X[1])/xl,(d[0]*H[0]+d[1]*H[1])/hl);}
+  const key=rot.toFixed(3)+'|'+ui.sunT+'|'+ui.sunM+'|'+(PAL.dark?1:0);if(cv._k===key)return;cv._k=key;
+  const ink=PAL.dark?'#d7dbe2':'#3a3f48',dim=PAL.dark?'rgba(215,219,226,.35)':'rgba(58,63,72,.3)';
+  x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,132,132);x.translate(66,66);
+  x.strokeStyle=dim;x.lineWidth=2;x.beginPath();x.arc(0,0,36,0,Math.PI*2);x.stroke();
+  const at=(a,r)=>[Math.sin(a)*r,-Math.cos(a)*r];
+  for(let i=0;i<8;i++){const a=rot+i*Math.PI/4,[x0,y0]=at(a,i%2?31:28),[x1,y1]=at(a,36);x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y1);x.stroke();}
+  const v=sunVec(ui.sunT,ui.sunM);
+  if(v.alt>0){const a=rot+v.az*D2R,[sx,sy]=at(a,36);x.strokeStyle='rgba(232,150,40,.85)';x.lineWidth=4;x.beginPath();x.moveTo(sx*.62,sy*.62);x.lineTo(0,0);x.stroke();
+    x.fillStyle='#f0a429';x.beginPath();x.arc(sx,sy,9,0,Math.PI*2);x.fill();x.strokeStyle=PAL.dark?'#1b1e24':'#fff';x.lineWidth=2.5;x.stroke();}
+  x.font='700 21px system-ui,sans-serif';x.textAlign='center';x.textBaseline='middle';
+  for(const[t,b]of[['N',0],['E',90],['S',180],['W',270]]){const[lx,ly]=at(rot+b*D2R,53);x.fillStyle=t==='N'?'#c2412d':ink;x.fillText(t,lx,ly+1);}
+}
+function placeCompass(){const g=T3.compass;if(!g)return;const th=(model.meta.north||0)*D2R,fb=flatBox(),C=fb.c,CR=Math.max(CMP_R0,fb.r+.6),pv=g.userData.piv;pv.rotation.y=-th;pv.position.set(C[0],0,C[1]);pv.scale.setScalar(CR/CMP_R0);
+  for(const sp of g.userData.letters){const a=th+sp.userData.b*D2R,R=CR+1.15;sp.position.set(C[0]+Math.sin(a)*R,.45,C[1]-Math.cos(a)*R);}}
 const DECL=[-21.3,-13.3,-2.4,9.4,18.8,23.3,21.5,13.8,2.2,-9.6,-19.1,-23.3];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DIRS=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+const SEASONS=[{label:'Nov–Feb',dec:-20,m:0},{label:'Mar–Apr · Sep–Oct',dec:0,m:2},{label:'May–Aug',dec:20,m:6}];
+const seasonOf=m=>[0,0,1,1,2,2,2,2,1,1,0,0][m]??0;
 function sunVec(t,m){
-  const phi=1.35*D2R,dec=DECL[m]*D2R,H=(t-13.1)*15*D2R; // Singapore solar noon is about 1:05 pm
+  const phi=1.35*D2R,dec=SEASONS[seasonOf(m)].dec*D2R,H=(t-13.1)*15*D2R; // Singapore solar noon is about 1:05 pm
   const E=-Math.cos(dec)*Math.sin(H),N=Math.cos(phi)*Math.sin(dec)-Math.sin(phi)*Math.cos(dec)*Math.cos(H),U=Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(H);
   const th=(model.meta.north||0)*D2R,nv=[Math.sin(th),-Math.cos(th)],ev=[Math.cos(th),Math.sin(th)];
   return{x:E*ev[0]+N*nv[0],z:E*ev[1]+N*nv[1],y:U,alt:Math.asin(clamp(U,-1,1))/D2R,az:((Math.atan2(E,N)/D2R)+360)%360};
 }
+// which rooms' windows get direct sun in the chosen season, morning and afternoon
+function sunRooms(){
+  if(!model.meta.northSet)return'<div>Set <b>North ↑</b> to match the north arrow on your site plan. Then this shows which rooms get the sun.</div>';
+  const th=(model.meta.north||0)*D2R,nv=[Math.sin(th),-Math.cos(th)],ev=[Math.cos(th),Math.sin(th)],win=[];
+  for(const w of model.walls){if(w.removed)continue;const f=wf(w);for(const o of w.openings||[]){if(o.type!=='window')continue;const sm=o.at+o.w/2;let inR=null,out=0;
+    for(const sg of[1,-1]){const p=wpt(w,f,sm,sg*((w.t||100)/2+250)),r=roomAt(p[0],p[1]);if(!r||r.kind==='ledge')out=sg;else inR=r;}
+    if(!out||!inR)continue;const n=[f.nx*out,f.ny*out];win.push({nm:inR.name||inR.id,N:n[0]*nv[0]+n[1]*nv[1],E:n[0]*ev[0]+n[1]*ev[1]});}}
+  const am=new Map(),pm=new Map();
+  for(let t=7;t<=19.5;t+=.25){if(t>12&&t<13)continue;const v=sunVec(t,ui.sunM);if(v.alt<4||v.alt>60)continue;const c=Math.cos(v.alt*D2R),sE=Math.sin(v.az*D2R)*c,sN=Math.cos(v.az*D2R)*c;
+    for(const x of win){if(sE*x.E+sN*x.N<.3)continue;const m=t<=12?am:pm;if(!m.has(x.nm))m.set(x.nm,t);}}
+  const dir=t=>DIRS[Math.round(sunVec(t,ui.sunM).az/22.5)%16],hm=t=>{const h=Math.floor(t),mi=Math.round((t-h)*60);return((h+11)%12+1)+(mi?':'+String(mi).padStart(2,'0'):'')+(h<12?'am':'pm');};
+  const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const P=[...pm.entries()].sort((a,b)=>a[1]-b[1]).map(([n,t])=>`${e(n)} <span class="read">from ${hm(t)}</span>`),A=[...am.keys()].map(e);
+  return`<div class="pm"><b>Afternoon sun from ${dir(16)}:</b> ${P.length?P.join(', '):'none of your windows'}</div><div><b>Morning sun from ${dir(9)}:</b> ${A.length?A.join(', '):'none of your windows'}</div>`;
+}
 function fmtTime(t){const h=Math.floor(t),m=Math.round((t-h)*60);const hh=((h+11)%12)+1;return`${hh}:${String(m).padStart(2,'0')} ${h<12?'am':'pm'}`;}
 function updateSun(){
   const v=sunVec(ui.sunT,ui.sunM);
-  $('#sun-t').value=ui.sunT;$('#sun-tl').textContent=fmtTime(ui.sunT);$('#sun-m').value=ui.sunM;$('#sun-n').value=model.meta.north||0;$('#sun-nl').textContent=(model.meta.north||0)+'°';
+  $('#sun-t').value=ui.sunT;$('#sun-tl').textContent=fmtTime(ui.sunT);$$('#sun-s button').forEach(b=>{const on=+b.dataset.s===seasonOf(ui.sunM);b.classList.toggle('on',on);b.setAttribute('aria-checked',on?'true':'false');});$('#sun-rooms').innerHTML=sunRooms();$('#app').classList.toggle('has-north',!!model.meta.northSet);$('#sun-n').value=model.meta.north||0;$('#sun-nl').textContent=(model.meta.north||0)+'°';
   $('#sun-r').textContent=v.alt>0?`${Math.round(v.alt)}° up, from ${DIRS[Math.round(v.az/22.5)%16]}`:'Sun below horizon';
   $('#westsun').hidden=!(v.alt>0&&v.az>200&&v.az<340&&ui.sunT>=13);
-  if(!T3.inited||T3.failed)return;
-  const up=Math.max(v.y,0);const c=new THREE.Vector3(6.3,0,4.7);
+  drawRose();if(!T3.inited||T3.failed)return;
+  placeCompass();const up=Math.max(v.y,0);const fc=flatC(),c=new THREE.Vector3(fc[0],0,fc[1]);T3.ground.position.set(fc[0],-.21,fc[1]);
   T3.sun.position.set(c.x+v.x*30,Math.max(.5,v.y*30),c.z+v.z*30);T3.sun.target.position.copy(c);
   const day=clamp(v.alt/12,0,1);T3.sun.intensity=1.55*day;T3.sun.castShadow=!!ui.shadows&&day>0;
   const warm=clamp(1-v.alt/35,0,1);T3.sun.color.setRGB(1,1-.18*warm,1-.38*warm);
   T3.hemi.intensity=(T3.walkMode?.48:.26)+.3*clamp(v.alt/25,0,1);T3.need=true;
 }
 (function initSunUI(){
-  $('#sun-m').innerHTML=MONTHS.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+  $('#sun-s').innerHTML=SEASONS.map((s,i)=>`<button role="radio" data-s="${i}">${s.label}</button>`).join('');
   $('#sun-t').oninput=e=>{ui.sunT=+e.target.value;updateSun();};$('#sun-t').onchange=saveUI;
-  $('#sun-m').onchange=e=>{ui.sunM=+e.target.value;saveUI();updateSun();};
-  $('#sun-n').oninput=e=>{model.meta.north=+e.target.value;updateSun();requestDraw();};$('#sun-n').onchange=()=>commit();
-  $('#sun-min').onclick=()=>{ui.sunMin=ui.sunMin?0:1;saveUI();$('#sunp').classList.toggle('min',!!ui.sunMin);$('#sun-min').innerHTML=ui.sunMin?ICON.chevU:ICON.chevD;};
+  $('#sun-s').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;ui.sunM=SEASONS[+b.dataset.s].m;saveUI();updateSun();};
+  $('#sun-n').oninput=e=>{model.meta.north=+e.target.value;model.meta.northSet=true;updateSun();requestDraw();};$('#sun-n').onchange=()=>commit();
+  $('#sun-min').onclick=()=>{ui.sunMin=ui.sunMin?0:1;saveUI();T3.need=true;requestAnimationFrame(()=>resize3D());$('#sunp').classList.toggle('min',!!ui.sunMin);$('#sun-min').innerHTML=ui.sunMin?ICON.chevU:ICON.chevD;};
   $('#sunp').classList.toggle('min',!!ui.sunMin);$('#sun-min').innerHTML=ui.sunMin?ICON.chevU:ICON.chevD;
+  const PLAY='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',PAUSE='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>';
+  const pb=$('#sun-play');pb.innerHTML=PLAY;
+  const stop=()=>{cancelAnimationFrame(T3.sunPlay);T3.sunPlay=0;pb.innerHTML=PLAY;pb.title='Play the day';saveUI();};
+  pb.onclick=()=>{if(T3.sunPlay){stop();return;}if(ui.sunT>=19.4)ui.sunT=7;let last=performance.now();
+    const step=now=>{ui.sunT=Math.min(19.5,ui.sunT+(now-last)/1000*1.25);last=now;updateSun();if(ui.sunT>=19.5){stop();return;}T3.sunPlay=requestAnimationFrame(step);};
+    pb.innerHTML=PAUSE;pb.title='Pause';T3.sunPlay=requestAnimationFrame(step);};
 })();
 
 // ---------- static scene: slab, floors, walls, openings
@@ -2499,6 +2592,10 @@ function buildStatic(){
   const slabOf=poly=>{const sh=new THREE.Shape();poly.forEach((p,i)=>i?sh.lineTo(p[0]/1000,-p[1]/1000):sh.moveTo(p[0]/1000,-p[1]/1000));
   const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:.2,bevelEnabled:false}),mat('#c4c0b9',.95));slab.rotation.x=-Math.PI/2;slab.position.y=-.202;slab.receiveShadow=true;slab.castShadow=true;G.add(slab);};
   if(OUTLINE)slabOf(OUTLINE);else{for(const r of model.rooms)slabOf(r.poly);for(const w of model.walls){const f=wf(w);slabOf(spanPoly(w,f,0,f.L));}}
+  // lid: invisible to the camera, but it casts shadows, so sunlight only gets in through the windows
+  if(top>=H){const lm=T3.lidMat||(T3.lidMat=new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false,side:THREE.DoubleSide}));
+    const lidOf=poly=>{const sh=new THREE.Shape();poly.forEach((p,i)=>i?sh.lineTo(p[0]/1000,-p[1]/1000):sh.moveTo(p[0]/1000,-p[1]/1000));const m=new THREE.Mesh(new THREE.ShapeGeometry(sh),lm);m.rotation.x=-Math.PI/2;m.position.y=H/1000+.002;m.castShadow=true;m.raycast=()=>{};G.add(m);};
+    if(OUTLINE)lidOf(OUTLINE);else{for(const r of model.rooms)lidOf(r.poly);for(const w of model.walls){const f=wf(w);lidOf(spanPoly(w,f,0,f.L));}}}
   // floors
   for(const r of model.rooms){const s=new THREE.Shape();r.poly.forEach((p,i)=>i?s.lineTo(p[0]/1000,-p[1]/1000):s.moveTo(p[0]/1000,-p[1]/1000));
     const geo=new THREE.ShapeGeometry(s);geo.rotateX(-Math.PI/2);const m=new THREE.Mesh(geo,floorMat(r.floor));m.position.y=.002;m.receiveShadow=true;m.userData={kind:'room',id:r.id};G.add(m);
@@ -2805,14 +2902,14 @@ function setupPicking(){
 }
 function updCutButtons(){$$('.ov3d [data-cut]').forEach(b=>b.classList.toggle('on',b.dataset.cut===ui.cut));}
 function camPreset(k){
-  if(!T3.inited||T3.failed||T3.walkMode)return;
+  if(!T3.inited||T3.failed||T3.walkMode)return;T3.camKey=k;T3.userMoved=false;
   $$('[data-cam]').forEach(b=>b.classList.toggle('on',b.dataset.cam===k));
-  const tgt=new THREE.Vector3(6.3,0,4.7);
+  const tgt=new THREE.Vector3(flatC()[0],0,flatC()[1]);
   const pos=camPos(k);
   T3.tween={t0:performance.now(),p0:T3.cam.position.clone(),q0:T3.controls.target.clone(),p1:pos,q1:tgt};T3.need=true;
 }
-function camPos(k){const a=T3.cam.aspect||1.6,vf=T3.cam.fov*D2R/2,hf=Math.atan(Math.tan(vf)*a);const R=k==='top'?7.2:7.5;const d=R/Math.sin(Math.min(vf,hf))*1.02;
-  const dir=k==='top'?new THREE.Vector3(0,1,.002):k==='front'?new THREE.Vector3(0,.32,1):new THREE.Vector3(-.36,.66,.66);dir.normalize();return new THREE.Vector3(6.3,0,4.7).addScaledVector(dir,d);}
+function camPos(k){const a=T3.cam.aspect||1.6,vf=T3.cam.fov*D2R/2,hf=Math.atan(Math.tan(vf)*a);const R=(k==='top'?(a<1?7.6:7.2):(a<1?8.9:7.5))*Math.max(.6,flatBox().r/7.85);const d=R/Math.sin(Math.min(vf,hf))*1.02;
+  const dir=k==='top'?new THREE.Vector3(0,1,.002):k==='front'?new THREE.Vector3(0,.32,1):new THREE.Vector3(-.36,.66,.66);dir.normalize();return new THREE.Vector3(flatC()[0],0,flatC()[1]).addScaledVector(dir,d);}
 function stepTween(now){const tw=T3.tween;const t=clamp((now-tw.t0)/550,0,1),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;T3.cam.position.lerpVectors(tw.p0,tw.p1,e);T3.controls.target.lerpVectors(tw.q0,tw.q1,e);if(t>=1)T3.tween=null;T3.need=true;return true;}
 
 // ---------- walk mode

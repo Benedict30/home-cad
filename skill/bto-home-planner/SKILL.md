@@ -1,6 +1,6 @@
 ---
 name: bto-home-planner
-description: Use when someone shares a BTO or other HDB floor plan, or asks to plan their home or flat with one attached, and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Gives a wall check under HDB rules, layouts for their use cases, and a CAD app of their flat with 2D plans, 3D and a walk-through.
+description: Use when someone shares a BTO or other HDB floor plan, or asks to plan their home or flat with one attached, and wants to know which walls they can knock down, or how to lay out the flat for how they live, such as dog owners, collectors, working from home, gaming, a baby on the way or renting out a room. Also use it when they want to know which rooms get the afternoon or west sun, with their site plan and unit number. Gives a wall check under HDB rules, layouts for their use cases, a sun check room by room, and a CAD app of their flat with 2D plans, 3D, a walk-through and a sun study.
 ---
 
 # BTO home planner
@@ -12,8 +12,11 @@ Help someone plan an HDB flat (Singapore public housing), whether a new BTO or a
 - **Floor plan.** A photo, screenshot or PDF of the HDB plan. If it's missing, ask for it.
 - **The household.** Who lives there (ages, kids, parents, a helper, pets), who works from home, and what's coming up (a baby, parents moving in, kids growing up, renting out a room). If this is missing, ask once in one short message. If they say "just go", assume a typical couple and state that assumption.
 - **Must-haves**, and the block's completion date if known (it decides the 3-year bathroom rule).
+- **For a sun check:** the site plan page from the same HDB sales brochure, and their block and unit number. The floor plan must be the one for their flat type in that same brochure. If either is missing, ask for it.
 
-Never repeat block or unit numbers from the plan in your answer or drawings.
+Use the unit number only to find the unit on the site plan. Never repeat block or unit numbers in your answer or drawings; say "your unit".
+
+If they only ask about the sun ("Check the sun for my BTO"), skip the wall check and the 4 layouts: make one layout, the flat as it is with typical furniture for their household (a couple if you don't know), do the sun check in step 5, and offer the full layouts at the end.
 
 ## 2. Read the plan
 
@@ -147,8 +150,15 @@ Write the plan as a JSON file (`plan.json`). The comment above `/*PLAN-START*/` 
   - the furniture: centre point, width, depth, height, rotation and kind, with a plain name ("Queen bed", "Cot", "Cat tree", "Fridge"), because the name picks the 3D model
   Put the best layout first and set `best` on it (on both entries if it has a now and an after). For a life change, add separate "now" and "after" entries. If several layouts share the same "now", add it once.
 - **Check it fits:** run `python3 scripts/check_plan.py plan.json`. It flags any piece outside its room, in a wall, in a door swing or on another piece. Fix everything it lists and run it again until it says OK. Also check by eye that walkways stay at least 800 mm wide and beds have their headboard against a wall.
+- **Sun check** (when they shared the site plan and unit number). Do it before building the app, so the app knows north:
+  1. Find their unit on the site plan: units are labelled with the last digits of the unit number (#12-176 is "176"), inside their block. Crop and zoom to read it, and note the pixel position of that number.
+  2. Read the scale bar: take two labelled ticks far apart and divide their distance in pixels by the metres between them. Check the north arrow; it usually points straight up.
+  3. Run `python3 scripts/fit_unit.py plan.json siteplan.png --at X Y --scale PX_PER_M` (add `--arrow DEG` if the north arrow is turned, in degrees clockwise from up). It lines the flat's outline up with the unit and writes `fit_1.png`, `fit_2.png`, `fit_3.png`.
+  4. Look at each image. The right fit has the outline sitting on their unit, the main door (red dot) at the corridor or lift lobby, and the windows (blue dots) facing outside, not into a neighbouring unit. Units next to each other are often mirror images, and the script tries both. If no fit works, the floor plan is probably a different flat type: ask for the right page.
+  5. Save it: run the same command with `--pick N --out plan.json`. This sets `north`, and if their unit is the mirror image of the brochure plan, it mirrors the plan so every room faces the right way.
+  6. Run `python3 scripts/sun_report.py plan.json`. It gives a table of each room's window directions and when they get direct sun in each season, using the same rules as the app. Use it in your reply rather than working the sun out yourself.
 - **Build the app:** run `python3 scripts/build_app.py plan.json`. It checks the plan's format, puts it into the app and saves the file where you can share it (on claude.ai, `/mnt/user-data/outputs/`). Share that file. Don't retype the app into an artifact: it's about 1 MB, with the 3D engine built in.
-- Tell them to download the file and open it in any browser, on a phone or a computer; it works offline. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. They can move furniture, try their own changes and export a plan drawing.
+- Tell them to download the file and open it in any browser, on a phone or a computer; it works offline. It opens on the layouts, best fit first, with arrows to step through them in Plan, 3D and Walk. **Knock down** colours each wall by what HDB allows and shows the same tags as your wall check. They can move furniture, try their own changes and export a plan drawing. With a sun check, the **Sun study** panel in 3D shows the same answer: pick the season, press play to watch the sun move through the rooms, and the compass shows which way is north.
 
 ## 6. Reply
 
@@ -163,3 +173,9 @@ Write the plan as a JSON file (`plan.json`). The comment above `/*PLAN-START*/` 
   - beams
   - measurements taken on site
 - Remind them you've read a photo, so they should check against the official plan.
+- **For a sun check:**
+  - Start with one line on which way the flat faces (for example, "Your bedrooms face south-southwest, and the main bedroom's side window faces west-northwest").
+  - Then the `sun_report.py` table, and which rooms get the afternoon sun, in which months and from when.
+  - Then 3–4 concrete moves for those rooms: thermal blackout curtains or solar film on the windows facing west, south-west or north-west; a properly sized aircon (and a ceiling fan) for the hottest room; keeping beds, desks and TV screens out of the afternoon sun's path. Rooms with morning sun suit plants and a breakfast corner.
+  - In Singapore the midday sun is almost overhead, so it barely comes in; afternoon sun from about 3pm to sunset is the hot one.
+  - Say that site plans are indicative, that a neighbouring block or unit right outside a window can shade it, and that lower floors get more shade.
